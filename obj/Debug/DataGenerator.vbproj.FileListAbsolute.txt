@@ -1,0 +1,11 @@
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.vbproj.AssemblyReference.cache
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.vbproj.GenerateResource.cache
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.vbproj.CoreCompileInputs.cache
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DataGenerator.exe.config
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DataGenerator.exe
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DataGenerator.pdb
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.exe
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.pdb
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\Bogus.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGene.DFC565C4.Up2Date
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmMain.resources

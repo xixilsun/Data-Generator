@@ -1,0 +1,319 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.8": {
+      "Bogus/35.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.VisualBasic/10.3.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.VisualBasic"
+        ],
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win": {
+      "Bogus/35.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.VisualBasic/10.3.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.VisualBasic"
+        ],
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-arm64": {
+      "Bogus/35.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.VisualBasic/10.3.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.VisualBasic"
+        ],
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x64": {
+      "Bogus/35.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.VisualBasic/10.3.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.VisualBasic"
+        ],
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x86": {
+      "Bogus/35.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net40/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.VisualBasic/10.3.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.VisualBasic"
+        ],
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Bogus/35.5.0": {
+      "sha512": "iCXszbIvvxgfb01bPe/s3R6pQSKX6rpcQWqM7wqDt+lsMogR6fkSWBwqOxLpdXmMB7mgZNNk2hm2M1shoIiekA==",
+      "type": "package",
+      "path": "bogus/35.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bogus.35.5.0.nupkg.sha512",
+        "bogus.nuspec",
+        "lib/net40/Bogus.dll",
+        "lib/net40/Bogus.xml",
+        "lib/net6.0/Bogus.dll",
+        "lib/net6.0/Bogus.xml",
+        "lib/netstandard1.3/Bogus.dll",
+        "lib/netstandard1.3/Bogus.xml",
+        "lib/netstandard2.0/Bogus.dll",
+        "lib/netstandard2.0/Bogus.xml"
+      ]
+    },
+    "Microsoft.VisualBasic/10.3.0": {
+      "sha512": "AvMDjmJHjz9bdlvxiSdEHHcWP+sZtp7zwule5ab6DaUbgoBnwCsd7nymj69vSz18ypXuEv3SI7ZUNwbIKrvtMA==",
+      "type": "package",
+      "path": "microsoft.visualbasic/10.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net45/_._",
+        "lib/netcore50/Microsoft.VisualBasic.dll",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.3/Microsoft.VisualBasic.dll",
+        "lib/netstandard2.0/Microsoft.VisualBasic.dll",
+        "lib/portable-net45+win8+wpa81/_._",
+        "lib/uap10.0.16299/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "microsoft.visualbasic.10.3.0.nupkg.sha512",
+        "microsoft.visualbasic.nuspec",
+        "ref/net45/_._",
+        "ref/netcore50/Microsoft.VisualBasic.dll",
+        "ref/netcore50/Microsoft.VisualBasic.xml",
+        "ref/netcore50/de/Microsoft.VisualBasic.xml",
+        "ref/netcore50/es/Microsoft.VisualBasic.xml",
+        "ref/netcore50/fr/Microsoft.VisualBasic.xml",
+        "ref/netcore50/it/Microsoft.VisualBasic.xml",
+        "ref/netcore50/ja/Microsoft.VisualBasic.xml",
+        "ref/netcore50/ko/Microsoft.VisualBasic.xml",
+        "ref/netcore50/ru/Microsoft.VisualBasic.xml",
+        "ref/netcore50/zh-hans/Microsoft.VisualBasic.xml",
+        "ref/netcore50/zh-hant/Microsoft.VisualBasic.xml",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard1.1/Microsoft.VisualBasic.dll",
+        "ref/netstandard1.1/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/de/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/es/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/fr/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/it/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/ja/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/ko/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/ru/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/zh-hans/Microsoft.VisualBasic.xml",
+        "ref/netstandard1.1/zh-hant/Microsoft.VisualBasic.xml",
+        "ref/netstandard2.0/Microsoft.VisualBasic.dll",
+        "ref/netstandard2.0/Microsoft.VisualBasic.xml",
+        "ref/portable-net45+win8+wpa81/_._",
+        "ref/uap10.0.16299/_._",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.8": [
+      "Bogus >= 35.5.0",
+      "Microsoft.VisualBasic >= 10.3.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\NUGET\\global_packages": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "X:\\WorkingCopy\\!Testing Project\\DataGenerator\\DataGenerator.vbproj",
+      "projectName": "DataGenerator",
+      "projectPath": "X:\\WorkingCopy\\!Testing Project\\DataGenerator\\DataGenerator.vbproj",
+      "packagesPath": "C:\\NUGET\\global_packages",
+      "outputPath": "X:\\WorkingCopy\\!Testing Project\\DataGenerator\\obj\\",
+      "projectStyle": "PackageReference",
+      "skipContentFileWrite": true,
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\S2209063\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net48"
+      ],
+      "sources": {
+        "\\\\172.18.3.167\\Nuget\\Package": {},
+        "\\\\172.18.3.167\\Nuget\\Package64": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net48": {
+          "projectReferences": {}
+        }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net48": {
+        "dependencies": {
+          "Bogus": {
+            "target": "Package",
+            "version": "[35.5.0, )"
+          },
+          "Microsoft.VisualBasic": {
+            "target": "Package",
+            "version": "[10.3.0, )"
+          }
+        }
+      }
+    },
+    "runtimes": {
+      "win": {
+        "#import": []
+      },
+      "win-arm64": {
+        "#import": []
+      },
+      "win-x64": {
+        "#import": []
+      },
+      "win-x86": {
+        "#import": []
+      }
+    }
+  },
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Access to the path 'C:\\NUGET\\http_cache\\670c1461c29885f9aa22c281d8b7da90845b38e4$ps_api.nuget.org_v3_index.json\\vuln_index.dat-new' is denied."
+    }
+  ]
+}
