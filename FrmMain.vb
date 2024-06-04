@@ -6,7 +6,14 @@ Imports Bogus
 Imports System.Windows.Forms
 Imports System.Collections.Generic
 Imports System.Reflection
+Imports DevExpress.XtraEditors.Repository
+Imports DevExpress.XtraGrid.Views.Grid
+Imports DevExpress.XtraEditors
+Imports Bogus.DataSets
+Imports DevExpress.Utils.Serializing
+
 Public Class FrmMain
+    Private dtDataSet As New DataTable
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim CategoryList As List(Of String) = BogusDatatable().AsEnumerable().Select(Function(o) o("Category").ToString).Distinct().ToList()
         FillComboBox(cboCategory, CategoryList)
@@ -14,18 +21,159 @@ Public Class FrmMain
 
         'TestingGenerateData()
         Me.KeyPreview = True
+
+        'Prepare GridView
+        PrepareGridView()
+
+        'Add Handler
+        AddHandler dtDataSet.RowChanged, AddressOf OnInitNewRow
+        AddHandler btnGenerate.Click, AddressOf ProcessGenerateData
+        AddHandler cboCategory.SelectedIndexChanged, AddressOf FillSubcategoryComboBox
     End Sub
-    Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.F5 Then
-            btnGenerate_Click(sender, e)
-        End If
-    End Sub
-    Private Sub FillSubcategory(category As String)
+
+    Private Sub FillSubcategoryComboBox(sender As Object, e As EventArgs)
+        Dim Category As String = cboCategory.SelectedValue
         Dim SubcategoryList As List(Of String) = BogusDatatable().AsEnumerable().Where(Function(x) x("Category") = category).Select(Function(o) o("Subcategory").ToString).ToList()
         FillComboBox(cboSubcategory, SubcategoryList)
     End Sub
 
-    Private Sub FillComboBox(cboTable As ComboBox, dataSource As List(Of String))
+    Private Sub OnInitNewRow(sender As Object, e As InitNewRowEventArgs)
+        Dim View As GridView = CType(sender, GridView)
+
+        'Set Default value for Category
+        Dim CategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
+        If CategoryCombo.Items.Count > 0 Then
+            View.SetRowCellValue(e.RowHandle, "Category", CategoryCombo.Items(0).ToString)
+        End If
+
+        'Set Default value for Subcategory
+        Dim SubcategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
+        If SubcategoryCombo.Items.Count > 0 Then
+            View.SetRowCellValue(e.RowHandle, "Subcategory", SubcategoryCombo.Items(0).ToString)
+        End If
+    End Sub
+
+    Private Sub ProcessGenerateData(sender As Object, e As EventArgs)
+        Dim ColumnName As String = "", Category As String = "", Subcategory As String = "", OptionalValue As String = ""
+        Try
+            Dim dtOutput As New DataTable
+            Dim AllColumns As String = ""
+            Dim col As New List(Of String)
+            Dim RowData As String = ""
+
+            For Each row In dtDataSet.Rows
+                dtOutput.Columns.Add(row!ColumnName, System.Type.GetType("System.String"))
+                AllColumns &= If(AllColumns = "", "", ", ") & row!ColumnName
+                col.Add(row!ColumnName)
+            Next
+
+            For i As Integer = 0 To numQty.Value - 1
+                Dim paramList As New List(Of String)
+                For Each Row In dtDataSet.Rows
+                    paramList.Add(GenerateFakeData(Row!Category, Row!Subcategory))
+                Next
+
+                dtOutput.Rows.Add(paramList.ToArray)
+            Next
+
+            gcOutput.DataSource = Nothing
+            gcOutput.DataSource = dtOutput
+
+            gcOutput.MainView.PopulateColumns()
+            gcOutput.MainView.RefreshData()
+
+            Dim Query As String = $"INSERT INTO MyTable ({AllColumns}) VALUES"
+            Dim Count As Integer = 1
+            For Each row In dtOutput.Rows
+                Dim dataQuery As String = ""
+                For Each column As DataColumn In dtOutput.Columns
+                    dataQuery &= If(dataQuery = "", "", ", ") & $"'{row(column)}'"
+                Next
+                Query &= vbCrLf & $"({dataQuery})" & If(dtOutput.Rows.Count = Count, ";", ",")
+                Count += 1
+            Next
+            txtQuery.Text = Query
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
+    End Sub
+
+    Private Sub CommitNewRow()
+        gv.UpdateCurrentRow()
+
+        gv.CloseEditor()
+        gv.UpdateCurrentRow()
+        gv.RefreshData()
+    End Sub
+
+    Private Sub PrepareGridView()
+        dtDataSet.Columns.Add("ColumnName", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Category", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Optional", System.Type.GetType("System.String"))
+
+        dtDataSet.Rows.Add("", "Address", "ZipCode", "")
+        gc.DataSource = dtDataSet
+
+        'Call method to setup dropdowns
+        SetupDropdownColumns()
+    End Sub
+
+    Private Sub SetupDropdownColumns()
+        'Create RepositoryItemComboBox for Category Column
+        Dim CategoryCombo As New RepositoryItemComboBox()
+        Dim CategoryList As List(Of String) = BogusDatatable().AsEnumerable().Select(Function(o) o("Category").ToString).Distinct().ToList()
+        CategoryCombo.Items.AddRange(CategoryList)
+
+        'Assign RepositoryItemComboBox to GridView Column
+        gv.Columns("Category").ColumnEdit = CategoryCombo
+
+        SetupSubcategoryDropdown()
+        'Add event handler for category column value change
+        AddHandler CategoryCombo.EditValueChanged, AddressOf OnCategoryChanged
+    End Sub
+
+    Private Sub OnCategoryChanged(sender As Object, e As EventArgs)
+        'Get the current view and focused row handle
+        Dim view As GridView = CType(gc.FocusedView, GridView)
+        Dim rowHandle As Integer = view.FocusedRowHandle
+
+        'Get the new value of the category column
+        Dim Editor As ComboBoxEdit = CType(sender, ComboBoxEdit)
+        Dim NewCategory As String = Editor.EditValue.ToString()
+
+        'Ensure the value is updated in gridview
+        view.SetRowCellValue(rowHandle, "Category", NewCategory)
+        SetupSubcategoryDropdown(NewCategory)
+    End Sub
+
+    Private Sub SetupSubcategoryDropdown(Optional category As String = "")
+        'Create RepositoryItemComboBox for Subcategory Column
+        Dim SubcategoryCombo As New RepositoryItemComboBox()
+        Dim SubcategoryList As List(Of String) = BogusDatatable().AsEnumerable().Select(Function(o) o("Subcategory").ToString).ToList()
+        If category <> "" Then
+            Dim view As GridView = CType(gc.FocusedView, GridView)
+
+            SubcategoryCombo = CType(view.Columns("Subcategory").ColumnEdit, RepositoryItemComboBox)
+            SubcategoryCombo.Items.Clear()
+
+            'SubcategoryList
+            SubcategoryList = BogusDatatable().AsEnumerable().Where(Function(o) o("Category").ToString = category).Select(Function(o) o("Subcategory").ToString).ToList()
+        End If
+        SubcategoryCombo.Items.AddRange(SubcategoryList)
+        gv.Columns("Subcategory").ColumnEdit = SubcategoryCombo
+    End Sub
+
+    Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.F5 Then
+            btnGenerateOneData_Click(sender, e)
+        End If
+    End Sub
+    Private Sub FillSubcategory(category As String)
+
+    End Sub
+
+    Private Sub FillComboBox(cboTable As Windows.Forms.ComboBox, dataSource As List(Of String))
         With cboTable
             .DataSource = dataSource
             .DropDownStyle = ComboBoxStyle.DropDown
@@ -71,9 +219,9 @@ Public Class FrmMain
     End Function
 
 
-    Private Sub cboDataType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCategory.SelectedIndexChanged
-        FillSubcategory(cboCategory.SelectedValue)
-    End Sub
+    'Private Sub cboDataType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCategory.SelectedIndexChanged
+    '    FillSubcategory(cboCategory.SelectedValue)
+    'End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnOneData.Click
         Try
@@ -94,7 +242,7 @@ Public Class FrmMain
         'TestingGenerateData()
     End Sub
 
-    Private Function GenerateFakeData(category As String, subcategory As String)
+    Private Function GenerateFakeData(category As String, subcategory As String) As String
         Try
             'Create a new Faker instance
             Dim Fake As New Faker()
@@ -136,7 +284,6 @@ Public Class FrmMain
                     result = SubcategoryMethod.Invoke(CategoryInstance, Nothing)
                 End If
 
-                result = Fake.Commerce.Categories(4)
                 If TypeOf result Is String Then
                     RandomValue = Replace(result, vbLf, vbCrLf)
                 Else
@@ -148,20 +295,12 @@ Public Class FrmMain
                 End If
             End If
 
-            txtQuery.Text = RandomValue
+            Return RandomValue
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
         End Try
 
     End Function
-
-    'Private Function GetParameterValues(method As MethodInfo) As Object()
-    '    Dim parameters As ParameterInfo() = method.GetParameters()
-    '    Dim paramValues As Object() = New Object(parameters.Length - 1) {}
-    '    For i As Integer = 0 To parameters.Length - 1
-    '        Dim paramType As Type = parameters(i).ParameterType
-    '    Next
-    'End Function
 
     Private Function GetDefaultValue(param As ParameterInfo) As Object
         If param.HasDefaultValue Then
@@ -173,28 +312,6 @@ Public Class FrmMain
         End If
         Return Nothing
     End Function
-
-    'Select Case category
-    '    Case "Random"
-    '        Select Case subcategory
-    '            Case "Number"
-    '                result = Fake.Random.Number(0, 100)
-    '            Case "Bool"
-    '                result = Fake.Random.Bool().ToString
-    '            Case "String"
-    '                result = Fake.Random.String(10) 'Example length 10
-    '            Case Else
-    '                Throw New Exception("Unknown Subcategory for Random")
-    '        End Select
-    '    Case "Date"
-    '        Select Case subcategory
-    '            Case "Past"
-    '                result = Fake.Date.Past().ToString()
-    '            Case "Future"
-    '                result = Fake.Date.Future().ToString
-
-    '        End Select
-    'End Select
     Public Function BogusDatatable() As DataTable
         Dim table As New DataTable
 
@@ -384,8 +501,22 @@ Public Class FrmMain
         BogusDatatable = table
     End Function
 
-    Private Sub btnGenerate_Click(sender As Object, e As EventArgs) Handles btnGenerate.Click
-        GenerateFakeData(cboCategory.SelectedValue, cboSubcategory.SelectedValue)
+    Private Sub btnGenerateOneData_Click(sender As Object, e As EventArgs) Handles btnGenerateOneData.Click
+        txtQuery.Text = GenerateFakeData(cboCategory.SelectedValue, cboSubcategory.SelectedValue)
+    End Sub
+
+    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
+        Dim newRow As DataRow = dtDataSet.NewRow()
+        dtDataSet.Rows.Add(newRow)
+        gv.FocusedRowHandle = gv.RowCount - 1
+
+    End Sub
+
+    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+        If gv.RowCount > 0 Then
+            Dim rowIndex As Integer = gv.FocusedRowHandle
+            dtDataSet.Rows.RemoveAt(rowIndex)
+        End If
     End Sub
 End Class
 

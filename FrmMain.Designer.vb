@@ -22,21 +22,45 @@ Partial Class FrmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmMain))
         Me.btnOneData = New System.Windows.Forms.Button()
         Me.txtQuery = New System.Windows.Forms.TextBox()
         Me.cboCategory = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.cboSubcategory = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.btnGenerateOneData = New System.Windows.Forms.Button()
+        Me.gc = New DevExpress.XtraGrid.GridControl()
+        Me.gv = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.btnAdd = New System.Windows.Forms.ToolStripButton()
+        Me.btnEdit = New System.Windows.Forms.ToolStripButton()
+        Me.btnDelete = New System.Windows.Forms.ToolStripButton()
+        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.gcOutput = New DevExpress.XtraGrid.GridControl()
+        Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.btnGenerate = New System.Windows.Forms.Button()
+        Me.numQty = New System.Windows.Forms.NumericUpDown()
+        Me.Label6 = New System.Windows.Forms.Label()
+        CType(Me.gc, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gv, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel1.SuspendLayout()
+        Me.Panel2.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
+        Me.Panel3.SuspendLayout()
+        CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.numQty, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnOneData
         '
-        Me.btnOneData.Location = New System.Drawing.Point(630, 92)
+        Me.btnOneData.Location = New System.Drawing.Point(633, 475)
         Me.btnOneData.Name = "btnOneData"
         Me.btnOneData.Size = New System.Drawing.Size(143, 28)
         Me.btnOneData.TabIndex = 0
@@ -48,12 +72,12 @@ Partial Class FrmMain
         Me.txtQuery.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtQuery.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtQuery.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtQuery.Location = New System.Drawing.Point(19, 215)
+        Me.txtQuery.Location = New System.Drawing.Point(19, 412)
         Me.txtQuery.Margin = New System.Windows.Forms.Padding(10)
         Me.txtQuery.Multiline = True
         Me.txtQuery.Name = "txtQuery"
         Me.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtQuery.Size = New System.Drawing.Size(585, 200)
+        Me.txtQuery.Size = New System.Drawing.Size(601, 125)
         Me.txtQuery.TabIndex = 11
         '
         'cboCategory
@@ -61,7 +85,7 @@ Partial Class FrmMain
         Me.cboCategory.Font = New System.Drawing.Font("Arial", 8.0!)
         Me.cboCategory.FormattingEnabled = True
         Me.cboCategory.Items.AddRange(New Object() {"Address", "Commerce", "Company", "Database", "Date", "Finance", "Hacker", "Images", "Internet", "Lorem", "Name", "Phone", "Rant", "System", "Vehicle", "Random"})
-        Me.cboCategory.Location = New System.Drawing.Point(19, 33)
+        Me.cboCategory.Location = New System.Drawing.Point(633, 388)
         Me.cboCategory.Name = "cboCategory"
         Me.cboCategory.Size = New System.Drawing.Size(121, 22)
         Me.cboCategory.TabIndex = 12
@@ -70,7 +94,7 @@ Partial Class FrmMain
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label3.Location = New System.Drawing.Point(16, 16)
+        Me.Label3.Location = New System.Drawing.Point(630, 371)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(52, 14)
         Me.Label3.TabIndex = 13
@@ -81,7 +105,7 @@ Partial Class FrmMain
         Me.cboSubcategory.Font = New System.Drawing.Font("Arial", 8.0!)
         Me.cboSubcategory.FormattingEnabled = True
         Me.cboSubcategory.Items.AddRange(New Object() {"FullName", "FirstName", "LastName"})
-        Me.cboSubcategory.Location = New System.Drawing.Point(187, 33)
+        Me.cboSubcategory.Location = New System.Drawing.Point(633, 440)
         Me.cboSubcategory.Name = "cboSubcategory"
         Me.cboSubcategory.Size = New System.Drawing.Size(121, 22)
         Me.cboSubcategory.TabIndex = 14
@@ -90,63 +114,194 @@ Partial Class FrmMain
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label1.Location = New System.Drawing.Point(184, 16)
+        Me.Label1.Location = New System.Drawing.Point(630, 423)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(44, 14)
         Me.Label1.TabIndex = 15
         Me.Label1.Text = "Options"
         '
-        'TextBox1
-        '
-        Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TextBox1.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox1.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TextBox1.Location = New System.Drawing.Point(19, 92)
-        Me.TextBox1.Margin = New System.Windows.Forms.Padding(10)
-        Me.TextBox1.Multiline = True
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBox1.Size = New System.Drawing.Size(585, 65)
-        Me.TextBox1.TabIndex = 16
-        '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label2.Location = New System.Drawing.Point(16, 74)
+        Me.Label2.Location = New System.Drawing.Point(16, 25)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(37, 14)
+        Me.Label2.Size = New System.Drawing.Size(71, 14)
         Me.Label2.TabIndex = 17
-        Me.Label2.Text = "Query"
+        Me.Label2.Text = "New DataSet"
         '
         'Label4
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label4.Location = New System.Drawing.Point(16, 191)
+        Me.Label4.Location = New System.Drawing.Point(16, 397)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(37, 14)
         Me.Label4.TabIndex = 18
         Me.Label4.Text = "Result"
         '
+        'btnGenerateOneData
+        '
+        Me.btnGenerateOneData.Location = New System.Drawing.Point(633, 509)
+        Me.btnGenerateOneData.Name = "btnGenerateOneData"
+        Me.btnGenerateOneData.Size = New System.Drawing.Size(143, 28)
+        Me.btnGenerateOneData.TabIndex = 19
+        Me.btnGenerateOneData.Text = "Generate One"
+        Me.btnGenerateOneData.UseVisualStyleBackColor = True
+        '
+        'gc
+        '
+        Me.gc.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gc.Location = New System.Drawing.Point(0, 0)
+        Me.gc.MainView = Me.gv
+        Me.gc.Name = "gc"
+        Me.gc.Size = New System.Drawing.Size(585, 151)
+        Me.gc.TabIndex = 20
+        Me.gc.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gv})
+        '
+        'gv
+        '
+        Me.gv.ActiveFilterEnabled = False
+        Me.gv.GridControl = Me.gc
+        Me.gv.Name = "gv"
+        Me.gv.OptionsView.ShowGroupPanel = False
+        '
+        'Panel1
+        '
+        Me.Panel1.Controls.Add(Me.Panel2)
+        Me.Panel1.Controls.Add(Me.ToolStrip1)
+        Me.Panel1.Location = New System.Drawing.Point(19, 43)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(585, 176)
+        Me.Panel1.TabIndex = 21
+        '
+        'Panel2
+        '
+        Me.Panel2.Controls.Add(Me.gc)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel2.Location = New System.Drawing.Point(0, 25)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(585, 151)
+        Me.Panel2.TabIndex = 22
+        '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnEdit, Me.btnDelete})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(585, 25)
+        Me.ToolStrip1.TabIndex = 21
+        Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'btnAdd
+        '
+        Me.btnAdd.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAdd.Image = CType(resources.GetObject("btnAdd.Image"), System.Drawing.Image)
+        Me.btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnAdd.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnAdd.Name = "btnAdd"
+        Me.btnAdd.Size = New System.Drawing.Size(49, 25)
+        Me.btnAdd.Text = "Add"
+        '
+        'btnEdit
+        '
+        Me.btnEdit.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnEdit.Image = CType(resources.GetObject("btnEdit.Image"), System.Drawing.Image)
+        Me.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnEdit.Name = "btnEdit"
+        Me.btnEdit.Size = New System.Drawing.Size(48, 22)
+        Me.btnEdit.Text = "Edit"
+        Me.btnEdit.Visible = False
+        '
+        'btnDelete
+        '
+        Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnDelete.Image = CType(resources.GetObject("btnDelete.Image"), System.Drawing.Image)
+        Me.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDelete.Name = "btnDelete"
+        Me.btnDelete.Size = New System.Drawing.Size(63, 22)
+        Me.btnDelete.Text = "Delete"
+        '
+        'Panel3
+        '
+        Me.Panel3.Controls.Add(Me.gcOutput)
+        Me.Panel3.Location = New System.Drawing.Point(19, 261)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(585, 109)
+        Me.Panel3.TabIndex = 23
+        '
+        'gcOutput
+        '
+        Me.gcOutput.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gcOutput.Location = New System.Drawing.Point(0, 0)
+        Me.gcOutput.MainView = Me.gvOutput
+        Me.gcOutput.Name = "gcOutput"
+        Me.gcOutput.Size = New System.Drawing.Size(585, 109)
+        Me.gcOutput.TabIndex = 20
+        Me.gcOutput.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvOutput})
+        '
+        'gvOutput
+        '
+        Me.gvOutput.ActiveFilterEnabled = False
+        Me.gvOutput.GridControl = Me.gcOutput
+        Me.gvOutput.Name = "gvOutput"
+        Me.gvOutput.OptionsView.ShowGroupPanel = False
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Arial", 8.25!)
+        Me.Label5.Location = New System.Drawing.Point(16, 244)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(67, 14)
+        Me.Label5.TabIndex = 24
+        Me.Label5.Text = "Sample Data"
+        '
         'btnGenerate
         '
-        Me.btnGenerate.Location = New System.Drawing.Point(630, 129)
+        Me.btnGenerate.Location = New System.Drawing.Point(633, 191)
         Me.btnGenerate.Name = "btnGenerate"
         Me.btnGenerate.Size = New System.Drawing.Size(143, 28)
-        Me.btnGenerate.TabIndex = 19
+        Me.btnGenerate.TabIndex = 25
         Me.btnGenerate.Text = "Generate"
         Me.btnGenerate.UseVisualStyleBackColor = True
+        '
+        'numQty
+        '
+        Me.numQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.numQty.Font = New System.Drawing.Font("Arial", 8.5!)
+        Me.numQty.Location = New System.Drawing.Point(717, 164)
+        Me.numQty.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
+        Me.numQty.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.numQty.Name = "numQty"
+        Me.numQty.Size = New System.Drawing.Size(59, 21)
+        Me.numQty.TabIndex = 26
+        Me.numQty.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Font = New System.Drawing.Font("Arial", 8.25!)
+        Me.Label6.Location = New System.Drawing.Point(633, 166)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(49, 14)
+        Me.Label6.TabIndex = 27
+        Me.Label6.Text = "Data Qty"
         '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(800, 556)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.numQty)
         Me.Controls.Add(Me.btnGenerate)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.Panel3)
+        Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.btnGenerateOneData)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.cboSubcategory)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.cboCategory)
@@ -155,6 +310,17 @@ Partial Class FrmMain
         Me.Controls.Add(Me.btnOneData)
         Me.Name = "FrmMain"
         Me.Text = "FrmMain"
+        CType(Me.gc, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gv, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
+        Me.Panel2.ResumeLayout(False)
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
+        Me.Panel3.ResumeLayout(False)
+        CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.numQty, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -166,8 +332,22 @@ Partial Class FrmMain
     Friend WithEvents Label3 As Windows.Forms.Label
     Friend WithEvents cboSubcategory As Windows.Forms.ComboBox
     Friend WithEvents Label1 As Windows.Forms.Label
-    Friend WithEvents TextBox1 As Windows.Forms.TextBox
     Friend WithEvents Label2 As Windows.Forms.Label
     Friend WithEvents Label4 As Windows.Forms.Label
+    Friend WithEvents btnGenerateOneData As Windows.Forms.Button
+    Friend WithEvents gc As DevExpress.XtraGrid.GridControl
+    Friend WithEvents gv As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents Panel1 As Windows.Forms.Panel
+    Friend WithEvents ToolStrip1 As Windows.Forms.ToolStrip
+    Friend WithEvents Panel2 As Windows.Forms.Panel
+    Friend WithEvents btnAdd As Windows.Forms.ToolStripButton
+    Friend WithEvents btnEdit As Windows.Forms.ToolStripButton
+    Friend WithEvents btnDelete As Windows.Forms.ToolStripButton
+    Friend WithEvents Panel3 As Windows.Forms.Panel
+    Friend WithEvents gcOutput As DevExpress.XtraGrid.GridControl
+    Friend WithEvents gvOutput As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents btnGenerate As Windows.Forms.Button
+    Friend WithEvents numQty As Windows.Forms.NumericUpDown
+    Friend WithEvents Label6 As Windows.Forms.Label
 End Class

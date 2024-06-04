@@ -9,3 +9,14 @@ X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.pdb
 X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\Bogus.dll
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGene.DFC565C4.Up2Date
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmMain.resources
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.Data.v10.2.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.Utils.v10.2.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraEditors.v10.2.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraGrid.v10.2.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraLayout.v10.2.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.Data.v10.2.xml
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.Utils.v10.2.xml
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraEditors.v10.2.xml
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraGrid.v10.2.xml
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraLayout.v10.2.xml
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.exe.licenses
