@@ -11,11 +11,21 @@ Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraEditors
 Imports Bogus.DataSets
 Imports DevExpress.Utils.Serializing
+Imports DevExpress.XtraGrid.Views.Base
+Imports DevExpress.XtraEditors.Controls
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Add Handler
+        AddHandler dtDataSet.RowChanged, AddressOf DatasetRowChanged
+        AddHandler cboCategory.SelectedIndexChanged, AddressOf FillSubcategoryComboBox
+        AddHandler gv.ValidateRow, AddressOf OnValidateRow
+        AddHandler btnGenerate.Click, AddressOf ProcessGenerateData
+        AddHandler gv.InvalidRowException, AddressOf OnInvalidRowException
+
         Dim CategoryList As List(Of String) = BogusDatatable().AsEnumerable().Select(Function(o) o("Category").ToString).Distinct().ToList()
+
         FillComboBox(cboCategory, CategoryList)
         'FillSubcategory(cboCategory.SelectedValue)
 
@@ -25,37 +35,49 @@ Public Class FrmMain
         'Prepare GridView
         PrepareGridView()
 
-        'Add Handler
-        AddHandler dtDataSet.RowChanged, AddressOf OnInitNewRow
-        AddHandler btnGenerate.Click, AddressOf ProcessGenerateData
-        AddHandler cboCategory.SelectedIndexChanged, AddressOf FillSubcategoryComboBox
+    End Sub
+
+    Private Sub OnInvalidRowException(sender As Object, e As InvalidRowExceptionEventArgs)
+        e.ExceptionMode = ExceptionMode.NoAction
+    End Sub
+
+    Private Sub OnValidateRow(sender As Object, e As ValidateRowEventArgs)
+        e.Valid = ValidateRow(e.RowHandle)
+    End Sub
+
+    Private Sub DatasetRowChanged(sender As Object, e As DataRowChangeEventArgs)
+        If e.Action = DataRowAction.Add Then
+            'Get the current view and focused row handle
+            Dim View As GridView = CType(gc.FocusedView, GridView)
+            Dim RowHandle As Integer = View.RowCount - 1
+            'Set Default value for Category
+            Dim CategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
+            If CategoryCombo.Items.Count > 0 Then
+                View.SetRowCellValue(RowHandle, "Category", CategoryCombo.Items(0).ToString)
+            End If
+
+            'Set Default value for Subcategory
+            Dim SubcategoryCombo As RepositoryItemComboBox = CType(View.Columns("Subcategory").ColumnEdit, RepositoryItemComboBox)
+            If SubcategoryCombo.Items.Count > 0 Then
+                View.SetRowCellValue(RowHandle, "Subcategory", SubcategoryCombo.Items(0).ToString)
+            End If
+
+            'Set focused row handle on new row
+            View.FocusedRowHandle = RowHandle
+        End If
     End Sub
 
     Private Sub FillSubcategoryComboBox(sender As Object, e As EventArgs)
         Dim Category As String = cboCategory.SelectedValue
-        Dim SubcategoryList As List(Of String) = BogusDatatable().AsEnumerable().Where(Function(x) x("Category") = category).Select(Function(o) o("Subcategory").ToString).ToList()
+        Dim SubcategoryList As List(Of String) = BogusDatatable().AsEnumerable().Where(Function(x) x("Category") = Category).Select(Function(o) o("Subcategory").ToString).ToList()
         FillComboBox(cboSubcategory, SubcategoryList)
-    End Sub
-
-    Private Sub OnInitNewRow(sender As Object, e As InitNewRowEventArgs)
-        Dim View As GridView = CType(sender, GridView)
-
-        'Set Default value for Category
-        Dim CategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
-        If CategoryCombo.Items.Count > 0 Then
-            View.SetRowCellValue(e.RowHandle, "Category", CategoryCombo.Items(0).ToString)
-        End If
-
-        'Set Default value for Subcategory
-        Dim SubcategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
-        If SubcategoryCombo.Items.Count > 0 Then
-            View.SetRowCellValue(e.RowHandle, "Subcategory", SubcategoryCombo.Items(0).ToString)
-        End If
     End Sub
 
     Private Sub ProcessGenerateData(sender As Object, e As EventArgs)
         Dim ColumnName As String = "", Category As String = "", Subcategory As String = "", OptionalValue As String = ""
         Try
+            'Trigger Validation before generate data
+            If Not ValidateGenerate() Then Exit Sub
             Dim dtOutput As New DataTable
             Dim AllColumns As String = ""
             Dim col As New List(Of String)
@@ -98,6 +120,28 @@ Public Class FrmMain
         End Try
     End Sub
 
+    Private Function ValidateGenerate() As Boolean
+        For i As Integer = 0 To gv.RowCount - 1
+            If Not ValidateRow(i) Then
+                Return False
+            End If
+        Next
+        Return True
+    End Function
+
+    Private Function ValidateRow(rowHandle As Integer) As Boolean
+        Dim View As GridView = gv
+        Dim ColumnName As String = If(View.GetRowCellValue(rowHandle, "ColumnName")?.ToString, String.Empty)
+
+        If String.IsNullOrWhiteSpace(ColumnName) Then
+            View.SetColumnError(View.Columns("ColumnName"), "ColumnName must not be empty.", DXErrorProvider.ErrorType.Critical)
+            Return False
+        Else
+            View.ClearColumnErrors()
+            Return True
+        End If
+    End Function
+
     Private Sub CommitNewRow()
         gv.UpdateCurrentRow()
 
@@ -112,11 +156,12 @@ Public Class FrmMain
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Optional", System.Type.GetType("System.String"))
 
-        dtDataSet.Rows.Add("", "Address", "ZipCode", "")
         gc.DataSource = dtDataSet
 
         'Call method to setup dropdowns
         SetupDropdownColumns()
+
+        dtDataSet.Rows.Add(dtDataSet.NewRow())
     End Sub
 
     Private Sub SetupDropdownColumns()
@@ -508,8 +553,6 @@ Public Class FrmMain
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         Dim newRow As DataRow = dtDataSet.NewRow()
         dtDataSet.Rows.Add(newRow)
-        gv.FocusedRowHandle = gv.RowCount - 1
-
     End Sub
 
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
