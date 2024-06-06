@@ -20,3 +20,5 @@ X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraEditors.v
 X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraGrid.v10.2.xml
 X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraLayout.v10.2.xml
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.exe.licenses
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmCategoryDetail.resources
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.Resources.resources

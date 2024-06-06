@@ -38,7 +38,7 @@ Partial Class FrmMain
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
-        Me.btnEdit = New System.Windows.Forms.ToolStripButton()
+        Me.btnCategoryDetail = New System.Windows.Forms.ToolStripButton()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
@@ -193,7 +193,7 @@ Partial Class FrmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnEdit, Me.btnDelete})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnDelete, Me.btnCategoryDetail})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(585, 25)
@@ -210,15 +210,15 @@ Partial Class FrmMain
         Me.btnAdd.Size = New System.Drawing.Size(49, 25)
         Me.btnAdd.Text = "Add"
         '
-        'btnEdit
+        'btnCategoryDetail
         '
-        Me.btnEdit.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnEdit.Image = CType(resources.GetObject("btnEdit.Image"), System.Drawing.Image)
-        Me.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnEdit.Name = "btnEdit"
-        Me.btnEdit.Size = New System.Drawing.Size(48, 22)
-        Me.btnEdit.Text = "Edit"
-        Me.btnEdit.Visible = False
+        Me.btnCategoryDetail.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.btnCategoryDetail.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCategoryDetail.Image = Global.DataGenerator.My.Resources.Resources.Detail
+        Me.btnCategoryDetail.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnCategoryDetail.Name = "btnCategoryDetail"
+        Me.btnCategoryDetail.Size = New System.Drawing.Size(114, 22)
+        Me.btnCategoryDetail.Text = "Category Detail"
         '
         'btnDelete
         '
@@ -398,7 +398,7 @@ Partial Class FrmMain
     Friend WithEvents ToolStrip1 As Windows.Forms.ToolStrip
     Friend WithEvents Panel2 As Windows.Forms.Panel
     Friend WithEvents btnAdd As Windows.Forms.ToolStripButton
-    Friend WithEvents btnEdit As Windows.Forms.ToolStripButton
+    Friend WithEvents btnCategoryDetail As Windows.Forms.ToolStripButton
     Friend WithEvents btnDelete As Windows.Forms.ToolStripButton
     Friend WithEvents Panel3 As Windows.Forms.Panel
     Friend WithEvents gcOutput As DevExpress.XtraGrid.GridControl
