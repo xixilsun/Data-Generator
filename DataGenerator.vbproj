@@ -110,6 +110,12 @@
     <Compile Include="FrmMain.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmReferenceDetail.Designer.vb">
+      <DependentUpon>FrmReferenceDetail.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmReferenceDetail.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ModFunction.vb" />
     <Compile Include="ModSQL.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -146,6 +152,9 @@
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmReferenceDetail.resx">
+      <DependentUpon>FrmReferenceDetail.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
@@ -166,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Code.ico" />
+    <None Include="Resources\Exit.ico" />
+    <None Include="Resources\OK.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

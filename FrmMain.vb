@@ -16,6 +16,8 @@ Imports DevExpress.XtraEditors.Controls
 Imports System.ComponentModel
 Imports System.Drawing
 Imports DevExpress.XtraGrid
+Imports DevExpress.XtraGrid.Columns
+Imports DevExpress.Utils
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
@@ -72,36 +74,9 @@ Public Class FrmMain
             .SelectedItem = My.Settings.DefaultDatabase
         End With
 
-
-        ' Add Options column to the GridView
-        Dim optionsColumn As New DevExpress.XtraGrid.Columns.GridColumn()
-        optionsColumn.Caption = "Options"
-        optionsColumn.FieldName = "Options"
-        optionsColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object
-        gv.Columns.Add(optionsColumn)
-
-        ' Create a button for the Options column
-        Dim optionsButton As New RepositoryItemButtonEdit()
-        optionsButton.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor
-        AddHandler optionsButton.ButtonClick, AddressOf OptionsButton_Click
-        optionsColumn.ColumnEdit = optionsButton
-
         FirstLoad = False
     End Sub
 
-    Private Sub OptionsButton_Click(sender As Object, e As ButtonPressedEventArgs)
-        Dim view As GridView = CType(gc.FocusedView, GridView)
-        Dim rowHandle As Integer = view.FocusedRowHandle
-
-        ' Show the DevExpress OptionsColumnEditForm
-        Dim optionsForm As New OptionsColumnEditForm(view, rowHandle)
-        If optionsForm.ShowDialog() = DialogResult.OK Then
-            ' Update the GridView with the new values
-            view.SetRowCellValue(rowHandle, "ParentTable", optionsForm.ParentTable)
-            view.SetRowCellValue(rowHandle, "ParentID", optionsForm.ParentID)
-            view.SetRowCellValue(rowHandle, "Rules", optionsForm.Rules)
-        End If
-    End Sub
 
     Private Sub OnGridViewCustomRowCellEditForEditing(sender As Object, e As CustomRowCellEditEventArgs)
         'Dim View As GridView = CType(sender, GridView)
@@ -130,14 +105,35 @@ Public Class FrmMain
         End If
         SelectedDatabase = cboDatabase.SelectedItem
         SelectedTable = cboTable.SelectedItem
-        Dim Sql = "SELECT column_name AS ColumnName" & vbCrLf &
+        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
+                  "Case When Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
+                  "FROM INFORMATION_SCHEMA.COLUMNS C" & vbCrLf &
+                  "LEFT JOIN " & vbCrLf &
+                  "(" & vbCrLf &
+                  "	SELECT " & vbCrLf &
+                  "    t.name AS ParentTable," & vbCrLf &
+                  "    COL_NAME(fc.referenced_object_id, fc.referenced_column_id) AS ParentID," & vbCrLf &
+                  "    f.name AS ForeignKeyName," & vbCrLf &
+                  "    OBJECT_NAME(f.parent_object_id) AS ReferenceTable," & vbCrLf &
+                  "    COL_NAME(fc.parent_object_id, fc.parent_column_id) AS ReferenceColumnName" & vbCrLf &
+                  "FROM " & vbCrLf &
+                  "    sys.foreign_keys AS f " & vbCrLf &
+                  "INNER JOIN " & vbCrLf &
+                  "    sys.foreign_key_columns AS fc ON f.OBJECT_ID = fc.constraint_object_id" & vbCrLf &
+                  "INNER JOIN " & vbCrLf &
+                  "    sys.tables t ON t.OBJECT_ID = fc.referenced_object_id" & vbCrLf &
+                  "WHERE " & vbCrLf &
+                  "	OBJECT_NAME(f.parent_object_id) = 'Denda'" & vbCrLf &
+                  ") REF ON Ref.ReferenceTable = C.TABLE_NAME AND Ref.ReferenceColumnName = C.COLUMN_NAME" & vbCrLf &
+                  "WHERE TABLE_NAME = 'Denda'" & vbCrLf &
+                  "SELECT column_name AS ColumnName, TABLE_NAME AS TableName" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
                   "WHERE TABLE_NAME = " & SqlStr(SelectedTable)
         Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(SelectedDatabase))
         dtDataSet.Rows.Clear()
 
         For Each row In Dt.Rows
-            dtDataSet.Rows.Add(row!ColumnName)
+            dtDataSet.Rows.Add(row!ColumnName, "", "", row!HasReference, "", row!ParentTable, row!ParentID)
         Next
 
     End Sub
@@ -172,10 +168,6 @@ Public Class FrmMain
 
     Private Sub OnInvalidRowException(sender As Object, e As InvalidRowExceptionEventArgs)
         e.ExceptionMode = ExceptionMode.NoAction
-    End Sub
-
-    Private Sub OnValidateRow(sender As Object, e As ValidateRowEventArgs)
-        e.Valid = ValidateRow(e.RowHandle)
     End Sub
 
     Private Sub DatasetRowChanged(sender As Object, e As DataRowChangeEventArgs)
@@ -258,13 +250,12 @@ Public Class FrmMain
     End Sub
 
     Private Function ValidateGenerate() As Boolean
-        Dim Bool As Boolean = True
         For i As Integer = 0 To gv.RowCount - 1
             If Not ValidateRow(i) Then
-                Bool = False
+                Return False
             End If
         Next
-        Return Bool
+        Return True
     End Function
 
     Private Function ValidateRow(rowHandle As Integer) As Boolean
@@ -301,14 +292,41 @@ Public Class FrmMain
         dtDataSet.Columns.Add("Category", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("HasReference", System.Type.GetType("System.Boolean"))
+        dtDataSet.Columns.Add("Detail", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("ParentTable", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("ParentID", System.Type.GetType("System.String"))
         dtDataSet.Columns("HasReference").DefaultValue = False
 
         gc.DataSource = dtDataSet
 
+        'gv.Columns("ParentTable").Visible = False
+        'gv.Columns("ParentID").Visible = False
+
+        gv.Columns("Detail").Width = 30
         'Call method to setup dropdowns
         SetupDropdownColumns()
 
+        Dim buttonEdit As New RepositoryItemButtonEdit
+        buttonEdit.Buttons(0).Caption = "Detail"
+        buttonEdit.TextEditStyle = TextEditStyles.HideTextEditor
+
+        'Add buttonclick event
+        AddHandler buttonEdit.ButtonClick, AddressOf OnDetailButtonClick
+
+        'Create new column
+        gv.Columns("Detail").ColumnEdit = buttonEdit
+
         dtDataSet.Rows.Add(dtDataSet.NewRow())
+    End Sub
+
+    Private Sub OnDetailButtonClick(sender As Object, e As ButtonPressedEventArgs)
+        Dim Frm As New FrmReferenceDetail
+        Dim RowHandle As Integer = gv.FocusedRowHandle
+        Frm._ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
+        Frm._DatabaseName = cboDatabase.SelectedItem
+        Frm._ParentTable = gv.GetRowCellValue(RowHandle, "ParentTable").ToString
+        Frm._ParentID = gv.GetRowCellValue(RowHandle, "ParentID").ToString
+        Frm.ShowDialog()
     End Sub
 
     Private Sub SetupDropdownColumns()

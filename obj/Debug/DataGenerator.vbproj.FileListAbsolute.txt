@@ -22,3 +22,4 @@ X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DevExpress.XtraLayout.v1
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.exe.licenses
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmCategoryDetail.resources
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.Resources.resources
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmReferenceDetail.resources
