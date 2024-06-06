@@ -38,8 +38,8 @@ Partial Class FrmMain
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
-        Me.btnCategoryDetail = New System.Windows.Forms.ToolStripButton()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
+        Me.btnCategoryDetail = New System.Windows.Forms.ToolStripButton()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
         Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -141,7 +141,7 @@ Partial Class FrmMain
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label4.Location = New System.Drawing.Point(16, 397)
+        Me.Label4.Location = New System.Drawing.Point(16, 395)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(37, 14)
         Me.Label4.TabIndex = 18
@@ -172,6 +172,7 @@ Partial Class FrmMain
         Me.gv.GridControl = Me.gc
         Me.gv.Name = "gv"
         Me.gv.OptionsView.ShowGroupPanel = False
+        Me.gv.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedRow
         '
         'Panel1
         '
@@ -210,6 +211,15 @@ Partial Class FrmMain
         Me.btnAdd.Size = New System.Drawing.Size(49, 25)
         Me.btnAdd.Text = "Add"
         '
+        'btnDelete
+        '
+        Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnDelete.Image = CType(resources.GetObject("btnDelete.Image"), System.Drawing.Image)
+        Me.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDelete.Name = "btnDelete"
+        Me.btnDelete.Size = New System.Drawing.Size(63, 22)
+        Me.btnDelete.Text = "Delete"
+        '
         'btnCategoryDetail
         '
         Me.btnCategoryDetail.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -219,15 +229,6 @@ Partial Class FrmMain
         Me.btnCategoryDetail.Name = "btnCategoryDetail"
         Me.btnCategoryDetail.Size = New System.Drawing.Size(114, 22)
         Me.btnCategoryDetail.Text = "Category Detail"
-        '
-        'btnDelete
-        '
-        Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDelete.Image = CType(resources.GetObject("btnDelete.Image"), System.Drawing.Image)
-        Me.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(63, 22)
-        Me.btnDelete.Text = "Delete"
         '
         'Panel3
         '
@@ -363,6 +364,7 @@ Partial Class FrmMain
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtQuery)
         Me.Controls.Add(Me.btnOneData)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "FrmMain"
         Me.Text = "FrmMain"
         CType(Me.gc, System.ComponentModel.ISupportInitialize).EndInit()

@@ -15,11 +15,12 @@ Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
 Imports System.ComponentModel
 Imports System.Drawing
+Imports DevExpress.XtraGrid
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
-    Private SelectedDatabase As String = My.Settings.DefaultDatabase
-    Private SelectedTable As String = My.Settings.DefaultTable
+    Private SelectedDatabase As String = ""
+    Private SelectedTable As String = ""
     Private BogusDt As New DataTable
     Private AllCategoryList As List(Of String)
     Private AllSubcategoryList As List(Of String)
@@ -28,7 +29,7 @@ Public Class FrmMain
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Add Handler
         AddHandler cboDatabase.SelectedIndexChanged, AddressOf OnDBSelectedIndexChanged
-        AddHandler dtDataSet.RowChanged, AddressOf DatasetRowChanged
+        'AddHandler dtDataSet.RowChanged, AddressOf DatasetRowChanged
         AddHandler cboCategory.SelectedIndexChanged, AddressOf FillSubcategoryComboBox
         'AddHandler cboSubcategory.SelectedIndexChanged, AddressOf FillCategoryComboBox
         'AddHandler gv.ValidateRow, AddressOf OnValidateRow
@@ -68,23 +69,52 @@ Public Class FrmMain
         Dim DatabaseList = ModSQL.GetDataTable("SELECT name AS DatabaseName FROM Sysdatabases WHERE name LIKE 'HRdb%'", ModSQL.GetConnectionString("Master")).AsEnumerable.Select(Function(o) o("DatabaseName")).ToList()
         With cboDatabase
             .Properties.Items.AddRange(DatabaseList)
-            .SelectedItem = SelectedDatabase
+            .SelectedItem = My.Settings.DefaultDatabase
         End With
 
-        If FirstLoad Then cboTable.SelectedItem = SelectedTable
+
+        ' Add Options column to the GridView
+        Dim optionsColumn As New DevExpress.XtraGrid.Columns.GridColumn()
+        optionsColumn.Caption = "Options"
+        optionsColumn.FieldName = "Options"
+        optionsColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object
+        gv.Columns.Add(optionsColumn)
+
+        ' Create a button for the Options column
+        Dim optionsButton As New RepositoryItemButtonEdit()
+        optionsButton.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor
+        AddHandler optionsButton.ButtonClick, AddressOf OptionsButton_Click
+        optionsColumn.ColumnEdit = optionsButton
+
         FirstLoad = False
     End Sub
 
+    Private Sub OptionsButton_Click(sender As Object, e As ButtonPressedEventArgs)
+        Dim view As GridView = CType(gc.FocusedView, GridView)
+        Dim rowHandle As Integer = view.FocusedRowHandle
+
+        ' Show the DevExpress OptionsColumnEditForm
+        Dim optionsForm As New OptionsColumnEditForm(view, rowHandle)
+        If optionsForm.ShowDialog() = DialogResult.OK Then
+            ' Update the GridView with the new values
+            view.SetRowCellValue(rowHandle, "ParentTable", optionsForm.ParentTable)
+            view.SetRowCellValue(rowHandle, "ParentID", optionsForm.ParentID)
+            view.SetRowCellValue(rowHandle, "Rules", optionsForm.Rules)
+        End If
+    End Sub
+
     Private Sub OnGridViewCustomRowCellEditForEditing(sender As Object, e As CustomRowCellEditEventArgs)
-        If e.Column.FieldName = "Subcategory" And Not FirstLoad Then
+        'Dim View As GridView = CType(sender, GridView)
+        Dim View As GridView = CType(sender, GridView)
+        Dim RowHandle As Integer = e.RowHandle
+
+        'Get the current category for the row
+        Dim CurrentCategory As String = View.GetRowCellValue(RowHandle, "Category").ToString
+
+        If e.Column.FieldName = "Subcategory" AndAlso CurrentCategory <> "" Then
             'Create a new RepositoryItemComboBox For the subcategory
             Dim SubcategoryCombo As New RepositoryItemComboBox
 
-            Dim View As GridView = CType(sender, GridView)
-            Dim RowHandle As Integer = e.RowHandle
-
-            'Get the current category for the row
-            Dim CurrentCategory As String = View.GetRowCellValue(RowHandle, "Category").ToString
 
             'Populate subcategory
             Dim SubcategoryList As List(Of String) = BogusDt.AsEnumerable().Where(Function(o) o("Category") = CurrentCategory).Select(Function(o) o("Subcategory").ToString).ToList
@@ -95,15 +125,21 @@ Public Class FrmMain
     End Sub
 
     Private Sub PrepareDataset(sender As Object, e As EventArgs)
+        If SelectedDatabase = cboDatabase.SelectedItem AndAlso SelectedTable = cboTable.SelectedItem Then
+            If MsgBox("Prepare Dataset?", MsgBoxStyle.YesNo + MsgBoxStyle.Information) = MsgBoxResult.No Then Exit Sub
+        End If
+        SelectedDatabase = cboDatabase.SelectedItem
+        SelectedTable = cboTable.SelectedItem
         Dim Sql = "SELECT column_name AS ColumnName" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
-                  "WHERE TABLE_NAME = " & SqlStr(cboTable.SelectedItem)
-        Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(cboDatabase.SelectedItem))
+                  "WHERE TABLE_NAME = " & SqlStr(SelectedTable)
+        Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(SelectedDatabase))
         dtDataSet.Rows.Clear()
 
         For Each row In Dt.Rows
             dtDataSet.Rows.Add(row!ColumnName)
         Next
+
     End Sub
 
     Private Sub OnDBSelectedIndexChanged(sender As Object, e As EventArgs)
@@ -122,7 +158,7 @@ Public Class FrmMain
                 .SelectedIndex = 0
             End With
 
-            If FirstLoad Then SetSelectedItem(cboTable, SelectedTable)
+            If FirstLoad Then SetSelectedItem(cboTable, My.Settings.DefaultTable)
         End If
     End Sub
 
@@ -150,7 +186,7 @@ Public Class FrmMain
             'Set Default value for Category
             Dim CategoryCombo As RepositoryItemComboBox = CType(View.Columns("Category").ColumnEdit, RepositoryItemComboBox)
             If CategoryCombo.Items.Count > 0 Then
-                View.SetRowCellValue(RowHandle, "Category", CategoryCombo.Items(0).ToString)
+                'View.SetRowCellValue(RowHandle, "Category", "") 'CategoryCombo.Items(0).ToString)
             End If
 
             'Set Default value for Subcategory
@@ -205,7 +241,7 @@ Public Class FrmMain
             gvOutput.HorzScrollVisibility = ScrollVisibility.Always
             gvOutput.BestFitColumns()
 
-            Dim Query As String = $"INSERT INTO MyTable ({AllColumns}) VALUES"
+            Dim Query As String = $"INSERT INTO {If(SelectedTable = "", "MyTable", SelectedTable)} ({AllColumns}) VALUES"
             Dim Count As Integer = 1
             For Each row In dtOutput.Rows
                 Dim dataQuery As String = ""
@@ -222,20 +258,29 @@ Public Class FrmMain
     End Sub
 
     Private Function ValidateGenerate() As Boolean
+        Dim Bool As Boolean = True
         For i As Integer = 0 To gv.RowCount - 1
             If Not ValidateRow(i) Then
-                Return False
+                Bool = False
             End If
         Next
-        Return True
+        Return Bool
     End Function
 
     Private Function ValidateRow(rowHandle As Integer) As Boolean
         Dim View As GridView = gv
         Dim ColumnName As String = If(View.GetRowCellValue(rowHandle, "ColumnName")?.ToString, String.Empty)
+        Dim Category As String = If(View.GetRowCellValue(rowHandle, "Category")?.ToString, String.Empty)
+        Dim Subcategory As String = If(View.GetRowCellValue(rowHandle, "Subcategory")?.ToString, String.Empty)
 
         If String.IsNullOrWhiteSpace(ColumnName) Then
             View.SetColumnError(View.Columns("ColumnName"), "ColumnName must not be empty.", DXErrorProvider.ErrorType.Critical)
+            Return False
+        ElseIf String.IsNullOrWhiteSpace(Category) Then
+            View.SetColumnError(View.Columns("Category"), "Category must not be empty.", DXErrorProvider.ErrorType.Critical)
+            Return False
+        ElseIf String.IsNullOrWhiteSpace(Subcategory) Then
+            View.SetColumnError(View.Columns("Subcategory"), "Subcategory must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
         Else
             View.ClearColumnErrors()
@@ -255,7 +300,8 @@ Public Class FrmMain
         dtDataSet.Columns.Add("ColumnName", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Category", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
-        dtDataSet.Columns.Add("Optional", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("HasReference", System.Type.GetType("System.Boolean"))
+        dtDataSet.Columns("HasReference").DefaultValue = False
 
         gc.DataSource = dtDataSet
 
@@ -274,7 +320,12 @@ Public Class FrmMain
         'Assign RepositoryItemComboBox to GridView Column
         gv.Columns("Category").ColumnEdit = CategoryCombo
 
-        SetupSubcategoryDropdown()
+        'Create RepositoryItemComboBox for Subcategory Column
+        Dim SubcategoryCombo As New RepositoryItemComboBox()
+        Dim SubcategoryList As List(Of String) = AllSubcategoryList
+
+        SubcategoryCombo.Items.AddRange(SubcategoryList)
+        gv.Columns("Subcategory").ColumnEdit = SubcategoryCombo
     End Sub
 
     Private Sub OnCategoryChanged(sender As Object, e As EventArgs)
@@ -290,6 +341,7 @@ Public Class FrmMain
         view.SetRowCellValue(rowHandle, "Category", NewCategory)
 
         'Refresh the view to trigger CustomRowCellEditforEditing
+
         'view.RefreshRowCell(rowHandle, view.Columns("Subcategory"))
         'SetupSubcategoryDropdown(NewCategory)
     End Sub
@@ -309,7 +361,7 @@ Public Class FrmMain
             ''Ensure the value is updated in gridview
             'view.SetRowCellValue(rowHandle, "Subcategory", NewSubcategory)
             'Dim Subcategory As String = view.GetRowCellValue(rowHandle, "Subcategory")
-            Dim OldCategory As String = view.GetRowCellValue(rowHandle, "Category")
+            Dim OldCategory As String = view.GetRowCellValue(rowHandle, "Category").ToString
             Dim NewCategory As String = BogusDt.AsEnumerable().Where(Function(o) o("Subcategory") = NewSubcategory).Select(Function(o) o("Category").ToString).First
             If OldCategory <> NewCategory Then
                 view.SetRowCellValue(rowHandle, "Category", NewCategory)
@@ -317,39 +369,10 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub SetupSubcategoryDropdown(Optional category As String = "")
-        'Create RepositoryItemComboBox for Subcategory Column
-        Dim SubcategoryCombo As New RepositoryItemComboBox()
-        'If the form is on the first load, the category is empty, set subcategory As All category 
-        Dim SubcategoryList As List(Of String) = AllSubcategoryList
-
-        If Not FirstLoad AndAlso category <> "" Then
-            Dim view As GridView = CType(gc.FocusedView, GridView)
-            Dim RowHandle As Integer = view.FocusedRowHandle
-
-            SubcategoryList = BogusDt.AsEnumerable().Where(Function(o) o("Category").ToString = category).Select(Function(o) o("Subcategory").ToString).ToList()
-            view.SetRowCellValue(RowHandle, "Subcategory", SubcategoryList.FirstOrDefault)
-
-            SubcategoryCombo.Items.AddRange(SubcategoryList)
-
-            gv.Columns("Subcategory").ColumnEdit = SubcategoryCombo
-
-            'SubcategoryCombo = CType(view.Columns("Subcategory").ColumnEdit, RepositoryItemComboBox)
-            'SubcategoryCombo.Items.Clear()
-
-            'SubcategoryList
-        End If
-        SubcategoryCombo.Items.AddRange(SubcategoryList)
-        gv.Columns("Subcategory").ColumnEdit = SubcategoryCombo
-    End Sub
-
     Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.F5 Then
-            btnGenerateOneData_Click(sender, e)
+            btnGenerate_Click(sender, e)
         End If
-    End Sub
-    Private Sub FillSubcategory(category As String)
-
     End Sub
 
     Private Sub FillComboBox(cboTable As Windows.Forms.ComboBox, dataSource As List(Of String))
@@ -448,6 +471,20 @@ Public Class FrmMain
                 RandomValue = Fake.Company.CompanyName
             ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
                 RandomValue = Fake.Lorem.Paragraphs(3, vbCrLf)
+            ElseIf category = "Date" AndAlso
+                    ("Past-PastOffset-Future-FutureOffset-Recent-RecentOffset-Soon-SoonOffset-Between-BetweenOffset-Timespan-".Contains(subcategory & "-")) Then
+                Select Case subcategory
+                    Case "Past"
+                        RandomValue = Fake.Date.Past()
+                    Case "Future"
+                        RandomValue = Fake.Date.Future()
+                    Case "Recent"
+                        RandomValue = Fake.Date.Recent()
+                    Case "Soon"
+                        RandomValue = Fake.Date.Soon()
+                    Case "Timespan"
+                        RandomValue = Fake.Date.Timespan().ToString
+                End Select
             Else
                 Dim SubcategoryMethod As MethodInfo = CategoryInstance.GetType().GetMethod(subcategory, BindingFlags.Public Or BindingFlags.Instance)
                 If SubcategoryMethod Is Nothing Then Throw New Exception("Unknown subcategory")
