@@ -44,9 +44,14 @@ Partial Class FrmMain
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
         Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.btnGenerate = New System.Windows.Forms.Button()
         Me.numQty = New System.Windows.Forms.NumericUpDown()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.cboDatabase = New DevExpress.XtraEditors.ComboBoxEdit()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.cboTable = New DevExpress.XtraEditors.ComboBoxEdit()
+        Me.btnPrepareDataset = New DevExpress.XtraEditors.SimpleButton()
+        Me.btnGenerate = New DevExpress.XtraEditors.SimpleButton()
         CType(Me.gc, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
@@ -56,6 +61,8 @@ Partial Class FrmMain
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.numQty, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cboTable.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnOneData
@@ -87,7 +94,7 @@ Partial Class FrmMain
         Me.cboCategory.Items.AddRange(New Object() {"Address", "Commerce", "Company", "Database", "Date", "Finance", "Hacker", "Images", "Internet", "Lorem", "Name", "Phone", "Rant", "System", "Vehicle", "Random"})
         Me.cboCategory.Location = New System.Drawing.Point(633, 388)
         Me.cboCategory.Name = "cboCategory"
-        Me.cboCategory.Size = New System.Drawing.Size(121, 22)
+        Me.cboCategory.Size = New System.Drawing.Size(143, 22)
         Me.cboCategory.TabIndex = 12
         '
         'Label3
@@ -107,7 +114,7 @@ Partial Class FrmMain
         Me.cboSubcategory.Items.AddRange(New Object() {"FullName", "FirstName", "LastName"})
         Me.cboSubcategory.Location = New System.Drawing.Point(633, 440)
         Me.cboSubcategory.Name = "cboSubcategory"
-        Me.cboSubcategory.Size = New System.Drawing.Size(121, 22)
+        Me.cboSubcategory.Size = New System.Drawing.Size(143, 22)
         Me.cboSubcategory.TabIndex = 14
         '
         'Label1
@@ -257,20 +264,11 @@ Partial Class FrmMain
         Me.Label5.TabIndex = 24
         Me.Label5.Text = "Sample Data"
         '
-        'btnGenerate
-        '
-        Me.btnGenerate.Location = New System.Drawing.Point(633, 191)
-        Me.btnGenerate.Name = "btnGenerate"
-        Me.btnGenerate.Size = New System.Drawing.Size(143, 28)
-        Me.btnGenerate.TabIndex = 25
-        Me.btnGenerate.Text = "Generate"
-        Me.btnGenerate.UseVisualStyleBackColor = True
-        '
         'numQty
         '
         Me.numQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.numQty.Font = New System.Drawing.Font("Arial", 8.5!)
-        Me.numQty.Location = New System.Drawing.Point(717, 164)
+        Me.numQty.Location = New System.Drawing.Point(717, 260)
         Me.numQty.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
         Me.numQty.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numQty.Name = "numQty"
@@ -282,20 +280,77 @@ Partial Class FrmMain
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label6.Location = New System.Drawing.Point(633, 166)
+        Me.Label6.Location = New System.Drawing.Point(633, 262)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(49, 14)
         Me.Label6.TabIndex = 27
         Me.Label6.Text = "Data Qty"
+        '
+        'cboDatabase
+        '
+        Me.cboDatabase.Location = New System.Drawing.Point(633, 62)
+        Me.cboDatabase.Name = "cboDatabase"
+        Me.cboDatabase.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cboDatabase.Size = New System.Drawing.Size(143, 20)
+        Me.cboDatabase.TabIndex = 28
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Arial", 8.25!)
+        Me.Label7.Location = New System.Drawing.Point(630, 42)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(53, 14)
+        Me.Label7.TabIndex = 29
+        Me.Label7.Text = "Database"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Arial", 8.25!)
+        Me.Label8.Location = New System.Drawing.Point(630, 96)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(32, 14)
+        Me.Label8.TabIndex = 31
+        Me.Label8.Text = "Table"
+        '
+        'cboTable
+        '
+        Me.cboTable.Location = New System.Drawing.Point(633, 115)
+        Me.cboTable.Name = "cboTable"
+        Me.cboTable.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cboTable.Size = New System.Drawing.Size(143, 20)
+        Me.cboTable.TabIndex = 30
+        '
+        'btnPrepareDataset
+        '
+        Me.btnPrepareDataset.Location = New System.Drawing.Point(633, 145)
+        Me.btnPrepareDataset.Name = "btnPrepareDataset"
+        Me.btnPrepareDataset.Size = New System.Drawing.Size(143, 23)
+        Me.btnPrepareDataset.TabIndex = 34
+        Me.btnPrepareDataset.Text = "Prepare Dataset"
+        '
+        'btnGenerate
+        '
+        Me.btnGenerate.Location = New System.Drawing.Point(633, 290)
+        Me.btnGenerate.Name = "btnGenerate"
+        Me.btnGenerate.Size = New System.Drawing.Size(143, 23)
+        Me.btnGenerate.TabIndex = 35
+        Me.btnGenerate.Text = "Generate"
         '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 556)
+        Me.Controls.Add(Me.btnGenerate)
+        Me.Controls.Add(Me.btnPrepareDataset)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.cboTable)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.cboDatabase)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.numQty)
-        Me.Controls.Add(Me.btnGenerate)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.Panel1)
@@ -321,6 +376,8 @@ Partial Class FrmMain
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.numQty, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cboTable.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -347,7 +404,12 @@ Partial Class FrmMain
     Friend WithEvents gcOutput As DevExpress.XtraGrid.GridControl
     Friend WithEvents gvOutput As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents Label5 As Windows.Forms.Label
-    Friend WithEvents btnGenerate As Windows.Forms.Button
     Friend WithEvents numQty As Windows.Forms.NumericUpDown
     Friend WithEvents Label6 As Windows.Forms.Label
+    Friend WithEvents cboDatabase As DevExpress.XtraEditors.ComboBoxEdit
+    Friend WithEvents Label7 As Windows.Forms.Label
+    Friend WithEvents Label8 As Windows.Forms.Label
+    Friend WithEvents cboTable As DevExpress.XtraEditors.ComboBoxEdit
+    Friend WithEvents btnPrepareDataset As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents btnGenerate As DevExpress.XtraEditors.SimpleButton
 End Class

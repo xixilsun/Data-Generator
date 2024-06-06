@@ -3,8 +3,8 @@ Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CompilerServices
-Public Class ModSQL
-    Public Shared Function GetConnectionString(ByVal xAppName As String, ByVal xServer As String, ByVal xName As String, ByVal xUser As String, ByVal xPwd As String, ByVal xAuth As Boolean) As String
+Module ModSQL
+    Public Function GetConnectionString(ByVal xAppName As String, ByVal xServer As String, ByVal xName As String, ByVal xUser As String, ByVal xPwd As String, ByVal xAuth As Boolean) As String
         If Not xAuth Then
             Return "Persist Security Info=False;Data Source= " & xServer & ";Initial Catalog= " & xName & ";User ID= " & xUser & "; PWD= " & xPwd & "; Application Name= " & xAppName
         End If
@@ -12,12 +12,12 @@ Public Class ModSQL
         Return "Persist Security Info=False;Data Source= " & xServer & ";Initial Catalog= " & xName & ";Integrated Security=SSPI; Application Name= " & xAppName
     End Function
 
-    Public Shared Function GetConnectionString(ByVal Optional xName As String = "HRdb_PS") As String
-        Return GetConnectionString("DataGenerator", "172.18.3.14", xName, "", "", False)
+    Public Function GetConnectionString(ByVal Optional xName As String = "HRdb_PS") As String
+        Return GetConnectionString("DataGenerator", "172.18.3.14", xName, "", "", True)
     End Function
 
 
-    Public Shared Function GetDataTable(ByVal pstrSQL As String, ByVal p_ConnectionString As String, ByVal Optional TimeOut As Integer = 30, ByVal Optional p_WithSchema As Boolean = False, ByVal Optional p_IsErrorRaise As Boolean = False) As DataTable
+    Public Function GetDataTable(ByVal pstrSQL As String, ByVal p_ConnectionString As String, ByVal Optional TimeOut As Integer = 30, ByVal Optional p_WithSchema As Boolean = False, ByVal Optional p_IsErrorRaise As Boolean = False) As DataTable
         Dim sqlDataAdapter As SqlDataAdapter = Nothing
         Dim dataTable As DataTable = Nothing
         Dim text As String = ""
@@ -67,7 +67,7 @@ Public Class ModSQL
         Return dataTable
     End Function
 
-    Public Shared Function GetOneData(ByVal strSQL As String, ByVal pDefaultValue As Object, ByVal pConnectionString As String) As Object
+    Public Function GetOneData(ByVal strSQL As String, ByVal pDefaultValue As Object, ByVal pConnectionString As String) As Object
         Dim sqlConnection As SqlConnection = Nothing
         Dim sqlCommand As SqlCommand = Nothing
         Dim obj As Object = Nothing
@@ -102,7 +102,7 @@ Public Class ModSQL
         Return obj
     End Function
 
-    Public Shared Sub ExecuteSQL(p_SQL As String, connectionString As String)
+    Public Sub ExecuteSQL(p_SQL As String, connectionString As String)
         Dim sqlCommand As SqlCommand = Nothing
         Dim sqlConnection As SqlConnection = Nothing
         Dim sqlTransaction As SqlTransaction = Nothing
@@ -153,7 +153,7 @@ Public Class ModSQL
         End Try
     End Sub
 
-    Public Shared Function ExecuteLoopSQL(sSQLs As ArrayList, connectionString As String) As Boolean
+    Public Function ExecuteLoopSQL(sSQLs As ArrayList, connectionString As String) As Boolean
         Dim oBol As Boolean = False
 
         Dim sqlConnection As SqlConnection = Nothing
@@ -207,4 +207,4 @@ Public Class ModSQL
 
         Return oBol
     End Function
-End Class
+End Module
