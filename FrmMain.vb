@@ -18,6 +18,7 @@ Imports System.Drawing
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.Utils
+Imports System.Data.Common
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
@@ -45,6 +46,7 @@ Public Class FrmMain
         AllCategoryList = BogusDt.AsEnumerable().Select(Function(o) o("Category").ToString).Distinct().ToList
         AllSubcategoryList = BogusDt.AsEnumerable().Select(Function(o) o("Subcategory").ToString).ToList
 
+        'Category & subcategory
         FillComboBox(cboCategory, AllCategoryList)
         'FillSubcategory(cboCategory.SelectedValue)
 
@@ -105,8 +107,9 @@ Public Class FrmMain
         End If
         SelectedDatabase = cboDatabase.SelectedItem
         SelectedTable = cboTable.SelectedItem
-        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
-                  "Case When Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
+        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, DATA_TYPE As DataType, CHARACTER_MAXIMUM_LENGTH As MaxLength, " & vbCrLf &
+                  "Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
+                  "CASE WHEN Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS C" & vbCrLf &
                   "LEFT JOIN " & vbCrLf &
                   "(" & vbCrLf &
@@ -125,15 +128,13 @@ Public Class FrmMain
                   "WHERE " & vbCrLf &
                   "	OBJECT_NAME(f.parent_object_id) = 'Denda'" & vbCrLf &
                   ") REF ON Ref.ReferenceTable = C.TABLE_NAME AND Ref.ReferenceColumnName = C.COLUMN_NAME" & vbCrLf &
-                  "WHERE TABLE_NAME = 'Denda'" & vbCrLf &
-                  "SELECT column_name AS ColumnName, TABLE_NAME AS TableName" & vbCrLf &
-                  "FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
                   "WHERE TABLE_NAME = " & SqlStr(SelectedTable)
         Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(SelectedDatabase))
         dtDataSet.Rows.Clear()
 
         For Each row In Dt.Rows
-            dtDataSet.Rows.Add(row!ColumnName, "", "", row!HasReference, "", row!ParentTable, row!ParentID)
+            dtDataSet.Rows.Add(row!ColumnName, "", "", "", If(IsDBNull(row!MaxLength) OrElse row!DataType = "text", "-", row!MaxLength),
+                               row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID)
         Next
 
     End Sub
@@ -199,7 +200,6 @@ Public Class FrmMain
     End Sub
 
     Private Sub ProcessGenerateData(sender As Object, e As EventArgs)
-        Dim ColumnName As String = "", Category As String = "", Subcategory As String = "", OptionalValue As String = ""
         Try
             'Trigger Validation before generate data
             If Not ValidateGenerate() Then Exit Sub
@@ -217,7 +217,11 @@ Public Class FrmMain
             For i As Integer = 0 To numQty.Value - 1
                 Dim paramList As New List(Of String)
                 For Each Row In dtDataSet.Rows
-                    paramList.Add(GenerateFakeData(Row!Category, Row!Subcategory))
+                    If Not Row!HasReference Then
+                        paramList.Add(GenerateFakeData(Row!Category, Row!Subcategory))
+                    Else
+                        paramList.Add(GenerateDataFromReference(Row!ParentDatabase, Row!ParentTable, Row!ParentID))
+                    End If
                 Next
 
                 dtOutput.Rows.Add(paramList.ToArray)
@@ -249,6 +253,12 @@ Public Class FrmMain
         End Try
     End Sub
 
+    Private Function GenerateDataFromReference(parentDatabase As Object, parentTable As Object, parentID As Object) As String
+        Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
+        Dim Result As String = GetOneData(Sql, "", GetConnectionString(parentDatabase))
+        Return Result
+    End Function
+
     Private Function ValidateGenerate() As Boolean
         For i As Integer = 0 To gv.RowCount - 1
             If Not ValidateRow(i) Then
@@ -260,17 +270,27 @@ Public Class FrmMain
 
     Private Function ValidateRow(rowHandle As Integer) As Boolean
         Dim View As GridView = gv
+        View.FocusedRowHandle = rowHandle
         Dim ColumnName As String = If(View.GetRowCellValue(rowHandle, "ColumnName")?.ToString, String.Empty)
         Dim Category As String = If(View.GetRowCellValue(rowHandle, "Category")?.ToString, String.Empty)
         Dim Subcategory As String = If(View.GetRowCellValue(rowHandle, "Subcategory")?.ToString, String.Empty)
+        Dim HasReference As Boolean = View.GetRowCellValue(rowHandle, "HasReference")
+        Dim ParentDatabase As String = If(View.GetRowCellValue(rowHandle, "ParentDatabase")?.ToString, String.Empty)
+        Dim ParentTable As String = If(View.GetRowCellValue(rowHandle, "ParentTable")?.ToString, String.Empty)
+        Dim ParentID As String = If(View.GetRowCellValue(rowHandle, "ParentID")?.ToString, String.Empty)
+
+        If HasReference AndAlso Not String.IsNullOrWhiteSpace(Category) AndAlso Not String.IsNullOrWhiteSpace(Subcategory) Then
+            View.SetRowCellValue(rowHandle, "Category", String.Empty)
+            View.SetRowCellValue(rowHandle, "Subcategory", String.Empty)
+        End If
 
         If String.IsNullOrWhiteSpace(ColumnName) Then
             View.SetColumnError(View.Columns("ColumnName"), "ColumnName must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
-        ElseIf String.IsNullOrWhiteSpace(Category) Then
+        ElseIf Not HasReference AndAlso String.IsNullOrWhiteSpace(Category) Then
             View.SetColumnError(View.Columns("Category"), "Category must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
-        ElseIf String.IsNullOrWhiteSpace(Subcategory) Then
+        ElseIf Not HasReference AndAlso String.IsNullOrWhiteSpace(Subcategory) Then
             View.SetColumnError(View.Columns("Subcategory"), "Subcategory must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
         Else
@@ -291,42 +311,62 @@ Public Class FrmMain
         dtDataSet.Columns.Add("ColumnName", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Category", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Parameter", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("MaxLength", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("HasReference", System.Type.GetType("System.Boolean"))
-        dtDataSet.Columns.Add("Detail", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Ref", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("ParentDatabase", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("ParentTable", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("ParentID", System.Type.GetType("System.String"))
+        dtDataSet.Columns("MaxLength").DefaultValue = "-"
         dtDataSet.Columns("HasReference").DefaultValue = False
 
         gc.DataSource = dtDataSet
 
-        'gv.Columns("ParentTable").Visible = False
-        'gv.Columns("ParentID").Visible = False
+        'Hide
+        gv.Columns("ParentDatabase").Visible = False
+        gv.Columns("ParentTable").Visible = False
+        gv.Columns("ParentID").Visible = False
 
-        gv.Columns("Detail").Width = 30
+        gv.Columns("Ref").Width = 30
+        gv.Columns("HasReference").OptionsColumn.AllowEdit = False
         'Call method to setup dropdowns
         SetupDropdownColumns()
 
-        Dim buttonEdit As New RepositoryItemButtonEdit
-        buttonEdit.Buttons(0).Caption = "Detail"
-        buttonEdit.TextEditStyle = TextEditStyles.HideTextEditor
+        Dim btnReference As New RepositoryItemButtonEdit
+        btnReference.Buttons(0).Caption = "Reference"
+        btnReference.TextEditStyle = TextEditStyles.HideTextEditor
 
         'Add buttonclick event
-        AddHandler buttonEdit.ButtonClick, AddressOf OnDetailButtonClick
+        AddHandler btnReference.ButtonClick, AddressOf OnReferenceButtonClick
 
         'Create new column
-        gv.Columns("Detail").ColumnEdit = buttonEdit
+        gv.Columns("Ref").ColumnEdit = btnReference
 
         dtDataSet.Rows.Add(dtDataSet.NewRow())
     End Sub
 
-    Private Sub OnDetailButtonClick(sender As Object, e As ButtonPressedEventArgs)
+    Private Sub OnReferenceButtonClick(sender As Object, e As ButtonPressedEventArgs)
         Dim Frm As New FrmReferenceDetail
         Dim RowHandle As Integer = gv.FocusedRowHandle
-        Frm._ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
-        Frm._DatabaseName = cboDatabase.SelectedItem
-        Frm._ParentTable = gv.GetRowCellValue(RowHandle, "ParentTable").ToString
-        Frm._ParentID = gv.GetRowCellValue(RowHandle, "ParentID").ToString
+        Frm.ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
+        Frm.HasReference = CType(gv.GetRowCellValue(RowHandle, "HasReference"), Boolean)
+        Frm.ParentDatabase = gv.GetRowCellValue(RowHandle, "ParentDatabase").ToString
+        Frm.ParentTable = gv.GetRowCellValue(RowHandle, "ParentTable").ToString
+        Frm.ParentID = gv.GetRowCellValue(RowHandle, "ParentID").ToString
         Frm.ShowDialog()
+        If Frm.IsOK Then
+            gv.SetRowCellValue(RowHandle, "HasReference", Frm.HasReference)
+            If Frm.HasReference Then
+                gv.SetRowCellValue(RowHandle, "ParentDatabase", Frm.ParentDatabase)
+                gv.SetRowCellValue(RowHandle, "ParentTable", Frm.ParentTable)
+                gv.SetRowCellValue(RowHandle, "ParentID", Frm.ParentID)
+            Else
+                gv.SetRowCellValue(RowHandle, "ParentDatabase", String.Empty)
+                gv.SetRowCellValue(RowHandle, "ParentTable", String.Empty)
+                gv.SetRowCellValue(RowHandle, "ParentID", String.Empty)
+            End If
+        End If
     End Sub
 
     Private Sub SetupDropdownColumns()
@@ -389,7 +429,7 @@ Public Class FrmMain
 
     Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.F5 Then
-            btnGenerate_Click(sender, e)
+            ProcessGenerateData(sender, e)
         End If
     End Sub
 
@@ -423,9 +463,6 @@ Public Class FrmMain
         txtQuery.Text = sb.ToString
     End Sub
 
-    Private Sub Test2()
-        Dim faker As New Faker("en")
-    End Sub
     '<Extension()>
     Public Shared Function PropertyList(ByVal obj As Object) As String
         Dim props = obj.[GetType]().GetProperties()
@@ -438,12 +475,7 @@ Public Class FrmMain
         Return sb.ToString()
     End Function
 
-
-    'Private Sub cboDataType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCategory.SelectedIndexChanged
-    '    FillSubcategory(cboCategory.SelectedValue)
-    'End Sub
-
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnOneData.Click
+    Private Sub btnOneData_Click(sender As Object, e As EventArgs) Handles btnOneData.Click
         Try
             Dim faker As New Faker()
             'Dim x = cboCategory.SelectedValue & "." & cboSubcategory.SelectedValue \
@@ -562,10 +594,6 @@ Public Class FrmMain
             Dim rowIndex As Integer = gv.FocusedRowHandle
             dtDataSet.Rows.RemoveAt(rowIndex)
         End If
-    End Sub
-
-    Private Sub btnGenerate_Click(sender As Object, e As EventArgs) Handles btnGenerate.Click
-
     End Sub
 
     Private Sub btnCategoryDetail_Click(sender As Object, e As EventArgs) Handles btnCategoryDetail.Click

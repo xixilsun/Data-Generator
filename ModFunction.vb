@@ -163,6 +163,8 @@ Module ModFunction
         table.Rows.Add("Random", "AlphaNumeric", "Returns a random set of alpha numeric characters 0-9, a-z.")
         table.Rows.Add("Random", "Hash", "Return a random hex hash. Default 40 characters, aka SHA-1.")
         table.Rows.Add("Random", "Replace", "Replaces symbols with numbers and letters. # = number, ? = letter, * = number or letter.")
+        table.Rows.Add("Random", "UserDefined", "Get a random value from user defined.")
+        table.Rows.Add("Random", "Gender", "Get a random gender.")
 
 
         table.Rows.Add("System", "FileName", "Get a random file name.")

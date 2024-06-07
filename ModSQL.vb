@@ -12,8 +12,8 @@ Module ModSQL
         Return "Persist Security Info=False;Data Source= " & xServer & ";Initial Catalog= " & xName & ";Integrated Security=SSPI; Application Name= " & xAppName
     End Function
 
-    Public Function GetConnectionString(ByVal Optional xName As String = "HRdb_PS") As String
-        Return GetConnectionString("DataGenerator", "172.18.3.14", xName, "", "", True)
+    Public Function GetConnectionString(ByVal Optional databaseName As String = "HRdb_PS") As String
+        Return GetConnectionString("DataGenerator", "172.18.3.14", databaseName, "", "", True)
     End Function
 
 
