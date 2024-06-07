@@ -116,7 +116,13 @@
     <Compile Include="FrmReferenceDetail.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ModFunction.vb" />
+    <Compile Include="FrmSettingParameter.Designer.vb">
+      <DependentUpon>FrmSettingParameter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSettingParameter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModGlobal.vb" />
     <Compile Include="ModSQL.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -151,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmReferenceDetail.resx">
       <DependentUpon>FrmReferenceDetail.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSettingParameter.resx">
+      <DependentUpon>FrmSettingParameter.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">

@@ -1,24 +1,14 @@
 ﻿Imports System.Data
 Imports System.Linq
-Imports System.Runtime.CompilerServices
 Imports System.Text
 Imports Bogus
 Imports System.Windows.Forms
 Imports System.Collections.Generic
-Imports System.Reflection
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraEditors
-Imports Bogus.DataSets
-Imports DevExpress.Utils.Serializing
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
-Imports System.ComponentModel
-Imports System.Drawing
-Imports DevExpress.XtraGrid
-Imports DevExpress.XtraGrid.Columns
-Imports DevExpress.Utils
-Imports System.Data.Common
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
@@ -28,6 +18,7 @@ Public Class FrmMain
     Private AllCategoryList As List(Of String)
     Private AllSubcategoryList As List(Of String)
     Private FirstLoad As Boolean = True
+
 
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Add Handler
@@ -133,7 +124,7 @@ Public Class FrmMain
         dtDataSet.Rows.Clear()
 
         For Each row In Dt.Rows
-            dtDataSet.Rows.Add(row!ColumnName, "", "", "", If(IsDBNull(row!MaxLength) OrElse row!DataType = "text", "-", row!MaxLength),
+            dtDataSet.Rows.Add(row!ColumnName, "", "", "", "", If(IsDBNull(row!MaxLength) OrElse row!DataType = "text", "-", row!MaxLength),
                                row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID)
         Next
 
@@ -311,6 +302,7 @@ Public Class FrmMain
         dtDataSet.Columns.Add("ColumnName", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Category", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Setting", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Parameter", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("MaxLength", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("HasReference", System.Type.GetType("System.Boolean"))
@@ -329,21 +321,53 @@ Public Class FrmMain
         gv.Columns("ParentID").Visible = False
 
         gv.Columns("Ref").Width = 30
+        gv.Columns("Setting").Width = 30
         gv.Columns("HasReference").OptionsColumn.AllowEdit = False
         'Call method to setup dropdowns
         SetupDropdownColumns()
+
+        Dim btnSetting As New RepositoryItemButtonEdit
+        btnSetting.Buttons(0).Caption = "Setting Parameter"
+        btnSetting.TextEditStyle = TextEditStyles.HideTextEditor
 
         Dim btnReference As New RepositoryItemButtonEdit
         btnReference.Buttons(0).Caption = "Reference"
         btnReference.TextEditStyle = TextEditStyles.HideTextEditor
 
         'Add buttonclick event
+        AddHandler btnSetting.ButtonClick, AddressOf OnSettingButtonClick
         AddHandler btnReference.ButtonClick, AddressOf OnReferenceButtonClick
 
-        'Create new column
+        'Set as Button
+        gv.Columns("Setting").ColumnEdit = btnSetting
         gv.Columns("Ref").ColumnEdit = btnReference
 
         dtDataSet.Rows.Add(dtDataSet.NewRow())
+    End Sub
+
+    Private Sub OnSettingButtonClick(sender As Object, e As ButtonPressedEventArgs)
+        Dim Frm As New FrmSettingParameter
+        Dim RowHandle As Integer = gv.FocusedRowHandle
+        Frm.ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
+        Frm.Category = gv.GetRowCellValue(RowHandle, "Category").ToString
+        Frm.Subcategory = gv.GetRowCellValue(RowHandle, "Subcategory").ToString
+        Frm.MaxLength = gv.GetRowCellValue(RowHandle, "MaxLength").ToString
+        Frm.CategoryList = AllCategoryList
+        Frm.SubcategoryList = AllSubcategoryList
+
+        Frm.ShowDialog()
+        If Frm.IsOK Then
+            'gv.SetRowCellValue(RowHandle, "HasReference", Frm.HasReference)
+            'If Frm.HasReference Then
+            '    gv.SetRowCellValue(RowHandle, "ParentDatabase", Frm._Category)
+            '    gv.SetRowCellValue(RowHandle, "ParentTable", Frm._Subcategory)
+            '    gv.SetRowCellValue(RowHandle, "ParentID", Frm.ParentID)
+            'Else
+            '    gv.SetRowCellValue(RowHandle, "ParentDatabase", String.Empty)
+            '    gv.SetRowCellValue(RowHandle, "ParentTable", String.Empty)
+            '    gv.SetRowCellValue(RowHandle, "ParentID", String.Empty)
+            'End If
+        End If
     End Sub
 
     Private Sub OnReferenceButtonClick(sender As Object, e As ButtonPressedEventArgs)
@@ -494,90 +518,6 @@ Public Class FrmMain
         'TestingGenerateData()
     End Sub
 
-    Private Function GenerateFakeData(category As String, subcategory As String) As String
-        Try
-            'Create a new Faker instance
-            Dim Fake As New Faker()
-            Dim RandomValue As String = ""
-
-            Dim CategoryProperty As PropertyInfo = GetType(Faker).GetProperty(category, BindingFlags.Public Or BindingFlags.Instance)
-            If CategoryProperty Is Nothing Then Throw New Exception("Unknown category")
-
-            Dim CategoryInstance As Object = CategoryProperty.GetValue(Fake)
-
-            'Special Handling for overloaded methods like Random.Number
-            If category = "Random" AndAlso
-                (subcategory = "Number" OrElse subcategory = "Bool" OrElse subcategory = "String") Then
-                If subcategory = "Number" Then
-                    RandomValue = Fake.Random.Number(0, 100).ToString()
-                ElseIf subcategory = "Bool" Then
-                    RandomValue = Fake.Random.Bool().ToString
-                ElseIf subcategory = "String" Then
-                    RandomValue = Fake.Random.String(10).ToString
-                End If
-
-            ElseIf category = "Company" AndAlso
-                    subcategory = "CompanyName" Then
-                RandomValue = Fake.Company.CompanyName
-            ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
-                RandomValue = Fake.Lorem.Paragraphs(3, vbCrLf)
-            ElseIf category = "Date" AndAlso
-                    ("Past-PastOffset-Future-FutureOffset-Recent-RecentOffset-Soon-SoonOffset-Between-BetweenOffset-Timespan-".Contains(subcategory & "-")) Then
-                Select Case subcategory
-                    Case "Past"
-                        RandomValue = Fake.Date.Past()
-                    Case "Future"
-                        RandomValue = Fake.Date.Future()
-                    Case "Recent"
-                        RandomValue = Fake.Date.Recent()
-                    Case "Soon"
-                        RandomValue = Fake.Date.Soon()
-                    Case "Timespan"
-                        RandomValue = Fake.Date.Timespan().ToString
-                End Select
-            Else
-                Dim SubcategoryMethod As MethodInfo = CategoryInstance.GetType().GetMethod(subcategory, BindingFlags.Public Or BindingFlags.Instance)
-                If SubcategoryMethod Is Nothing Then Throw New Exception("Unknown subcategory")
-
-                'Check if the method has parameter
-                Dim parameters As ParameterInfo() = SubcategoryMethod.GetParameters()
-                Dim result As Object
-
-                If parameters.Length > 0 Then
-                    Dim paramValues As Object() = parameters.Select(Function(p) GetDefaultValue(p)).ToArray
-                    result = SubcategoryMethod.Invoke(CategoryInstance, paramValues)
-                Else
-                    result = SubcategoryMethod.Invoke(CategoryInstance, Nothing)
-                End If
-
-                If TypeOf result Is String Then
-                    RandomValue = Replace(result, vbLf, vbCrLf)
-                Else
-                    If result.length > 1 Then
-                        For Each obj In result
-                            RandomValue &= If(RandomValue = "", "", vbCrLf) & obj.ToString
-                        Next
-                    End If
-                End If
-            End If
-
-            Return RandomValue
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical)
-        End Try
-        Return ""
-    End Function
-
-    Private Function GetDefaultValue(param As ParameterInfo) As Object
-        If param.HasDefaultValue Then
-            Return param.DefaultValue
-        ElseIf param.ParameterType.IsValueType Then
-            Return Activator.CreateInstance(param.ParameterType)
-        Else
-            Return Nothing
-        End If
-        Return Nothing
-    End Function
 
 
     Private Sub btnGenerateOneData_Click(sender As Object, e As EventArgs) Handles btnGenerateOneData.Click

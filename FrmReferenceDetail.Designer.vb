@@ -24,8 +24,6 @@ Partial Class FrmReferenceDetail
     Private Sub InitializeComponent()
         Me.LabelControl1 = New DevExpress.XtraEditors.LabelControl()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
-        Me.btnSave = New System.Windows.Forms.ToolStripButton()
-        Me.btnClear = New System.Windows.Forms.ToolStripButton()
         Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         Me.cboParentTable = New DevExpress.XtraEditors.ComboBoxEdit()
         Me.cboParentID = New DevExpress.XtraEditors.ComboBoxEdit()
@@ -33,6 +31,8 @@ Partial Class FrmReferenceDetail
         Me.txtColumnName = New DevExpress.XtraEditors.TextEdit()
         Me.cboParentDatabase = New DevExpress.XtraEditors.ComboBoxEdit()
         Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
+        Me.btnSave = New System.Windows.Forms.ToolStripButton()
+        Me.btnClear = New System.Windows.Forms.ToolStripButton()
         Me.ToolStrip1.SuspendLayout()
         CType(Me.cboParentTable.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cboParentID.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,26 +56,6 @@ Partial Class FrmReferenceDetail
         Me.ToolStrip1.Size = New System.Drawing.Size(309, 25)
         Me.ToolStrip1.TabIndex = 2
         Me.ToolStrip1.Text = "ToolStrip1"
-        '
-        'btnSave
-        '
-        Me.btnSave.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSave.Image = Global.DataGenerator.My.Resources.Resources.OK
-        Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnSave.Margin = New System.Windows.Forms.Padding(0)
-        Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(55, 25)
-        Me.btnSave.Text = "Save"
-        '
-        'btnClear
-        '
-        Me.btnClear.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnClear.Image = Global.DataGenerator.My.Resources.Resources._Exit
-        Me.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnClear.Margin = New System.Windows.Forms.Padding(0)
-        Me.btnClear.Name = "btnClear"
-        Me.btnClear.Size = New System.Drawing.Size(57, 25)
-        Me.btnClear.Text = "Clear"
         '
         'LabelControl2
         '
@@ -132,6 +112,26 @@ Partial Class FrmReferenceDetail
         Me.LabelControl4.Size = New System.Drawing.Size(79, 13)
         Me.LabelControl4.TabIndex = 9
         Me.LabelControl4.Text = "Reference to DB"
+        '
+        'btnSave
+        '
+        Me.btnSave.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSave.Image = Global.DataGenerator.My.Resources.Resources.OK
+        Me.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnSave.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(55, 25)
+        Me.btnSave.Text = "Save"
+        '
+        'btnClear
+        '
+        Me.btnClear.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnClear.Image = Global.DataGenerator.My.Resources.Resources._Exit
+        Me.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnClear.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnClear.Name = "btnClear"
+        Me.btnClear.Size = New System.Drawing.Size(57, 25)
+        Me.btnClear.Text = "Clear"
         '
         'FrmReferenceDetail
         '

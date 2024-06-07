@@ -1,6 +1,12 @@
 ﻿Imports System.Data
+Imports Bogus
+Imports System.Reflection
+Imports System.Linq
+Imports System.Collections.Generic
 
-Module ModFunction
+Module ModGlobal
+    Private GenderList As List(Of String) = New List(Of String) From {"Male", "Female"}
+    Private Randomizer = New Random()
     Public Function SqlStr(param As String) As String
         Return "'" & param & "'"
     End Function
@@ -195,5 +201,133 @@ Module ModFunction
         table.Rows.Add("Vehicle", "Type", "Get a vehicle type. IE: Minivan, SUV, Sedan.")
         table.Rows.Add("Vehicle", "Fuel", "Get a vehicle fuel type. IE: Electric, Gasoline, Diesel.")
         BogusDatatable = table
+    End Function
+
+    Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "") As String
+        Try
+            'Create a new Faker instance
+            Dim Fake As New Faker()
+            Dim RandomValue As String = ""
+
+            Dim CategoryProperty As PropertyInfo = GetType(Faker).GetProperty(category, BindingFlags.Public Or BindingFlags.Instance)
+            If CategoryProperty Is Nothing Then Throw New Exception("Unknown category")
+
+            Dim CategoryInstance As Object = CategoryProperty.GetValue(Fake)
+
+            'Special Handling for overloaded methods like Random.Number
+            If category = "Random" AndAlso
+                ("Number-Bool-String-Gender-UserDefined-").Contains(subcategory & "-") Then
+                If subcategory = "Number" Then
+                    Dim max = 1000, min = 0
+                    Dim value = GetValueByKey(userParameter, "min")
+                    If Not IsNothing(value) Then min = value
+                    value = GetValueByKey(userParameter, "max")
+                    If Not IsNothing(value) Then max = value
+                    RandomValue = Fake.Random.Number(min, max).ToString()
+                ElseIf subcategory = "Bool" Then
+                    RandomValue = If(Fake.Random.Bool(), 1, 0)
+                ElseIf subcategory = "String" Then
+                    RandomValue = Fake.Random.String(10).ToString
+                ElseIf subcategory = "Gender" Then
+                    RandomValue = GenderList(Randomizer.Next(0, GenderList.Count))
+                End If
+            ElseIf category = "Company" AndAlso subcategory = "CompanyName" Then
+                RandomValue = Fake.Company.CompanyName
+            ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
+                RandomValue = Fake.Lorem.Paragraphs(3, vbCrLf)
+            ElseIf category = "Date" AndAlso
+                    ("Past-PastOffset-Future-FutureOffset-Recent-RecentOffset-Soon-SoonOffset-Between-BetweenOffset-Timespan-".Contains(subcategory & "-")) Then
+                Select Case subcategory
+                    Case "Past"
+                        RandomValue = Fake.Date.Past()
+                    Case "Future"
+                        RandomValue = Fake.Date.Future()
+                    Case "Recent"
+                        RandomValue = Fake.Date.Recent()
+                    Case "Soon"
+                        RandomValue = Fake.Date.Soon()
+                    Case "Timespan"
+                        RandomValue = Fake.Date.Timespan().ToString
+                End Select
+            Else
+                Dim SubcategoryMethod As MethodInfo = CategoryInstance.GetType().GetMethod(subcategory, BindingFlags.Public Or BindingFlags.Instance)
+                If SubcategoryMethod Is Nothing Then Throw New Exception("Unknown subcategory")
+
+                'Check if the method has parameter
+                Dim parameters As ParameterInfo() = SubcategoryMethod.GetParameters()
+                Dim result As Object
+
+                If parameters.Length > 0 Then
+                    Dim paramValues As Object()
+                    If userParameter = "" Then
+                        paramValues = parameters.Select(Function(p) GetDefaultValue(p)).ToArray
+                    Else
+                        paramValues = parameters.Select(Function(o) GetUserParameter(o, userParameter)).ToArray
+                    End If
+                    result = SubcategoryMethod.Invoke(CategoryInstance, paramValues)
+                Else
+                    result = SubcategoryMethod.Invoke(CategoryInstance, Nothing)
+                End If
+
+                If TypeOf result Is String Then
+                    RandomValue = Replace(result, vbLf, vbCrLf)
+                Else
+                    If result.length > 1 Then
+                        For Each obj In result
+                            RandomValue &= If(RandomValue = "", "", vbCrLf) & obj.ToString
+                        Next
+                    End If
+                End If
+            End If
+
+            Return RandomValue
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
+        Return ""
+    End Function
+
+    Private Function GetUserParameter(param As ParameterInfo, userParameter As String) As Object
+        Dim result As Object = GetValueByKey(userParameter, param.Name)
+        If result IsNot Nothing Then
+            Return result
+        Else
+            Return GetDefaultValue(param)
+        End If
+    End Function
+
+    Private Function GetValueByKey(userParameter As String, parameterName As String) As Object
+        Dim lines As String() = userParameter.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.None)
+        Dim strValue As String = ""
+        For Each line In lines
+            If line.StartsWith(parameterName & "=") Then
+                strValue = line.Substring((parameterName & "=").Length).Trim
+                Exit For
+            End If
+        Next
+        If strValue = "" Then
+            Return Nothing
+        Else
+            Dim intValue As Integer
+            If Integer.TryParse(strValue, intValue) Then
+                Return intValue
+            End If
+            Dim boolValue As Boolean
+            If Boolean.TryParse(strValue, boolValue) Then
+                Return boolValue
+            End If
+        End If
+        Return strValue
+    End Function
+
+    Private Function GetDefaultValue(param As ParameterInfo) As Object
+        If param.HasDefaultValue Then
+            Return param.DefaultValue
+        ElseIf param.ParameterType.IsValueType Then
+            Return Activator.CreateInstance(param.ParameterType)
+        Else
+            Return Nothing
+        End If
+        Return Nothing
     End Function
 End Module
