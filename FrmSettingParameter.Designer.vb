@@ -39,7 +39,6 @@ Partial Class FrmSettingParameter
         Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.txtParameterList = New System.Windows.Forms.TextBox()
-        Me.btnGetParameter = New DevExpress.XtraEditors.SimpleButton()
         Me.pnlParameters = New System.Windows.Forms.Panel()
         Me.ToolStrip1.SuspendLayout()
         CType(Me.txtColumnName.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -53,7 +52,7 @@ Partial Class FrmSettingParameter
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnClear})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(1035, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(585, 25)
         Me.ToolStrip1.TabIndex = 3
         Me.ToolStrip1.Text = "ToolStrip1"
         '
@@ -96,7 +95,7 @@ Partial Class FrmSettingParameter
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label4.Location = New System.Drawing.Point(22, 168)
+        Me.Label4.Location = New System.Drawing.Point(22, 111)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(90, 14)
         Me.Label4.TabIndex = 20
@@ -105,9 +104,10 @@ Partial Class FrmSettingParameter
         'txtUserDefined
         '
         Me.txtUserDefined.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtUserDefined.Enabled = False
         Me.txtUserDefined.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUserDefined.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtUserDefined.Location = New System.Drawing.Point(25, 188)
+        Me.txtUserDefined.Location = New System.Drawing.Point(25, 131)
         Me.txtUserDefined.Margin = New System.Windows.Forms.Padding(10)
         Me.txtUserDefined.Multiline = True
         Me.txtUserDefined.Name = "txtUserDefined"
@@ -120,7 +120,7 @@ Partial Class FrmSettingParameter
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("Arial", 8.25!)
         Me.Label9.ForeColor = System.Drawing.Color.Blue
-        Me.Label9.Location = New System.Drawing.Point(22, 312)
+        Me.Label9.Location = New System.Drawing.Point(22, 255)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(135, 14)
         Me.Label9.TabIndex = 37
@@ -130,7 +130,7 @@ Partial Class FrmSettingParameter
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label1.Location = New System.Drawing.Point(22, 111)
+        Me.Label1.Location = New System.Drawing.Point(299, 82)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(69, 14)
         Me.Label1.TabIndex = 41
@@ -140,7 +140,7 @@ Partial Class FrmSettingParameter
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label3.Location = New System.Drawing.Point(22, 82)
+        Me.Label3.Location = New System.Drawing.Point(299, 53)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(51, 14)
         Me.Label3.TabIndex = 39
@@ -148,7 +148,7 @@ Partial Class FrmSettingParameter
         '
         'cboSubcategory
         '
-        Me.cboSubcategory.Location = New System.Drawing.Point(121, 108)
+        Me.cboSubcategory.Location = New System.Drawing.Point(410, 79)
         Me.cboSubcategory.Name = "cboSubcategory"
         Me.cboSubcategory.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cboSubcategory.Size = New System.Drawing.Size(143, 20)
@@ -156,7 +156,7 @@ Partial Class FrmSettingParameter
         '
         'cboCategory
         '
-        Me.cboCategory.Location = New System.Drawing.Point(121, 79)
+        Me.cboCategory.Location = New System.Drawing.Point(410, 50)
         Me.cboCategory.Name = "cboCategory"
         Me.cboCategory.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cboCategory.Size = New System.Drawing.Size(143, 20)
@@ -164,7 +164,7 @@ Partial Class FrmSettingParameter
         '
         'btnGenerate
         '
-        Me.btnGenerate.Location = New System.Drawing.Point(436, 312)
+        Me.btnGenerate.Location = New System.Drawing.Point(217, 284)
         Me.btnGenerate.Name = "btnGenerate"
         Me.btnGenerate.Size = New System.Drawing.Size(114, 23)
         Me.btnGenerate.TabIndex = 47
@@ -172,14 +172,14 @@ Partial Class FrmSettingParameter
         '
         'txtMaxLength
         '
-        Me.txtMaxLength.Location = New System.Drawing.Point(121, 136)
+        Me.txtMaxLength.Location = New System.Drawing.Point(121, 79)
         Me.txtMaxLength.Name = "txtMaxLength"
         Me.txtMaxLength.Size = New System.Drawing.Size(143, 20)
         Me.txtMaxLength.TabIndex = 51
         '
         'LabelControl4
         '
-        Me.LabelControl4.Location = New System.Drawing.Point(25, 139)
+        Me.LabelControl4.Location = New System.Drawing.Point(25, 82)
         Me.LabelControl4.Name = "LabelControl4"
         Me.LabelControl4.Size = New System.Drawing.Size(56, 13)
         Me.LabelControl4.TabIndex = 50
@@ -189,50 +189,43 @@ Partial Class FrmSettingParameter
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label5.Location = New System.Drawing.Point(301, 168)
+        Me.Label5.Location = New System.Drawing.Point(299, 222)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(76, 14)
         Me.Label5.TabIndex = 53
         Me.Label5.Text = "Parameter List"
+        Me.Label5.Visible = False
         '
         'txtParameterList
         '
         Me.txtParameterList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtParameterList.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtParameterList.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtParameterList.Location = New System.Drawing.Point(304, 186)
+        Me.txtParameterList.Location = New System.Drawing.Point(302, 240)
         Me.txtParameterList.Margin = New System.Windows.Forms.Padding(10)
         Me.txtParameterList.Multiline = True
         Me.txtParameterList.Name = "txtParameterList"
         Me.txtParameterList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtParameterList.Size = New System.Drawing.Size(261, 119)
+        Me.txtParameterList.Size = New System.Drawing.Size(266, 29)
         Me.txtParameterList.TabIndex = 52
-        '
-        'btnGetParameter
-        '
-        Me.btnGetParameter.Location = New System.Drawing.Point(306, 312)
-        Me.btnGetParameter.Name = "btnGetParameter"
-        Me.btnGetParameter.Size = New System.Drawing.Size(114, 23)
-        Me.btnGetParameter.TabIndex = 54
-        Me.btnGetParameter.Text = "Get Parameter"
+        Me.txtParameterList.Visible = False
         '
         'pnlParameters
         '
         Me.pnlParameters.Font = New System.Drawing.Font("Tahoma", 8.25!)
-        Me.pnlParameters.Location = New System.Drawing.Point(300, 50)
+        Me.pnlParameters.Location = New System.Drawing.Point(300, 109)
         Me.pnlParameters.Name = "pnlParameters"
-        Me.pnlParameters.Size = New System.Drawing.Size(268, 108)
+        Me.pnlParameters.Size = New System.Drawing.Size(268, 110)
         Me.pnlParameters.TabIndex = 55
         '
         'FrmSettingParameter
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1035, 363)
-        Me.Controls.Add(Me.pnlParameters)
-        Me.Controls.Add(Me.btnGetParameter)
-        Me.Controls.Add(Me.Label5)
+        Me.ClientSize = New System.Drawing.Size(585, 329)
         Me.Controls.Add(Me.txtParameterList)
+        Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.pnlParameters)
         Me.Controls.Add(Me.txtMaxLength)
         Me.Controls.Add(Me.LabelControl4)
         Me.Controls.Add(Me.btnGenerate)
@@ -247,6 +240,7 @@ Partial Class FrmSettingParameter
         Me.Controls.Add(Me.LabelControl3)
         Me.Controls.Add(Me.ToolStrip1)
         Me.Name = "FrmSettingParameter"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FrmSettingParameter"
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
@@ -276,6 +270,5 @@ Partial Class FrmSettingParameter
     Friend WithEvents LabelControl4 As DevExpress.XtraEditors.LabelControl
     Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents txtParameterList As Windows.Forms.TextBox
-    Friend WithEvents btnGetParameter As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents pnlParameters As Windows.Forms.Panel
 End Class

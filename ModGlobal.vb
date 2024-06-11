@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Linq
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
+Imports DevExpress.XtraPrinting.Export.Pdf.PdfImageCache
 
 Module ModGlobal
     Public GenderList As List(Of String) = New List(Of String) From {"Male", "Female"}
@@ -156,6 +157,7 @@ Module ModGlobal
         table.Rows.Add("Name", "JobType", "Get a type of job.")
 
         table.Rows.Add("Random", "Number", "Get an int from 0 to max.")
+        table.Rows.Add("Random", "Digits", "Get a random sequence of digits.")
         table.Rows.Add("Random", "Decimal", "Get a random decimal, between 0.0 and 1.0.")
         table.Rows.Add("Random", "Double", "Get a random double, between 0.0 and 1.0.")
         table.Rows.Add("Random", "Float", "Get a random float, between 0.0 and 1.0.")
@@ -204,7 +206,7 @@ Module ModGlobal
         BogusDatatable = table
     End Function
 
-    Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "", Optional userDefined As String = "") As String
+    Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "", Optional userDefined As String = "", Optional maxLength As Integer = 9999999) As String
         Try
             'Create a new Faker instance
             Dim Fake As New Faker()
@@ -220,9 +222,9 @@ Module ModGlobal
                 ("Number-Bool-String-Gender-UserDefined-").Contains(subcategory & "-") Then
                 If subcategory = "Number" Then
                     Dim max = 1000, min = 0
-                    Dim value = GetValueByKey(userParameter, "min")
+                    Dim value = GetValueByKey(userParameter, "min", Type.GetType("System.Int32"))
                     If Not IsNothing(value) Then min = value
-                    value = GetValueByKey(userParameter, "max")
+                    value = GetValueByKey(userParameter, "max", Type.GetType("System.Int32"))
                     If Not IsNothing(value) Then max = value
                     RandomValue = Fake.Random.Number(min, max).ToString()
                 ElseIf subcategory = "Bool" Then
@@ -252,6 +254,13 @@ Module ModGlobal
                         RandomValue = Fake.Date.Soon()
                     Case "Timespan"
                         RandomValue = Fake.Date.Timespan().ToString
+                    Case "Between"
+                        Dim StartDate = Date.Today, EndDate = #2099/01/01#
+                        Dim Value = GetValueByKey(userParameter, "start", Type.GetType("System.Date"))
+                        If Not IsNothing(Value) Then StartDate = Value
+                        Value = GetValueByKey(userParameter, "end", Type.GetType("System.Date"))
+                        If Not IsNothing(Value) Then EndDate = Value
+                        RandomValue = Fake.Date.Between(StartDate, EndDate)
                 End Select
             Else
                 Dim SubcategoryMethod As MethodInfo = CategoryInstance.GetType().GetMethod(subcategory, BindingFlags.Public Or BindingFlags.Instance)
@@ -275,6 +284,12 @@ Module ModGlobal
 
                 If TypeOf result Is String OrElse TypeOf result Is Double OrElse TypeOf result Is Decimal OrElse TypeOf result Is Char OrElse
                     TypeOf result Is Single OrElse TypeOf result Is Byte Then
+                    If subcategory = "AlphaNumeric" Then
+                        Dim IsUpperCase As Boolean = GetValueByKey(userParameter, "IsUpperCase", Type.GetType("System.Boolean"))
+                        If IsUpperCase Then result = result.ToString.ToUpper()
+                    ElseIf subcategory = "Amount" Then
+                        result = result * 1000
+                    End If
                     RandomValue = Replace(result, vbLf, vbCrLf)
                 Else
                     If result.length > 1 Then
@@ -285,6 +300,10 @@ Module ModGlobal
                 End If
             End If
 
+            'Check length
+            If RandomValue IsNot Nothing AndAlso RandomValue.Length > maxLength Then
+                RandomValue = RandomValue.Substring(0, maxLength)
+            End If
             Return RandomValue
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
@@ -293,15 +312,23 @@ Module ModGlobal
     End Function
 
     Private Function GetUserParameter(param As ParameterInfo, userParameter As String) As Object
-        Dim result As Object = GetValueByKey(userParameter, param.Name)
-        If result IsNot Nothing AndAlso result <> "" Then
-            Return Convert.ChangeType(result, param.ParameterType)
-            'If TypeOf result Is Decimal OrElse TypeOf result Is Int32 Then
-            'End If
-            'Return result
-        Else
-            Return GetDefaultValue(param)
+        Dim result As Object = GetValueByKey(userParameter, param.Name, param.ParameterType, param)
+        Return result
+    End Function
+
+    Public Function ChangeType(ByVal value As Object, ByVal conversion As Type) As Object
+        Dim t = conversion
+
+        If t.IsGenericType AndAlso t.GetGenericTypeDefinition().Equals(GetType(Nullable(Of))) Then
+
+            If value Is Nothing Then
+                Return Nothing
+            End If
+
+            t = Nullable.GetUnderlyingType(t)
         End If
+
+        Return Convert.ChangeType(value, t)
     End Function
 
     Public Function UppercaseFirstLetter(input As String)
@@ -310,7 +337,7 @@ Module ModGlobal
         Return FirstLetter & RestOfString
     End Function
 
-    Private Function GetValueByKey(userParameter As String, parameterName As String) As Object
+    Public Function GetValueByKey(userParameter As String, parameterName As String, paramType As Type, Optional param As ParameterInfo = Nothing) As Object
         Dim lines As String() = userParameter.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.None)
         Dim strValue As String = ""
         For Each line In lines
@@ -319,23 +346,15 @@ Module ModGlobal
                 Exit For
             End If
         Next
-        'If strValue = "" Then
-        '    Return Nothing
-        'Else
-        '    Dim decValue As Decimal
-        '    If Decimal.TryParse(strValue, decValue) Then
-        '        Return decValue
-        '    End If
-        '    Dim intValue As Integer
-        '    If Integer.TryParse(strValue, intValue) Then
-        '        Return intValue
-        '    End If
-        '    Dim boolValue As Boolean
-        '    If Boolean.TryParse(strValue, boolValue) Then
-        '        Return boolValue
-        '    End If
-        'End If
-        Return strValue
+        If strValue <> "" Then
+            Return ChangeType(strValue, paramType)
+        ElseIf param IsNot Nothing Then
+            Return GetDefaultValue(param)
+        ElseIf paramType <> Type.GetType("System.String") AndAlso strValue = "" Then
+            Return Nothing
+        Else
+            Return strValue
+        End If
     End Function
 
     Private Function GetDefaultValue(param As ParameterInfo) As Object

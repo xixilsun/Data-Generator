@@ -74,7 +74,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Address")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
         Public ReadOnly Property DefaultCategory() As String
             Get
                 Return CType(Me("DefaultCategory"),String)
@@ -83,10 +83,10 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("ZipCode")>  _
-        Public ReadOnly Property DefaultSubcategory() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public ReadOnly Property h() As String
             Get
-                Return CType(Me("DefaultSubcategory"),String)
+                Return CType(Me("h"),String)
             End Get
         End Property
     End Class

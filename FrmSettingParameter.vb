@@ -16,8 +16,10 @@ Public Class FrmSettingParameter
     Private _CategoryList As New List(Of String)
     Private _SubcategoryList As New List(Of String)
     Private _Parameter As String = ""
+    Private _UserDefined As String = ""
     Private _MaxLength As String = ""
     Private _IsOK As Boolean
+    Private IsFirstLoad As Boolean = True
 
     Public ReadOnly Property IsOK As Boolean
         Get
@@ -30,6 +32,14 @@ Public Class FrmSettingParameter
         End Set
         Get
             Return _Parameter
+        End Get
+    End Property
+    Public Property UserDefined As String
+        Set(ByVal value As String)
+            _UserDefined = value
+        End Set
+        Get
+            Return _UserDefined
         End Get
     End Property
     Public Property MaxLength As String
@@ -84,10 +94,6 @@ Public Class FrmSettingParameter
         End Get
     End Property
 
-    Private Sub cboSubcategory_SelectedIndexChanged(sender As Object, e As EventArgs)
-
-    End Sub
-
     Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
 
     End Sub
@@ -96,22 +102,9 @@ Public Class FrmSettingParameter
         Try
             If cboCategory.SelectedItem = "" AndAlso cboSubcategory.SelectedItem = "" Then Throw New Exception("Please choose CategoryAttribute & subcategory")
 
-            'Get Parameter to ParameterList
-            'Dim values As New Dictionary(Of String, String)
-            Dim ParameterText As String = ""
-            For Each ctrl As Control In pnlParameters.Controls
-                If TypeOf ctrl Is TextEdit Then
-                    Dim txt As TextEdit = DirectCast(ctrl, TextEdit)
-                    ParameterText &= If(ParameterText = "", "", vbCrLf) & txt.Name & "=" & txt.Text
-                ElseIf TypeOf ctrl Is SpinEdit Then
-                    Dim num As SpinEdit = DirectCast(ctrl, SpinEdit)
-                    ParameterText &= If(ParameterText = "", "", vbCrLf) & num.Name & "=" & num.Value
-                End If
-            Next
-
-            txtParameterList.Text = ParameterText
+            'Get Parameter to ParameterList Textbox
+            SetParameterList()
             Dim Sample As String = GenerateFakeData(cboCategory.SelectedItem, cboSubcategory.SelectedItem, txtParameterList.Text, txtUserDefined.Text)
-
 
             MsgBox(Sample, MsgBoxStyle.Information)
         Catch ex As Exception
@@ -119,9 +112,32 @@ Public Class FrmSettingParameter
         End Try
     End Sub
 
+    Private Sub SetParameterList()
+        'Get Parameter to ParameterList
+        Dim ParameterText As String = ""
+        For Each ctrl As Control In pnlParameters.Controls
+            If TypeOf ctrl Is TextEdit Then
+                Dim txt As TextEdit = DirectCast(ctrl, TextEdit)
+                ParameterText &= If(ParameterText = "", "", vbCrLf) & txt.Name & "=" & txt.Text
+            ElseIf TypeOf ctrl Is SpinEdit Then
+                Dim num As SpinEdit = DirectCast(ctrl, SpinEdit)
+                ParameterText &= If(ParameterText = "", "", vbCrLf) & num.Name & "=" & num.Value
+            ElseIf TypeOf ctrl Is ComboBoxEdit Then
+                Dim cbo As ComboBoxEdit = DirectCast(ctrl, ComboBoxEdit)
+                ParameterText &= If(ParameterText = "", "", vbCrLf) & cbo.Name & "=" & cbo.SelectedItem
+            ElseIf TypeOf ctrl Is DateEdit Then
+                Dim _date As DateEdit = DirectCast(ctrl, DateEdit)
+                ParameterText &= If(ParameterText = "", "", vbCrLf) & _date.Name & "=" & _date.EditValue
+            End If
+        Next
+        txtParameterList.Text = ParameterText
+    End Sub
+
     Private Sub FrmSettingParameter_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         txtColumnName.Text = _ColumnName
         txtParameterList.Text = _Parameter
+        txtMaxLength.Text = _MaxLength
+        txtUserDefined.Text = _UserDefined
         With cboCategory
             .Properties.Items.AddRange(CategoryList)
             .SelectedItem = _Category
@@ -130,8 +146,7 @@ Public Class FrmSettingParameter
             .Properties.Items.AddRange(SubcategoryList)
             .SelectedItem = _Subcategory
         End With
-        txtMaxLength.Text = _MaxLength
-
+        IsFirstLoad = False
     End Sub
 
     Private Sub cboCategory_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCategory.SelectedIndexChanged
@@ -141,7 +156,7 @@ Public Class FrmSettingParameter
             With cboSubcategory
                 .Properties.Items.Clear()
                 .Properties.Items.AddRange(SubcategoryList)
-                .SelectedIndex = 0
+                If Not IsFirstLoad Then .SelectedIndex = 0
             End With
         End If
     End Sub
@@ -156,31 +171,13 @@ Public Class FrmSettingParameter
                 AddHandler cboCategory.SelectedIndexChanged, AddressOf cboCategory_SelectedIndexChanged
             End If
 
+            txtUserDefined.Enabled = SelectedSubcategory = "UserDefined"
+            If Not txtUserDefined.Enabled Then txtUserDefined.Text = ""
             'Clear panel Parameter if subcategory changed
             pnlParameters.Controls.Clear()
 
             'Get Parameter of subcategory
             GetParameterInput(NewCategory, SelectedSubcategory)
-
-            '' Add appropriate controls based on the selected subcategory
-            'Select Case Subcategory
-            '    Case "ZipCode"
-            '        AddTextBox("Format")
-
-            '    Case "Sentence"
-            '        AddTextBox("Word Count")
-
-            '    Case "Email"
-            '        AddTextBox("First Name")
-            '        AddTextBox("Last Name")
-            '        AddTextBox("Provider")
-
-            '    Case "Between"
-            '        AddDateTimePicker("Start Date")
-            '        AddDateTimePicker("End Date")
-
-            '        ' Add cases for other subcategories as needed
-            'End Select
         End If
     End Sub
 
@@ -190,6 +187,10 @@ Public Class FrmSettingParameter
         lbl.Text = labelText
         lbl.AutoSize = True
         lbl.Location = New Point(0, pnlParameters.Controls.Count * 14 + 4)
+        If IsFirstLoad AndAlso txtParameterList.Text.Trim <> "" Then
+            Dim value As Object = GetValueByKey(txtParameterList.Text, labelText, paramType)
+            If value.ToString <> "" Then paramDefaultValue = value
+        End If
 
         If paramType = Type.GetType("System.String") OrElse paramType = Type.GetType("System.Char") Then
             Dim txt As New TextEdit()
@@ -204,8 +205,10 @@ Public Class FrmSettingParameter
             txt.Location = New Point(110, pnlParameters.Controls.Count * 14)
             txt.Width = 143
             txt.Name = labelText
-            txt.Value = paramDefaultValue
-
+            txt.Properties.IsFloatValue = False
+            txt.Properties.EditMask = "n0"
+            txt.Value = If(labelText = "Length" AndAlso txtMaxLength.Text <> "-" AndAlso txtMaxLength.Text <> "-" AndAlso Not IsFirstLoad, Convert.ToInt32(txtMaxLength.Text), paramDefaultValue)
+            If txtMaxLength.Text <> "-" And labelText = "Length" Then txt.Properties.MaxValue = Convert.ToInt32(txtMaxLength.Text)
             pnlParameters.Controls.Add(txt)
         ElseIf paramType.FullName.Contains("System.DateTime") Then
             Dim txt As New DateEdit()
@@ -252,22 +255,17 @@ Public Class FrmSettingParameter
             pnlParameters.Controls.Add(lbl)
         End If
     End Sub
-
-
-    Private Sub AddDateTimePicker(labelText As String)
+    Private Sub AddLabel(labelText As String)
         Dim lbl As New Label()
+        Dim IsNotFound As Boolean = False
         lbl.Text = labelText
+        lbl.ForeColor = Color.Blue
         lbl.AutoSize = True
-        lbl.Location = New Point(10, pnlParameters.Controls.Count * 14 + 4)
-
-        Dim dtp As New DateTimePicker()
-        dtp.Location = New Point(110, pnlParameters.Controls.Count * 14 + 4)
-
+        lbl.Location = New Point(0, pnlParameters.Controls.Count * 14 + 4)
         pnlParameters.Controls.Add(lbl)
-        pnlParameters.Controls.Add(dtp)
     End Sub
 
-    Private Sub btnGetParameter_Click(sender As Object, e As EventArgs) Handles btnGetParameter.Click
+    Private Sub btnGetParameter_Click(sender As Object, e As EventArgs)
         txtParameterList.Clear()
         Try
             Dim AllParameter As String = ""
@@ -308,6 +306,11 @@ Public Class FrmSettingParameter
             If selectedSubcategory = "Number" Then
                 AddInputBox("Min", Type.GetType("System.Int32"), 0)
                 AddInputBox("Max", Type.GetType("System.Int32"), 100)
+            ElseIf selectedSubcategory = "Amount" Then
+                AddInputBox("Min", Type.GetType("System.Int32"), 1)
+                AddInputBox("Max", Type.GetType("System.Int32"), 10000)
+                AddInputBox("Decimal", Type.GetType("System.Int32"), 0)
+                AddLabel("Amount will be in thousands")
             ElseIf selectedSubcategory = "String" Then
                 AddInputBox("Length", Type.GetType("System.Int32"), 10)
 
@@ -329,23 +332,61 @@ Public Class FrmSettingParameter
                 'Check if the method has parameter
                 Dim parameters As ParameterInfo() = SubcategoryMethod.GetParameters()
                 For Each param In parameters
-                    AddInputBox(UppercaseFirstLetter(param.Name.ToString), param.ParameterType, If(param.HasDefaultValue, param.DefaultValue, Nothing))
+                    If param.Name.ToString <> "separator" Then AddInputBox(UppercaseFirstLetter(param.Name.ToString), param.ParameterType, If(param.HasDefaultValue, param.DefaultValue, Nothing))
                 Next
+                If selectedSubcategory = "AlphaNumeric" Then AddInputBox("IsUpperCase", Type.GetType("System.Boolean"), True)
             End If
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
 
-    Private Sub txtParameterList_TextChanged(sender As Object, e As EventArgs) Handles txtParameterList.TextChanged
-
-    End Sub
-
-    Private Sub Label5_Click(sender As Object, e As EventArgs) Handles Label5.Click
-
-    End Sub
-
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        _Category = cboCategory.SelectedItem
+        _Subcategory = cboSubcategory.SelectedItem
+        _ColumnName = txtColumnName.Text
+        _MaxLength = txtMaxLength.Text
+
+        SetParameterList()
+        _Parameter = txtParameterList.Text
+        If Not IsValid() Then Exit Sub
+
+        If _Subcategory = "UserDefined" Then _UserDefined = txtUserDefined.Text
+        'Get Parameter to ParameterList Textbox
+
+        _IsOK = True
+        Me.Dispose()
+    End Sub
+
+    Private Function IsValid() As Boolean
+        Dim bool = False
+        Try
+            If _Subcategory = "UserDefined" AndAlso txtUserDefined.Text.Trim = "" Then
+                Throw New Exception("Please fill user defined list!")
+            ElseIf _Category = "" OrElse _Subcategory = "" Then
+                Throw New Exception("Please fill category and subcategory!")
+            End If
+
+            bool = True
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
+        Return bool
+    End Function
+
+    Private Sub Label9_Click(sender As Object, e As EventArgs) Handles Label9.Click
+
+    End Sub
+
+    Private Sub txtUserDefined_TextChanged(sender As Object, e As EventArgs) Handles txtUserDefined.TextChanged
+
+    End Sub
+
+    Private Sub Label4_Click(sender As Object, e As EventArgs) Handles Label4.Click
+
+    End Sub
+
+    Private Sub pnlParameters_Paint(sender As Object, e As PaintEventArgs) Handles pnlParameters.Paint
 
     End Sub
 End Class

@@ -9,6 +9,7 @@ Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
+Imports DevExpress.XtraReports.Parameters
 
 Public Class FrmMain
     Private dtDataSet As New DataTable
@@ -72,7 +73,6 @@ Public Class FrmMain
 
 
     Private Sub OnGridViewCustomRowCellEditForEditing(sender As Object, e As CustomRowCellEditEventArgs)
-        'Dim View As GridView = CType(sender, GridView)
         Dim View As GridView = CType(sender, GridView)
         Dim RowHandle As Integer = e.RowHandle
 
@@ -88,7 +88,6 @@ Public Class FrmMain
             Dim SubcategoryList As List(Of String) = BogusDt.AsEnumerable().Where(Function(o) o("Category") = CurrentCategory).Select(Function(o) o("Subcategory").ToString).ToList
             SubcategoryCombo.Items.AddRange(SubcategoryList)
             e.RepositoryItem = SubcategoryCombo
-
         End If
     End Sub
 
@@ -98,10 +97,11 @@ Public Class FrmMain
         End If
         SelectedDatabase = cboDatabase.SelectedItem
         SelectedTable = cboTable.SelectedItem
-        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, DATA_TYPE As DataType, CHARACTER_MAXIMUM_LENGTH As MaxLength, " & vbCrLf &
+        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, S.is_identity As IsIdentity, DATA_TYPE As DataType, CHARACTER_MAXIMUM_LENGTH As MaxLength, " & vbCrLf &
                   "Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
                   "CASE WHEN Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS C" & vbCrLf &
+                  "INNER JOIN sys.Columns S ON C.COLUMN_NAME = S.name" & vbCrLf &
                   "LEFT JOIN " & vbCrLf &
                   "(" & vbCrLf &
                   "	SELECT " & vbCrLf &
@@ -119,12 +119,54 @@ Public Class FrmMain
                   "WHERE " & vbCrLf &
                   "	OBJECT_NAME(f.parent_object_id) = 'Denda'" & vbCrLf &
                   ") REF ON Ref.ReferenceTable = C.TABLE_NAME AND Ref.ReferenceColumnName = C.COLUMN_NAME" & vbCrLf &
-                  "WHERE TABLE_NAME = " & SqlStr(SelectedTable)
+                  "WHERE TABLE_NAME = " & SqlStr(SelectedTable) & " AND S.object_id = object_id(" & SqlStr(SelectedTable) & ")"
         Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(SelectedDatabase))
         dtDataSet.Rows.Clear()
 
         For Each row In Dt.Rows
-            dtDataSet.Rows.Add(row!ColumnName, "", "", "", "", If(IsDBNull(row!MaxLength) OrElse row!DataType = "text", "-", row!MaxLength),
+            'If identity no need to generate id column
+            If row!IsIdentity = 1 Then Continue For
+
+            'Set default category & subcategory
+            Dim DefaultCategory As String = ""
+            Dim DefaultSubcategory As String = ""
+            If Not Convert.ToBoolean(row!HasReference) Then
+                If row!DataType = "text" Then
+                    DefaultCategory = "Lorem"
+                    DefaultSubcategory = "Paragraph"
+                ElseIf row!DataType = "varchar" AndAlso row!ColumnName.ToString.Contains("user") Then
+                    DefaultCategory = "Internet"
+                    DefaultSubcategory = "UserName"
+                ElseIf row!DataType = "datetime" AndAlso row!ColumnName.ToString.Contains("update") Then
+                    DefaultCategory = "Date"
+                    DefaultSubcategory = "Past"
+                ElseIf row!DataType = "bit" Then
+                    DefaultCategory = "Random"
+                    DefaultSubcategory = "Bool"
+                ElseIf row!DataType.ToString.Contains("varchar") Then
+                    DefaultCategory = "Lorem"
+                    DefaultSubcategory = "Word"
+                ElseIf row!DataType = "money" Then
+                    DefaultCategory = "Finance"
+                    DefaultSubcategory = "Amount"
+                ElseIf row!DataType.ToString.Contains("date") Then
+                    DefaultCategory = "Date"
+                    DefaultSubcategory = "Between"
+                ElseIf row!DataType.ToString.Contains("int") OrElse row!DataType = "numeric" Then
+                    DefaultCategory = "Random"
+                    DefaultSubcategory = "Number"
+                ElseIf row!DataType = "char" Then
+                    DefaultCategory = "Random"
+                    DefaultSubcategory = "Char"
+                End If
+
+            End If
+            'Max Length
+            Dim Max As String = "-"
+            If Not IsDBNull(row!MaxLength) OrElse row!DataType = "text" Then Max = row!MaxLength
+
+
+            dtDataSet.Rows.Add(row!ColumnName, DefaultCategory, DefaultSubcategory, "", "", "", Max,
                                row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID)
         Next
 
@@ -207,12 +249,32 @@ Public Class FrmMain
 
             For i As Integer = 0 To numQty.Value - 1
                 Dim paramList As New List(Of String)
+                Dim RowHandle As Integer = 0
                 For Each Row In dtDataSet.Rows
+                    Dim maxLength As Integer = 9999999
+                    If Row!MaxLength <> "-" Then maxLength = Convert.ToInt32(Row!MaxLength)
+
+                    Dim RandomResult As String = ""
                     If Not Row!HasReference Then
-                        paramList.Add(GenerateFakeData(Row!Category, Row!Subcategory))
+                        RandomResult = GenerateFakeData(Row!Category, Row!Subcategory, Row!Parameter.ToString, Row!UserDefined.ToString, maxLength)
                     Else
-                        paramList.Add(GenerateDataFromReference(Row!ParentDatabase, Row!ParentTable, Row!ParentID))
+                        RandomResult = GenerateDataFromReference(Row!ParentDatabase, Row!ParentTable, Row!ParentID, maxLength)
                     End If
+
+                    'If Empty
+                    If RandomResult = "" Then
+                        If Row!HasReference Then
+                            gv.FocusedRowHandle = RowHandle
+                            gv.SetColumnError(gv.Columns("MaxLength"), "Reference MaxLength is longer than current MaxLength.", DXErrorProvider.ErrorType.Critical)
+                        Else
+                            gv.FocusedRowHandle = RowHandle
+                            MsgBox("Please check setting for Column Name : " & Row!ColumnName, MsgBoxStyle.Critical)
+                            OnSettingButtonClick(Nothing, Nothing)
+                        End If
+                        Exit Sub
+                    End If
+                    paramList.Add(RandomResult)
+                    RowHandle += 1
                 Next
 
                 dtOutput.Rows.Add(paramList.ToArray)
@@ -244,9 +306,17 @@ Public Class FrmMain
         End Try
     End Sub
 
-    Private Function GenerateDataFromReference(parentDatabase As Object, parentTable As Object, parentID As Object) As String
+    Private Function GenerateDataFromReference(parentDatabase As Object, parentTable As Object, parentID As Object, Optional maxLength As Integer = 9999999) As String
         Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
         Dim Result As String = GetOneData(Sql, "", GetConnectionString(parentDatabase))
+
+        'Check length
+        If Result.Length > maxLength Then
+            Dim refLength As Integer = GetOneData($"SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parentTable}'", 999999, GetConnectionString(parentDatabase))
+
+            MsgBox("Reference result length is more than your column length!" & vbCrLf & "Reference Length : " & refLength, MsgBoxStyle.Critical)
+            Result = ""
+        End If
         Return Result
     End Function
 
@@ -276,12 +346,15 @@ Public Class FrmMain
         End If
 
         If String.IsNullOrWhiteSpace(ColumnName) Then
+            MsgBox("ColumnName must not be empty.", MsgBoxStyle.Critical)
             View.SetColumnError(View.Columns("ColumnName"), "ColumnName must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
         ElseIf Not HasReference AndAlso String.IsNullOrWhiteSpace(Category) Then
+            MsgBox("Category must not be empty.", MsgBoxStyle.Critical)
             View.SetColumnError(View.Columns("Category"), "Category must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
         ElseIf Not HasReference AndAlso String.IsNullOrWhiteSpace(Subcategory) Then
+            MsgBox("Subcategory must not be empty.", MsgBoxStyle.Critical)
             View.SetColumnError(View.Columns("Subcategory"), "Subcategory must not be empty.", DXErrorProvider.ErrorType.Critical)
             Return False
         Else
@@ -304,6 +377,7 @@ Public Class FrmMain
         dtDataSet.Columns.Add("Subcategory", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Setting", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("Parameter", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("UserDefined", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("MaxLength", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("HasReference", System.Type.GetType("System.Boolean"))
         dtDataSet.Columns.Add("Ref", System.Type.GetType("System.String"))
@@ -316,12 +390,15 @@ Public Class FrmMain
         gc.DataSource = dtDataSet
 
         'Hide
+        gv.Columns("Parameter").Visible = False
+        gv.Columns("UserDefined").Visible = False
         gv.Columns("ParentDatabase").Visible = False
         gv.Columns("ParentTable").Visible = False
         gv.Columns("ParentID").Visible = False
 
         gv.Columns("Ref").Width = 30
         gv.Columns("Setting").Width = 30
+        gv.Columns("HasReference").Width = 50
         gv.Columns("HasReference").OptionsColumn.AllowEdit = False
         'Call method to setup dropdowns
         SetupDropdownColumns()
@@ -352,21 +429,19 @@ Public Class FrmMain
         Frm.Category = gv.GetRowCellValue(RowHandle, "Category").ToString
         Frm.Subcategory = gv.GetRowCellValue(RowHandle, "Subcategory").ToString
         Frm.MaxLength = gv.GetRowCellValue(RowHandle, "MaxLength").ToString
+        Frm.Parameter = gv.GetRowCellValue(RowHandle, "Parameter").ToString
+        Frm.UserDefined = gv.GetRowCellValue(RowHandle, "UserDefined").ToString
         Frm.CategoryList = AllCategoryList
         Frm.SubcategoryList = AllSubcategoryList
 
         Frm.ShowDialog()
         If Frm.IsOK Then
-            'gv.SetRowCellValue(RowHandle, "HasReference", Frm.HasReference)
-            'If Frm.HasReference Then
-            '    gv.SetRowCellValue(RowHandle, "ParentDatabase", Frm._Category)
-            '    gv.SetRowCellValue(RowHandle, "ParentTable", Frm._Subcategory)
-            '    gv.SetRowCellValue(RowHandle, "ParentID", Frm.ParentID)
-            'Else
-            '    gv.SetRowCellValue(RowHandle, "ParentDatabase", String.Empty)
-            '    gv.SetRowCellValue(RowHandle, "ParentTable", String.Empty)
-            '    gv.SetRowCellValue(RowHandle, "ParentID", String.Empty)
-            'End If
+            gv.SetRowCellValue(RowHandle, "ColumnName", Frm.ColumnName)
+            gv.SetRowCellValue(RowHandle, "Category", Frm.Category)
+            gv.SetRowCellValue(RowHandle, "Subcategory", Frm.Subcategory)
+            gv.SetRowCellValue(RowHandle, "MaxLength", Frm.MaxLength)
+            gv.SetRowCellValue(RowHandle, "Parameter", Frm.Parameter)
+            gv.SetRowCellValue(RowHandle, "UserDefined", Frm.UserDefined)
         End If
     End Sub
 
@@ -422,10 +497,6 @@ Public Class FrmMain
         'Ensure the value is updated in gridview
         view.SetRowCellValue(rowHandle, "Category", NewCategory)
 
-        'Refresh the view to trigger CustomRowCellEditforEditing
-
-        'view.RefreshRowCell(rowHandle, view.Columns("Subcategory"))
-        'SetupSubcategoryDropdown(NewCategory)
     End Sub
 
     Private Sub OnSubcategoryChanged(sender As Object, e As EventArgs)
