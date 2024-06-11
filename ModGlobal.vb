@@ -3,9 +3,10 @@ Imports Bogus
 Imports System.Reflection
 Imports System.Linq
 Imports System.Collections.Generic
+Imports System.Runtime.InteropServices
 
 Module ModGlobal
-    Private GenderList As List(Of String) = New List(Of String) From {"Male", "Female"}
+    Public GenderList As List(Of String) = New List(Of String) From {"Male", "Female"}
     Private Randomizer = New Random()
     Public Function SqlStr(param As String) As String
         Return "'" & param & "'"
@@ -49,7 +50,7 @@ Module ModGlobal
         table.Rows.Add("Commerce", "Categories", "Get random product categories.")
         table.Rows.Add("Commerce", "Ean8", "Get a random EAN-8 barcode number.")
         table.Rows.Add("Commerce", "Ean13", "Get a random EAN-13 barcode number.")
-        table.Rows.Add("Commerce", "Uuid", "Get a random product uuid.")
+        'table.Rows.Add("Commerce", "Uuid", "Get a random product uuid.")
         table.Rows.Add("Commerce", "Color", "Get a random product.")
         table.Rows.Add("Commerce", "Product", "Get a random product.")
         table.Rows.Add("Commerce", "ProductAdjective", "Get a random product adjective.")
@@ -76,13 +77,13 @@ Module ModGlobal
         table.Rows.Add("Date", "Past", "Get a DateTime in the past between refDate and yearsToGoBack.")
         table.Rows.Add("Date", "PastOffset", "Get a DateTimeOffset in the past between refDate and yearsToGoBack.")
         table.Rows.Add("Date", "Future", "Get a DateTime in the future between refDate and yearsToGoForward.")
-        table.Rows.Add("Date", "FutureOffset", "Get a DateTimeOffset in the future between refDate and yearsToGoForward.")
+        'table.Rows.Add("Date", "FutureOffset", "Get a DateTimeOffset in the future between refDate and yearsToGoForward.")
         table.Rows.Add("Date", "Recent", "Get a random DateTime within the last few days.")
-        table.Rows.Add("Date", "RecentOffset", "Get a random DateTimeOffset within the last few days.")
+        'table.Rows.Add("Date", "RecentOffset", "Get a random DateTimeOffset within the last few days.")
         table.Rows.Add("Date", "Soon", "Get a DateTime that will happen soon.")
-        table.Rows.Add("Date", "SoonOffset", "Get a DateTimeOffset that will happen soon.")
+        'table'.Rows.Add("Date", "SoonOffset", "Get a DateTimeOffset that will happen soon.")
         table.Rows.Add("Date", "Between", "Get a random DateTime between start and end.") 'Must have argument
-        table.Rows.Add("Date", "BetweenOffset", "Get a random DateTimeOffset between start and end.") 'Must have argument
+        'table.Rows.Add("Date", "BetweenOffset", "Get a random DateTimeOffset between start and end.") 'Must have argument
         table.Rows.Add("Date", "Timespan", "Get a random TimeSpan.")
         table.Rows.Add("Date", "Month", "Get a random month.")
         table.Rows.Add("Date", "Weekday", "Get a random weekday.")
@@ -164,7 +165,7 @@ Module ModGlobal
         table.Rows.Add("Random", "String", "Get a string of characters of a specific length.")
         table.Rows.Add("Random", "Hexadecimal", "Generates a random hexadecimal string.")
         table.Rows.Add("Random", "Bool", "Get a random boolean.")
-        table.Rows.Add("Random", "Uuid", "Get a random GUID. Alias for Randomizer.Guid().")
+        'table.Rows.Add("Random", "Uuid", "Get a random GUID. Alias for Randomizer.Guid().")
         table.Rows.Add("Random", "Guid", "Get a random GUID.")
         table.Rows.Add("Random", "AlphaNumeric", "Returns a random set of alpha numeric characters 0-9, a-z.")
         table.Rows.Add("Random", "Hash", "Return a random hex hash. Default 40 characters, aka SHA-1.")
@@ -203,7 +204,7 @@ Module ModGlobal
         BogusDatatable = table
     End Function
 
-    Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "") As String
+    Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "", Optional userDefined As String = "") As String
         Try
             'Create a new Faker instance
             Dim Fake As New Faker()
@@ -230,11 +231,14 @@ Module ModGlobal
                     RandomValue = Fake.Random.String(10).ToString
                 ElseIf subcategory = "Gender" Then
                     RandomValue = GenderList(Randomizer.Next(0, GenderList.Count))
+                ElseIf subcategory = "UserDefined" Then
+                    Dim UserDefinedList = userDefined.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.None)
+                    RandomValue = UserDefinedList(Randomizer.Next(0, UserDefinedList.Count))
                 End If
             ElseIf category = "Company" AndAlso subcategory = "CompanyName" Then
                 RandomValue = Fake.Company.CompanyName
             ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
-                RandomValue = Fake.Lorem.Paragraphs(3, vbCrLf)
+                RandomValue = Fake.Lorem.Paragraphs()
             ElseIf category = "Date" AndAlso
                     ("Past-PastOffset-Future-FutureOffset-Recent-RecentOffset-Soon-SoonOffset-Between-BetweenOffset-Timespan-".Contains(subcategory & "-")) Then
                 Select Case subcategory
@@ -269,7 +273,8 @@ Module ModGlobal
                     result = SubcategoryMethod.Invoke(CategoryInstance, Nothing)
                 End If
 
-                If TypeOf result Is String Then
+                If TypeOf result Is String OrElse TypeOf result Is Double OrElse TypeOf result Is Decimal OrElse TypeOf result Is Char OrElse
+                    TypeOf result Is Single OrElse TypeOf result Is Byte Then
                     RandomValue = Replace(result, vbLf, vbCrLf)
                 Else
                     If result.length > 1 Then
@@ -289,34 +294,47 @@ Module ModGlobal
 
     Private Function GetUserParameter(param As ParameterInfo, userParameter As String) As Object
         Dim result As Object = GetValueByKey(userParameter, param.Name)
-        If result IsNot Nothing Then
-            Return result
+        If result IsNot Nothing AndAlso result <> "" Then
+            Return Convert.ChangeType(result, param.ParameterType)
+            'If TypeOf result Is Decimal OrElse TypeOf result Is Int32 Then
+            'End If
+            'Return result
         Else
             Return GetDefaultValue(param)
         End If
+    End Function
+
+    Public Function UppercaseFirstLetter(input As String)
+        Dim FirstLetter As String = input.Substring(0, 1).ToUpper()
+        Dim RestOfString As String = input.Substring(1)
+        Return FirstLetter & RestOfString
     End Function
 
     Private Function GetValueByKey(userParameter As String, parameterName As String) As Object
         Dim lines As String() = userParameter.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.None)
         Dim strValue As String = ""
         For Each line In lines
-            If line.StartsWith(parameterName & "=") Then
+            If line.StartsWith(UppercaseFirstLetter(parameterName) & "=") Then
                 strValue = line.Substring((parameterName & "=").Length).Trim
                 Exit For
             End If
         Next
-        If strValue = "" Then
-            Return Nothing
-        Else
-            Dim intValue As Integer
-            If Integer.TryParse(strValue, intValue) Then
-                Return intValue
-            End If
-            Dim boolValue As Boolean
-            If Boolean.TryParse(strValue, boolValue) Then
-                Return boolValue
-            End If
-        End If
+        'If strValue = "" Then
+        '    Return Nothing
+        'Else
+        '    Dim decValue As Decimal
+        '    If Decimal.TryParse(strValue, decValue) Then
+        '        Return decValue
+        '    End If
+        '    Dim intValue As Integer
+        '    If Integer.TryParse(strValue, intValue) Then
+        '        Return intValue
+        '    End If
+        '    Dim boolValue As Boolean
+        '    If Boolean.TryParse(strValue, boolValue) Then
+        '        Return boolValue
+        '    End If
+        'End If
         Return strValue
     End Function
 
