@@ -11,7 +11,7 @@
     <Setting Name="DefaultCategory" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="h" Type="System.String" Scope="Application">
+    <Setting Name="DefaultExportPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

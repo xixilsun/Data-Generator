@@ -24,3 +24,4 @@ X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmCategor
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.Resources.resources
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmReferenceDetail.resources
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmSettingParameter.resources
+X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmSyMsg.resources

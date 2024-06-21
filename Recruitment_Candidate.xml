@@ -1,0 +1,1091 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Dataset" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Dataset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColumnName" type="xs:string" minOccurs="0" />
+                <xs:element name="Category" type="xs:string" minOccurs="0" />
+                <xs:element name="Subcategory" type="xs:string" minOccurs="0" />
+                <xs:element name="Setting" type="xs:string" minOccurs="0" />
+                <xs:element name="Parameter" type="xs:string" minOccurs="0" />
+                <xs:element name="UserDefined" type="xs:string" minOccurs="0" />
+                <xs:element name="MaxLength" type="xs:string" default="-" minOccurs="0" />
+                <xs:element name="HasReference" type="xs:boolean" default="false" minOccurs="0" />
+                <xs:element name="Ref" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentDatabase" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentTable" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentID" type="xs:string" minOccurs="0" />
+                <xs:element name="Query" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Dataset>
+    <ColumnName>CandidateID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=R06240####</Parameter>
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ApplicationReceivedDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Recent</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Name</ColumnName>
+    <Category>Name</Category>
+    <Subcategory>FullName</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NIK</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=################</Parameter>
+    <UserDefined />
+    <MaxLength>35</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NIKExpiredDate</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BirthPlace</ColumnName>
+    <Category>Address</Category>
+    <Subcategory>City</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BirthDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Past</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Sex</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>1</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>Recruitment_Candidate</ParentTable>
+    <ParentID>Sex</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Religion</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>Religion</ParentTable>
+    <ParentID>Name</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>AddressHome</ColumnName>
+    <Category>Address</Category>
+    <Subcategory>FullAddress</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>AddressKTP</ColumnName>
+    <Category>Address</Category>
+    <Subcategory>SecondaryAddress</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>200</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Phone</ColumnName>
+    <Category>Phone</Category>
+    <Subcategory>PhoneNumber</Subcategory>
+    <Setting />
+    <Parameter>Format=0852########</Parameter>
+    <UserDefined />
+    <MaxLength>30</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>JobReferenceID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>STAFF</UserDefined>
+    <MaxLength>5</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>JobReferenceDescription</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>SukuID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>15</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>Suku</ParentTable>
+    <ParentID>SukuID</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>MaritalStatus</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>TK0
+TK1
+TK2
+TK3
+K0
+K1
+K2
+K3</UserDefined>
+    <MaxLength>3</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>EmailPersonal</ColumnName>
+    <Category>Internet</Category>
+    <Subcategory>Email</Subcategory>
+    <Setting />
+    <Parameter>FirstName=
+LastName=
+Provider=gmail.com
+UniqueSuffix=</Parameter>
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>FinalStatus</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>JOIN</UserDefined>
+    <MaxLength>15</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>FinalStatusRemark</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>JoinDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Recent</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>CompanyID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>PERUSAHAAN</ParentTable>
+    <ParentID>pt_kode</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BloodType</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>O
+A
+AB
+B</UserDefined>
+    <MaxLength>3</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>MotherName</ColumnName>
+    <Category>Name</Category>
+    <Subcategory>FullName</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>GDepartmentID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>0002</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>GSubDepartmentID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>0002A
+0002B
+0002C
+0002D</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>LokasiPelaporan</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MEDAN</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>LokasiOperational</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MEDAN</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>JobTitleID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>JobTitle</ParentTable>
+    <ParentID>JobTitleID</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>KaBagID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <Query>SELECT S.StaffIDNew AS KabagID, S.st_nama AS KabagName
+    , CASE WHEN S.st_ter_date IS NULL THEN CONVERT(BIT, 0) ELSE CONVERT(BIT, 1) END AS IsTerminated
+    , ISNULL(S.emailMM, '') AS EMail, S.GDepartmentID AS DepartmentID
+    , CASE WHEN CL.Com_Loc_ID = 'SSM-KALIMANTAN' THEN 'SSM-KLMT' ELSE CL.Com_Loc_ID END AS ComLocID
+    , ISNULL(GD.GDepartmentName, '') AS DepartmentName
+    , ISNULL(GSD.GSubDepartmentName, '') AS SubDepartmentName
+    , S.st_lk_kode AS LocationID
+    , LOKP.lk_nama AS LocationName
+    , S.Lokasi_Lapangan AS LocationOperationalID
+    , LOKL.lk_nama AS LocationOperationalName
+    , 'PERMANENT' AS EmployementStatus
+    , JT.JobTitleName AS JobTitle
+    , P.CompanyGroup
+    , st_nomor AS StaffID_Lama
+    , P.pt_nama AS CompanyName
+    , Kabag_ID AS KabagID
+    , S.NIK
+    , S.IsBlacklist
+FROM Staff S  
+INNER JOIN Perusahaan P ON S.st_pt_kode = P.pt_kode
+LEFT JOIN AnnualTax_MappingCompany C ON C.Pt_Kode = S.st_pt_kode COLLATE DATABASE_DEFAULT  
+LEFT JOIN AnnualTax_MappingLocation L ON L.Lk_Kode = S.st_lk_kode COLLATE DATABASE_DEFAULT   
+LEFT JOIN mm_com_loc CL 
+ON CL.Company_ID = C.Company_ID COLLATE DATABASE_DEFAULT AND CL.Location_ID = L.Location_ID COLLATE DATABASE_DEFAULT   
+LEFT JOIN GeneralDepartment GD ON GD.GDepartmentID = S.GDepartmentID  
+LEFT JOIN GeneralSubDepartment GSD ON GSD.GDepartmentID = S.GDepartmentID AND GSD.GSubDepartmentID = S.GSubDepartmentID 
+LEFT JOIN Lokasi LOKP ON S.st_lk_kode = LOKP.lk_kode COLLATE DATABASE_DEFAULT
+LEFT JOIN Lokasi LOKL ON S.Lokasi_Lapangan = LOKL.lk_kode COLLATE DATABASE_DEFAULT
+LEFT JOIN JobTitle JT ON S.JobTitleID = JT.JobTitleID COLLATE DATABASE_DEFAULT</Query>
+  </Dataset>
+  <Dataset>
+    <ColumnName>PointOfHire</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>CountryCode</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>ID</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>TaxStatus</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>TK0
+TK1
+TK2
+TK3
+K0
+K1
+K2
+K3</UserDefined>
+    <MaxLength>3</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NPWP</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=##.###.###.#-###.###</Parameter>
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NPWPRegisteredDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Past</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>JoinPBI</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Bool</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>PBISettled</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Bool</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BPJSHealthNumber</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=#############</Parameter>
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>KodeFaskes</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>InsuranceNumber</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>15</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>PensionNumber</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>QuotaTicket</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RouteFrom</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RouteTo</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateOn</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Now</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateBy</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>SYSTEM (AUTO)</UserDefined>
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ContractEndDate</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BankID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>BCA</UserDefined>
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>BankBranch</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Pusat</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>AccountNo</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=##########</Parameter>
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>AccountName</ColumnName>
+    <Category>Name</Category>
+    <Subcategory>FullName</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>TicketCuti</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>LevelID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>2</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>DivisionID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>S
+B
+O
+T
+F
+E</UserDefined>
+    <MaxLength>3</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ClassID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>1</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Allowance</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Bool</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>TicketType</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>FinalStatusDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Recent</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RequestID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <Query>SELECT RequestID FROM RecruitmentRequest
+WHERE RequestStatus = 'APPROVED' AND EmploymentStatus = 'S'</Query>
+  </Dataset>
+  <Dataset>
+    <ColumnName>UnitID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>HODId</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>HODName</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>HODJobTitle</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>KabupatenKota</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Medan</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Kecamatan</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Medan Kota
+Medan Area
+Medan Denai
+Medan Sunggal</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Desa</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Tegal Sari Mandala I
+Tegal Sari Mandala II
+Tegal Sari Mandala III</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>KodePos</ColumnName>
+    <Category>Address</Category>
+    <Subcategory>ZipCode</Subcategory>
+    <Setting />
+    <Parameter>Format=#####</Parameter>
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RT</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>35</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RW</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>35</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Provinsi</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Sumatera Utara</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NPWPName</ColumnName>
+    <Category>Name</Category>
+    <Subcategory>FullName</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NPWPAddress</ColumnName>
+    <Category>Address</Category>
+    <Subcategory>FullAddress</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>200</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>NoKK</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Digits</Subcategory>
+    <Setting />
+    <Parameter>Format=################</Parameter>
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ReplacedStaffID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RequestCompany</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MONI
+NON-MONI</UserDefined>
+    <MaxLength>15</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsPromotion</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Bool</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsPlaceOfOriginSameWithPOH</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>Bool</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+</NewDataSet>

@@ -84,9 +84,9 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-        Public ReadOnly Property h() As String
+        Public ReadOnly Property DefaultExportPath() As String
             Get
-                Return CType(Me("h"),String)
+                Return CType(Me("DefaultExportPath"),String)
             End Get
         End Property
     End Class

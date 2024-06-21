@@ -207,7 +207,7 @@ Public Class FrmSettingParameter
             txt.Name = labelText
             txt.Properties.IsFloatValue = False
             txt.Properties.EditMask = "n0"
-            txt.Value = If(labelText = "Length" AndAlso txtMaxLength.Text <> "-" AndAlso txtMaxLength.Text <> "-" AndAlso Not IsFirstLoad, Convert.ToInt32(txtMaxLength.Text), paramDefaultValue)
+            txt.Value = If(labelText = "Length" AndAlso txtMaxLength.Text <> "-" AndAlso Not IsFirstLoad, Convert.ToInt32(txtMaxLength.Text), paramDefaultValue)
             If txtMaxLength.Text <> "-" And labelText = "Length" Then txt.Properties.MaxValue = Convert.ToInt32(txtMaxLength.Text)
             pnlParameters.Controls.Add(txt)
         ElseIf paramType.FullName.Contains("System.DateTime") Then
@@ -303,13 +303,18 @@ Public Class FrmSettingParameter
         Try
             Dim Fake As New Faker()
 
+            If selectedCategory = "Random" AndAlso selectedSubcategory = "Digits" Then
+                selectedCategory = "Phone"
+                selectedSubcategory = "PhoneNumber"
+            End If
+
             If selectedSubcategory = "Number" Then
                 AddInputBox("Min", Type.GetType("System.Int32"), 0)
                 AddInputBox("Max", Type.GetType("System.Int32"), 100)
             ElseIf selectedSubcategory = "Amount" Then
                 AddInputBox("Min", Type.GetType("System.Int32"), 1)
                 AddInputBox("Max", Type.GetType("System.Int32"), 10000)
-                AddInputBox("Decimal", Type.GetType("System.Int32"), 0)
+                AddInputBox("Decimals", Type.GetType("System.Int32"), 0)
                 AddLabel("Amount will be in thousands")
             ElseIf selectedSubcategory = "String" Then
                 AddInputBox("Length", Type.GetType("System.Int32"), 10)
@@ -318,7 +323,7 @@ Public Class FrmSettingParameter
                 AddInputBox("Min", Type.GetType("System.Int32"), 1)
                 AddInputBox("Max", Type.GetType("System.Int32"), 10)
                 AddInputBox("Separator", Type.GetType("System.String"), vbCrLf)
-            ElseIf ("CompanyName-CountryCode-UserDefined-Gender-").Contains(selectedSubcategory & "-") Then
+            ElseIf ("CompanyName-CountryCode-UserDefined-Gender-Null-Empty-Now-").Contains(selectedSubcategory & "-") Then
                 'Do Nothing
             Else
                 Dim CategoryProperty As PropertyInfo = GetType(Faker).GetProperty(selectedCategory, BindingFlags.Public Or BindingFlags.Instance)
@@ -374,19 +379,4 @@ Public Class FrmSettingParameter
         Return bool
     End Function
 
-    Private Sub Label9_Click(sender As Object, e As EventArgs) Handles Label9.Click
-
-    End Sub
-
-    Private Sub txtUserDefined_TextChanged(sender As Object, e As EventArgs) Handles txtUserDefined.TextChanged
-
-    End Sub
-
-    Private Sub Label4_Click(sender As Object, e As EventArgs) Handles Label4.Click
-
-    End Sub
-
-    Private Sub pnlParameters_Paint(sender As Object, e As PaintEventArgs) Handles pnlParameters.Paint
-
-    End Sub
 End Class

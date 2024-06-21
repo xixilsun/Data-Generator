@@ -122,6 +122,12 @@
     <Compile Include="FrmSettingParameter.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmSyMsg.Designer.vb">
+      <DependentUpon>FrmSyMsg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSyMsg.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ModGlobal.vb" />
     <Compile Include="ModSQL.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -161,6 +167,9 @@
     <EmbeddedResource Include="FrmSettingParameter.resx">
       <DependentUpon>FrmSettingParameter.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmSyMsg.resx">
+      <DependentUpon>FrmSyMsg.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
@@ -181,6 +190,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Code.ico" />
+    <None Include="Resources\Clear.ico" />
+    <None Include="Resources\copy21.png" />
+    <None Include="Resources\copy1.png" />
+    <None Include="Resources\Export.png" />
+    <None Include="Resources\Import.png" />
     <None Include="Resources\Exit.ico" />
     <None Include="Resources\OK.ico" />
   </ItemGroup>

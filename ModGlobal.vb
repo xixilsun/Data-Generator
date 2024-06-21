@@ -84,6 +84,7 @@ Module ModGlobal
         table.Rows.Add("Date", "Soon", "Get a DateTime that will happen soon.")
         'table'.Rows.Add("Date", "SoonOffset", "Get a DateTimeOffset that will happen soon.")
         table.Rows.Add("Date", "Between", "Get a random DateTime between start and end.") 'Must have argument
+        table.Rows.Add("Date", "Now", "Get a date using GETDATE().") 'Must have argument
         'table.Rows.Add("Date", "BetweenOffset", "Get a random DateTimeOffset between start and end.") 'Must have argument
         table.Rows.Add("Date", "Timespan", "Get a random TimeSpan.")
         table.Rows.Add("Date", "Month", "Get a random month.")
@@ -175,6 +176,9 @@ Module ModGlobal
         table.Rows.Add("Random", "UserDefined", "Get a random value from user defined.")
         table.Rows.Add("Random", "Gender", "Get a random gender.")
 
+        table.Rows.Add("Default", "Null", "Return a NULL value.")
+        table.Rows.Add("Default", "Empty", "Return an empty string.")
+
 
         table.Rows.Add("System", "FileName", "Get a random file name.")
         table.Rows.Add("System", "DirectoryPath", "Get a random directory path (Unix).")
@@ -205,21 +209,45 @@ Module ModGlobal
         table.Rows.Add("Vehicle", "Fuel", "Get a vehicle fuel type. IE: Electric, Gasoline, Diesel.")
         BogusDatatable = table
     End Function
+    Public Function GenerateDataFromReference(parentDatabase As String, parentTable As String, parentID As String, query As String, Optional maxLength As Integer = 9999999) As String
+        Dim Result As String = ""
+        If parentDatabase <> "" AndAlso parentTable <> "" AndAlso parentID <> "" Then
+            Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
+            Result = GetOneData(Sql, "", GetConnectionString(parentDatabase))
 
+            'Check length
+            If Result.Length > maxLength Then
+                Dim refLength As Integer = GetOneData($"SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parentTable}'", 999999, GetConnectionString(parentDatabase))
+
+                MsgBox("Reference result length is more than your column length!" & vbCrLf & "Reference Length : " & refLength, MsgBoxStyle.Critical)
+                Result = ""
+            End If
+        ElseIf query <> "" Then
+            Dim Dt As DataTable = GetDataTable(query, GetConnectionString(parentDatabase))
+            If Dt Is Nothing Then Throw New Exception("Query is invalid")
+            Dim RandomRowIndex As Integer = Randomizer.next(0, Dt.Rows.Count)
+            Result = Dt.Rows(RandomRowIndex).Item(0).ToString
+        End If
+        Return Result
+    End Function
     Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "", Optional userDefined As String = "", Optional maxLength As Integer = 9999999) As String
         Try
             'Create a new Faker instance
             Dim Fake As New Faker()
             Dim RandomValue As String = ""
 
-            Dim CategoryProperty As PropertyInfo = GetType(Faker).GetProperty(category, BindingFlags.Public Or BindingFlags.Instance)
-            If CategoryProperty Is Nothing Then Throw New Exception("Unknown category")
+            Dim CategoryProperty As PropertyInfo
+            Dim CategoryInstance As New Object
+            If category <> "Default" Then
+                CategoryProperty = GetType(Faker).GetProperty(category, BindingFlags.Public Or BindingFlags.Instance)
+                If CategoryProperty Is Nothing Then Throw New Exception("Unknown category")
 
-            Dim CategoryInstance As Object = CategoryProperty.GetValue(Fake)
+                CategoryInstance = CategoryProperty.GetValue(Fake)
+            End If
 
             'Special Handling for overloaded methods like Random.Number
             If category = "Random" AndAlso
-                ("Number-Bool-String-Gender-UserDefined-").Contains(subcategory & "-") Then
+                ("Number-Bool-String-Gender-UserDefined-Digits-").Contains(subcategory & "-") Then
                 If subcategory = "Number" Then
                     Dim max = 1000, min = 0
                     Dim value = GetValueByKey(userParameter, "min", Type.GetType("System.Int32"))
@@ -236,13 +264,18 @@ Module ModGlobal
                 ElseIf subcategory = "UserDefined" Then
                     Dim UserDefinedList = userDefined.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.None)
                     RandomValue = UserDefinedList(Randomizer.Next(0, UserDefinedList.Count))
+                ElseIf subcategory = "Digits" Then
+                    Dim Format As String = "#####"
+                    Dim value = GetValueByKey(userParameter, "Format", Type.GetType("System.String"))
+                    If Not IsNothing(value) AndAlso value <> "" Then Format = value
+                    RandomValue = Fake.Phone.PhoneNumber(Format)
                 End If
             ElseIf category = "Company" AndAlso subcategory = "CompanyName" Then
                 RandomValue = Fake.Company.CompanyName
             ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
                 RandomValue = Fake.Lorem.Paragraphs()
             ElseIf category = "Date" AndAlso
-                    ("Past-PastOffset-Future-FutureOffset-Recent-RecentOffset-Soon-SoonOffset-Between-BetweenOffset-Timespan-".Contains(subcategory & "-")) Then
+                    ("Past-Future-Recent-Soon-Between-Timespan-Now-".Contains(subcategory & "-")) Then
                 Select Case subcategory
                     Case "Past"
                         RandomValue = Fake.Date.Past()
@@ -254,14 +287,22 @@ Module ModGlobal
                         RandomValue = Fake.Date.Soon()
                     Case "Timespan"
                         RandomValue = Fake.Date.Timespan().ToString
+                    Case "Now"
+                        RandomValue = "GETDATE()"
                     Case "Between"
                         Dim StartDate = Date.Today, EndDate = #2099/01/01#
-                        Dim Value = GetValueByKey(userParameter, "start", Type.GetType("System.Date"))
+                        Dim Value = GetValueByKey(userParameter, "start", Type.GetType("System.DateTime"))
                         If Not IsNothing(Value) Then StartDate = Value
-                        Value = GetValueByKey(userParameter, "end", Type.GetType("System.Date"))
+                        Value = GetValueByKey(userParameter, "end", Type.GetType("System.DateTime"))
                         If Not IsNothing(Value) Then EndDate = Value
                         RandomValue = Fake.Date.Between(StartDate, EndDate)
                 End Select
+            ElseIf category = "Default" Then
+                If subcategory = "Null" Then
+                    RandomValue = "NULL"
+                ElseIf subcategory = "Empty" Then
+                    RandomValue = ""
+                End If
             Else
                 Dim SubcategoryMethod As MethodInfo = CategoryInstance.GetType().GetMethod(subcategory, BindingFlags.Public Or BindingFlags.Instance)
                 If SubcategoryMethod Is Nothing Then Throw New Exception("Unknown subcategory")
@@ -289,6 +330,7 @@ Module ModGlobal
                         If IsUpperCase Then result = result.ToString.ToUpper()
                     ElseIf subcategory = "Amount" Then
                         result = result * 1000
+                        result = Convert.ToInt32(result)
                     End If
                     RandomValue = Replace(result, vbLf, vbCrLf)
                 Else
@@ -301,9 +343,11 @@ Module ModGlobal
             End If
 
             'Check length
-            If RandomValue IsNot Nothing AndAlso RandomValue.Length > maxLength Then
+            If RandomValue IsNot Nothing AndAlso RandomValue.Length > maxLength AndAlso RandomValue <> "NULL" Then
                 RandomValue = RandomValue.Substring(0, maxLength)
             End If
+
+            If RandomValue.Contains("'") Then RandomValue = RandomValue.Replace("'", "")
             Return RandomValue
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
@@ -346,6 +390,7 @@ Module ModGlobal
                 Exit For
             End If
         Next
+
         If strValue <> "" Then
             Return ChangeType(strValue, paramType)
         ElseIf param IsNot Nothing Then

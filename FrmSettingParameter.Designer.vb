@@ -156,6 +156,7 @@ Partial Class FrmSettingParameter
         '
         'cboCategory
         '
+        Me.cboCategory.Enabled = False
         Me.cboCategory.Location = New System.Drawing.Point(410, 50)
         Me.cboCategory.Name = "cboCategory"
         Me.cboCategory.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})

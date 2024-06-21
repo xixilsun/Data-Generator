@@ -1,0 +1,151 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Dataset" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Dataset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColumnName" type="xs:string" minOccurs="0" />
+                <xs:element name="Category" type="xs:string" minOccurs="0" />
+                <xs:element name="Subcategory" type="xs:string" minOccurs="0" />
+                <xs:element name="Setting" type="xs:string" minOccurs="0" />
+                <xs:element name="Parameter" type="xs:string" minOccurs="0" />
+                <xs:element name="UserDefined" type="xs:string" minOccurs="0" />
+                <xs:element name="MaxLength" type="xs:string" default="-" minOccurs="0" />
+                <xs:element name="HasReference" type="xs:boolean" default="false" minOccurs="0" />
+                <xs:element name="Ref" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentDatabase" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentTable" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentID" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Dataset>
+    <ColumnName>de_nomor</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>4</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_PS</ParentDatabase>
+    <ParentTable>STAFF</ParentTable>
+    <ParentID>st_nomor</ParentID>
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_tgl</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Between</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_jumlah</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_memo</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_pt_kode</ColumnName>
+    <Category>Lorem</Category>
+    <Subcategory>Word</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_user</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>de_update</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ChargeTypeID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsTaxable</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RKey</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+  </Dataset>
+</NewDataSet>

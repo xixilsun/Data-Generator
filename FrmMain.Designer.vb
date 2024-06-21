@@ -34,6 +34,9 @@ Partial Class FrmMain
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnCategoryDetail = New System.Windows.Forms.ToolStripButton()
+        Me.btnClear = New System.Windows.Forms.ToolStripButton()
+        Me.btnExport = New System.Windows.Forms.ToolStripButton()
+        Me.btnImport = New System.Windows.Forms.ToolStripButton()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
         Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -53,6 +56,7 @@ Partial Class FrmMain
         Me.btnPrepareDataset = New DevExpress.XtraEditors.SimpleButton()
         Me.btnGenerate = New DevExpress.XtraEditors.SimpleButton()
         Me.numQty = New DevExpress.XtraEditors.SpinEdit()
+        Me.btnCopy = New System.Windows.Forms.Button()
         CType(Me.gc, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
@@ -137,7 +141,7 @@ Partial Class FrmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnDelete, Me.btnCategoryDetail})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnDelete, Me.btnCategoryDetail, Me.btnClear, Me.btnExport, Me.btnImport})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(827, 25)
@@ -172,6 +176,31 @@ Partial Class FrmMain
         Me.btnCategoryDetail.Name = "btnCategoryDetail"
         Me.btnCategoryDetail.Size = New System.Drawing.Size(114, 22)
         Me.btnCategoryDetail.Text = "Category Detail"
+        '
+        'btnClear
+        '
+        Me.btnClear.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnClear.Image = Global.DataGenerator.My.Resources.Resources.Clear
+        Me.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnClear.Name = "btnClear"
+        Me.btnClear.Size = New System.Drawing.Size(57, 22)
+        Me.btnClear.Text = "Clear"
+        '
+        'btnExport
+        '
+        Me.btnExport.Image = Global.DataGenerator.My.Resources.Resources.Export
+        Me.btnExport.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnExport.Name = "btnExport"
+        Me.btnExport.Size = New System.Drawing.Size(100, 22)
+        Me.btnExport.Text = "Export Setting"
+        '
+        'btnImport
+        '
+        Me.btnImport.Image = Global.DataGenerator.My.Resources.Resources.Import
+        Me.btnImport.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnImport.Name = "btnImport"
+        Me.btnImport.Size = New System.Drawing.Size(103, 22)
+        Me.btnImport.Text = "Import Setting"
         '
         'Panel3
         '
@@ -358,11 +387,22 @@ Partial Class FrmMain
         Me.numQty.Size = New System.Drawing.Size(65, 20)
         Me.numQty.TabIndex = 37
         '
+        'btnCopy
+        '
+        Me.btnCopy.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.btnCopy.Image = Global.DataGenerator.My.Resources.Resources.copy
+        Me.btnCopy.Location = New System.Drawing.Point(1009, 451)
+        Me.btnCopy.Name = "btnCopy"
+        Me.btnCopy.Size = New System.Drawing.Size(32, 23)
+        Me.btnCopy.TabIndex = 38
+        Me.btnCopy.UseVisualStyleBackColor = True
+        '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1066, 667)
+        Me.Controls.Add(Me.btnCopy)
         Me.Controls.Add(Me.numQty)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.btnGenerate)
@@ -435,4 +475,8 @@ Partial Class FrmMain
     Friend WithEvents btnPrepareDataset As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents btnGenerate As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents numQty As DevExpress.XtraEditors.SpinEdit
+    Friend WithEvents btnImport As Windows.Forms.ToolStripButton
+    Friend WithEvents btnExport As Windows.Forms.ToolStripButton
+    Friend WithEvents btnCopy As Windows.Forms.Button
+    Friend WithEvents btnClear As Windows.Forms.ToolStripButton
 End Class

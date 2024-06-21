@@ -10,9 +10,10 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraReports.Parameters
+Imports DataGenerator.My
 
 Public Class FrmMain
-    Private dtDataSet As New DataTable
+    Private dtDataSet As New DataTable("Dataset")
     Private SelectedDatabase As String = ""
     Private SelectedTable As String = ""
     Private BogusDt As New DataTable
@@ -54,7 +55,7 @@ Public Class FrmMain
 
 
         'Add event handler for category column value change
-        AddHandler CategoryCombo.EditValueChanged, AddressOf OnCategoryChanged
+        'AddHandler CategoryCombo.EditValueChanged, AddressOf OnCategoryChanged
         AddHandler SubcategoryCombo.EditValueChanged, AddressOf OnSubcategoryChanged
 
         'Add Handler for CustomRowCellForEditing
@@ -78,17 +79,21 @@ Public Class FrmMain
 
         'Get the current category for the row
         Dim CurrentCategory As String = View.GetRowCellValue(RowHandle, "Category").ToString
+        Dim CurrentSubcategory As String = View.GetRowCellValue(RowHandle, "Subcategory").ToString
 
-        If e.Column.FieldName = "Subcategory" AndAlso CurrentCategory <> "" Then
-            'Create a new RepositoryItemComboBox For the subcategory
-            Dim SubcategoryCombo As New RepositoryItemComboBox
-
-
-            'Populate subcategory
-            Dim SubcategoryList As List(Of String) = BogusDt.AsEnumerable().Where(Function(o) o("Category") = CurrentCategory).Select(Function(o) o("Subcategory").ToString).ToList
-            SubcategoryCombo.Items.AddRange(SubcategoryList)
-            e.RepositoryItem = SubcategoryCombo
+        If e.Column.FieldName = "Subcategory" Then
+            'OnSubcategoryChanged(Nothing, Nothing)
         End If
+        'If e.Column.FieldName = "Subcategory" AndAlso CurrentCategory <> "" Then
+        '    'Create a new RepositoryItemComboBox For the subcategory
+        '    Dim SubcategoryCombo As New RepositoryItemComboBox
+
+
+        '    'Populate subcategory
+        '    Dim SubcategoryList As List(Of String) = BogusDt.AsEnumerable().Where(Function(o) o("Category") = CurrentCategory).Select(Function(o) o("Subcategory").ToString).ToList
+        '    SubcategoryCombo.Items.AddRange(SubcategoryList)
+        '    e.RepositoryItem = SubcategoryCombo
+        'End If
     End Sub
 
     Private Sub PrepareDataset(sender As Object, e As EventArgs)
@@ -97,7 +102,7 @@ Public Class FrmMain
         End If
         SelectedDatabase = cboDatabase.SelectedItem
         SelectedTable = cboTable.SelectedItem
-        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, S.is_identity As IsIdentity, DATA_TYPE As DataType, CHARACTER_MAXIMUM_LENGTH As MaxLength, " & vbCrLf &
+        Dim Sql = "SELECT COLUMN_NAME AS ColumnName, S.is_identity As IsIdentity, S.is_nullable As IsNullable, DATA_TYPE As DataType, CHARACTER_MAXIMUM_LENGTH As MaxLength, " & vbCrLf &
                   "Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
                   "CASE WHEN Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS C" & vbCrLf &
@@ -125,13 +130,16 @@ Public Class FrmMain
 
         For Each row In Dt.Rows
             'If identity no need to generate id column
-            If row!IsIdentity = 1 Then Continue For
+            If row!IsIdentity Then Continue For
 
             'Set default category & subcategory
             Dim DefaultCategory As String = ""
             Dim DefaultSubcategory As String = ""
             If Not Convert.ToBoolean(row!HasReference) Then
-                If row!DataType = "text" Then
+                If row!IsNullable Then
+                    DefaultCategory = "Default"
+                    DefaultSubcategory = "Null"
+                ElseIf row!DataType = "text" Then
                     DefaultCategory = "Lorem"
                     DefaultSubcategory = "Paragraph"
                 ElseIf row!DataType = "varchar" AndAlso row!ColumnName.ToString.Contains("user") Then
@@ -163,13 +171,16 @@ Public Class FrmMain
             End If
             'Max Length
             Dim Max As String = "-"
-            If Not IsDBNull(row!MaxLength) OrElse row!DataType = "text" Then Max = row!MaxLength
+            If Not IsDBNull(row!MaxLength) AndAlso row!DataType <> "text" Then Max = row!MaxLength
 
 
             dtDataSet.Rows.Add(row!ColumnName, DefaultCategory, DefaultSubcategory, "", "", "", Max,
-                               row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID)
+                               row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID, "")
         Next
 
+        'Add Handler
+        'Dim SubcategoryCombo As RepositoryItemComboBox = CType(gv.Columns("Subcategory").ColumnEdit, RepositoryItemComboBox)
+        'AddHandler SubcategoryCombo.EditValueChanged, AddressOf OnSubcategoryChanged
     End Sub
 
     Private Sub OnDBSelectedIndexChanged(sender As Object, e As EventArgs)
@@ -247,9 +258,17 @@ Public Class FrmMain
                 col.Add(row!ColumnName)
             Next
 
+            'Set Progress Bar
+            Dim frm = New FrmSyMsg
+            frm.ActiveAnimation = True
+            frm.Show("Start generating data")
+            frm.ReSetProgressBar(numQty.Value)
             For i As Integer = 0 To numQty.Value - 1
                 Dim paramList As New List(Of String)
                 Dim RowHandle As Integer = 0
+                frm.SetCount("Data - " & i + 1 & " / " & numQty.Value & vbCrLf & "Generating Data...")
+                frm.SetProgressBar()
+
                 For Each Row In dtDataSet.Rows
                     Dim maxLength As Integer = 9999999
                     If Row!MaxLength <> "-" Then maxLength = Convert.ToInt32(Row!MaxLength)
@@ -258,11 +277,11 @@ Public Class FrmMain
                     If Not Row!HasReference Then
                         RandomResult = GenerateFakeData(Row!Category, Row!Subcategory, Row!Parameter.ToString, Row!UserDefined.ToString, maxLength)
                     Else
-                        RandomResult = GenerateDataFromReference(Row!ParentDatabase, Row!ParentTable, Row!ParentID, maxLength)
+                        RandomResult = GenerateDataFromReference(Row!ParentDatabase.ToString, Row!ParentTable.ToString, Row!ParentID.ToString, Row!Query.ToString, maxLength)
                     End If
 
                     'If Empty
-                    If RandomResult = "" Then
+                    If RandomResult = "" AndAlso Row!Subcategory <> "Empty" Then
                         If Row!HasReference Then
                             gv.FocusedRowHandle = RowHandle
                             gv.SetColumnError(gv.Columns("MaxLength"), "Reference MaxLength is longer than current MaxLength.", DXErrorProvider.ErrorType.Critical)
@@ -276,9 +295,12 @@ Public Class FrmMain
                     paramList.Add(RandomResult)
                     RowHandle += 1
                 Next
-
                 dtOutput.Rows.Add(paramList.ToArray)
             Next
+
+            'Close Progress bar
+            frm.Close()
+            frm = Nothing
 
             gcOutput.DataSource = Nothing
             gcOutput.DataSource = dtOutput
@@ -295,7 +317,7 @@ Public Class FrmMain
             For Each row In dtOutput.Rows
                 Dim dataQuery As String = ""
                 For Each column As DataColumn In dtOutput.Columns
-                    dataQuery &= If(dataQuery = "", "", ", ") & $"'{row(column)}'"
+                    dataQuery &= If(dataQuery = "", "", ", ") & If(row(column) = "NULL" OrElse row(column) = "GETDATE()", row(column), $"'{row(column)}'")
                 Next
                 Query &= vbCrLf & $"({dataQuery})" & If(dtOutput.Rows.Count = Count, ";", ",")
                 Count += 1
@@ -306,19 +328,7 @@ Public Class FrmMain
         End Try
     End Sub
 
-    Private Function GenerateDataFromReference(parentDatabase As Object, parentTable As Object, parentID As Object, Optional maxLength As Integer = 9999999) As String
-        Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
-        Dim Result As String = GetOneData(Sql, "", GetConnectionString(parentDatabase))
 
-        'Check length
-        If Result.Length > maxLength Then
-            Dim refLength As Integer = GetOneData($"SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parentTable}'", 999999, GetConnectionString(parentDatabase))
-
-            MsgBox("Reference result length is more than your column length!" & vbCrLf & "Reference Length : " & refLength, MsgBoxStyle.Critical)
-            Result = ""
-        End If
-        Return Result
-    End Function
 
     Private Function ValidateGenerate() As Boolean
         For i As Integer = 0 To gv.RowCount - 1
@@ -384,17 +394,27 @@ Public Class FrmMain
         dtDataSet.Columns.Add("ParentDatabase", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("ParentTable", System.Type.GetType("System.String"))
         dtDataSet.Columns.Add("ParentID", System.Type.GetType("System.String"))
+        dtDataSet.Columns.Add("Query", System.Type.GetType("System.String"))
         dtDataSet.Columns("MaxLength").DefaultValue = "-"
         dtDataSet.Columns("HasReference").DefaultValue = False
 
         gc.DataSource = dtDataSet
 
+        'Set GridView 
+        SetGridView()
+
+        dtDataSet.Rows.Add(dtDataSet.NewRow())
+    End Sub
+
+    Private Sub SetGridView()
         'Hide
+        gv.Columns("Category").Visible = False
         gv.Columns("Parameter").Visible = False
         gv.Columns("UserDefined").Visible = False
         gv.Columns("ParentDatabase").Visible = False
         gv.Columns("ParentTable").Visible = False
         gv.Columns("ParentID").Visible = False
+        gv.Columns("Query").Visible = False
 
         gv.Columns("Ref").Width = 30
         gv.Columns("Setting").Width = 30
@@ -418,8 +438,6 @@ Public Class FrmMain
         'Set as Button
         gv.Columns("Setting").ColumnEdit = btnSetting
         gv.Columns("Ref").ColumnEdit = btnReference
-
-        dtDataSet.Rows.Add(dtDataSet.NewRow())
     End Sub
 
     Private Sub OnSettingButtonClick(sender As Object, e As ButtonPressedEventArgs)
@@ -453,6 +471,7 @@ Public Class FrmMain
         Frm.ParentDatabase = gv.GetRowCellValue(RowHandle, "ParentDatabase").ToString
         Frm.ParentTable = gv.GetRowCellValue(RowHandle, "ParentTable").ToString
         Frm.ParentID = gv.GetRowCellValue(RowHandle, "ParentID").ToString
+        Frm.Query = gv.GetRowCellValue(RowHandle, "Query").ToString
         Frm.ShowDialog()
         If Frm.IsOK Then
             gv.SetRowCellValue(RowHandle, "HasReference", Frm.HasReference)
@@ -460,10 +479,12 @@ Public Class FrmMain
                 gv.SetRowCellValue(RowHandle, "ParentDatabase", Frm.ParentDatabase)
                 gv.SetRowCellValue(RowHandle, "ParentTable", Frm.ParentTable)
                 gv.SetRowCellValue(RowHandle, "ParentID", Frm.ParentID)
+                gv.SetRowCellValue(RowHandle, "Query", Frm.Query)
             Else
                 gv.SetRowCellValue(RowHandle, "ParentDatabase", String.Empty)
                 gv.SetRowCellValue(RowHandle, "ParentTable", String.Empty)
                 gv.SetRowCellValue(RowHandle, "ParentID", String.Empty)
+                gv.SetRowCellValue(RowHandle, "Query", String.Empty)
             End If
         End If
     End Sub
@@ -507,7 +528,7 @@ Public Class FrmMain
         ''Get the new value of the category column
         Dim cboSubategory As ComboBoxEdit = CType(sender, ComboBoxEdit)
         Dim NewSubcategory As String = cboSubategory.EditValue.ToString()
-
+        'Dim NewSubcategory As String = view.GetRowCellValue(rowHandle, "Subcategory").ToString
         'Dim cboSubategory As ComboBoxEdit = TryCast(sender, ComboBoxEdit)
 
         If cboSubategory.Properties.Items.Contains(NewSubcategory) Then
@@ -525,6 +546,8 @@ Public Class FrmMain
     Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.F5 Then
             ProcessGenerateData(sender, e)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.C Then
+            btnCopy_Click(Nothing, Nothing)
         End If
     End Sub
 
@@ -589,8 +612,6 @@ Public Class FrmMain
         'TestingGenerateData()
     End Sub
 
-
-
     Private Sub btnGenerateOneData_Click(sender As Object, e As EventArgs) Handles btnGenerateOneData.Click
         txtQuery.Text = GenerateFakeData(cboCategory.SelectedValue, cboSubcategory.SelectedValue)
     End Sub
@@ -611,6 +632,64 @@ Public Class FrmMain
         Dim Frm As New FrmCategoryDetail
         Frm.ShowDialog()
     End Sub
+
+    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        Using SaveFileDialog As New SaveFileDialog()
+            SaveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
+            SaveFileDialog.Title = "Export Dataset Settings"
+            SaveFileDialog.FileName = cboTable.SelectedItem
+            SaveFileDialog.InitialDirectory = My.Settings.DefaultExportPath
+
+            If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim FilePath As String = SaveFileDialog.FileName
+
+                SaveDatasetSetting(dtDataSet, FilePath)
+            End If
+        End Using
+    End Sub
+
+    Private Sub SaveDatasetSetting(dtDataSet As DataTable, filePath As String)
+        Try
+            dtDataSet.WriteXml(filePath, XmlWriteMode.WriteSchema)
+        Catch ex As Exception
+            MsgBox("Error saving setting :" & vbCrLf & ex.Message, MsgBoxStyle.Critical)
+        End Try
+    End Sub
+
+    Public Function LoadDatatableFromFile(filePath As String) As DataTable
+        Dim dt As New DataTable
+        Try
+            dt.ReadXml(filePath)
+        Catch ex As Exception
+            MsgBox("Error load setting :" & vbCrLf & ex.Message, MsgBoxStyle.Critical)
+        End Try
+        Return dt
+    End Function
+    Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
+        Using OpenFileDialog As New OpenFileDialog()
+            OpenFileDialog.InitialDirectory = My.Settings.DefaultExportPath
+            OpenFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
+            OpenFileDialog.Title = "Import Dataset Settings"
+            If OpenFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim FilePath As String = OpenFileDialog.FileName
+                dtDataSet = LoadDatatableFromFile(FilePath)
+                cboTable.SelectedItem = IO.Path.GetFileNameWithoutExtension(OpenFileDialog.FileName)
+                SelectedTable = cboTable.SelectedItem
+                gc.DataSource = dtDataSet
+            End If
+        End Using
+    End Sub
+
+    Private Sub btnCopy_Click(sender As Object, e As EventArgs) Handles btnCopy.Click
+        If txtQuery.Text.Trim = "" Then Exit Sub
+        Clipboard.SetText(txtQuery.Text)
+        btnCopy.Image = Resources.copy2
+    End Sub
+
+    Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
+        dtDataSet.Clear()
+    End Sub
+
 End Class
 
 
