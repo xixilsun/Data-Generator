@@ -40,7 +40,7 @@ Partial Class FrmReferenceDetail
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnClear})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(310, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(304, 25)
         Me.ToolStrip1.TabIndex = 2
         Me.ToolStrip1.Text = "ToolStrip1"
         '
@@ -98,23 +98,31 @@ Partial Class FrmReferenceDetail
         '
         'pnlReference
         '
+        Me.pnlReference.AutoSize = True
         Me.pnlReference.Font = New System.Drawing.Font("Tahoma", 8.25!)
         Me.pnlReference.Location = New System.Drawing.Point(19, 97)
         Me.pnlReference.Name = "pnlReference"
-        Me.pnlReference.Size = New System.Drawing.Size(270, 140)
+        Me.pnlReference.Padding = New System.Windows.Forms.Padding(0, 0, 0, 10)
+        Me.pnlReference.Size = New System.Drawing.Size(270, 95)
         Me.pnlReference.TabIndex = 56
         '
         'FrmReferenceDetail
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(310, 249)
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.ClientSize = New System.Drawing.Size(304, 201)
         Me.Controls.Add(Me.pnlReference)
         Me.Controls.Add(Me.cboReferenceBy)
         Me.Controls.Add(Me.LabelControl5)
         Me.Controls.Add(Me.txtColumnName)
         Me.Controls.Add(Me.LabelControl3)
         Me.Controls.Add(Me.ToolStrip1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(320, 240)
         Me.Name = "FrmReferenceDetail"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Detail"

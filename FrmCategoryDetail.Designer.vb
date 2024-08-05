@@ -52,6 +52,7 @@ Partial Class FrmCategoryDetail
         Me.ClientSize = New System.Drawing.Size(800, 450)
         Me.Controls.Add(Me.gcCategoryDetail)
         Me.Name = "FrmCategoryDetail"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FrmCategoryDetail"
         CType(Me.gcCategoryDetail, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvCategoryDetail, System.ComponentModel.ISupportInitialize).EndInit()

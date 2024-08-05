@@ -5,6 +5,9 @@ Imports System.Linq
 Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 Imports DevExpress.XtraPrinting.Export.Pdf.PdfImageCache
+Imports DevExpress.XtraGrid.Views.Layout
+Imports System.Text.RegularExpressions
+Imports DevExpress.Data.Browsing.Design
 
 Module ModGlobal
     Public GenderList As List(Of String) = New List(Of String) From {"Male", "Female"}
@@ -20,10 +23,11 @@ Module ModGlobal
         table.Columns.Add("Category", GetType(String))
         table.Columns.Add("Subcategory", GetType(String))
         table.Columns.Add("Description", GetType(String))
+        table.Columns.Add("Tag", GetType(String))
 
         ' Add Address subcategories
         table.Rows.Add("Address", "ZipCode", "Get a zipcode.")
-        table.Rows.Add("Address", "City", "Get a city name.")
+        table.Rows.Add("Address", "City", "Get a city name.", "Popular")
         table.Rows.Add("Address", "StreetAddress", "Get a street address.")
         table.Rows.Add("Address", "CityPrefix", "Get a city prefix.")
         table.Rows.Add("Address", "CitySuffix", "Get a city suffix.")
@@ -32,8 +36,8 @@ Module ModGlobal
         table.Rows.Add("Address", "StreetSuffix", "Get a street suffix.")
         table.Rows.Add("Address", "SecondaryAddress", "Get a secondary address like 'Apt. 2' or 'Suite 321'.")
         table.Rows.Add("Address", "County", "Get a county.")
-        table.Rows.Add("Address", "Country", "Get a country.")
-        table.Rows.Add("Address", "FullAddress", "Get a full address like Street, City, Country.")
+        table.Rows.Add("Address", "Country", "Get a country.", "Popular")
+        table.Rows.Add("Address", "FullAddress", "Get a full address like Street, City, Country.", "Popular")
         table.Rows.Add("Address", "CountryCode", "Get a random ISO 3166-1 country code.")
         table.Rows.Add("Address", "State", "Get a random state state.")
         table.Rows.Add("Address", "StateAbbr", "Get a state abbreviation.")
@@ -52,7 +56,7 @@ Module ModGlobal
         table.Rows.Add("Commerce", "Ean8", "Get a random EAN-8 barcode number.")
         table.Rows.Add("Commerce", "Ean13", "Get a random EAN-13 barcode number.")
         'table.Rows.Add("Commerce", "Uuid", "Get a random product uuid.")
-        table.Rows.Add("Commerce", "Color", "Get a random product.")
+        table.Rows.Add("Commerce", "Color", "Get a random color.")
         table.Rows.Add("Commerce", "Product", "Get a random product.")
         table.Rows.Add("Commerce", "ProductAdjective", "Get a random product adjective.")
         table.Rows.Add("Commerce", "ProductMaterial", "Get a random product material.")
@@ -75,16 +79,16 @@ Module ModGlobal
         table.Rows.Add("Database", "Collation", "Generates a collation.")
         table.Rows.Add("Database", "Engine", "Generates a storage engine.")
 
-        table.Rows.Add("Date", "Past", "Get a DateTime in the past between refDate and yearsToGoBack.")
-        table.Rows.Add("Date", "PastOffset", "Get a DateTimeOffset in the past between refDate and yearsToGoBack.")
-        table.Rows.Add("Date", "Future", "Get a DateTime in the future between refDate and yearsToGoForward.")
+        table.Rows.Add("Date", "Past", "Get a DateTime in the past between refDate and yearsToGoBack.", "Popular")
+        'table.Rows.Add("Date", "PastOffset", "Get a DateTimeOffset in the past between refDate and yearsToGoBack.")
+        table.Rows.Add("Date", "Future", "Get a DateTime in the future between refDate and yearsToGoForward.", "Popular")
         'table.Rows.Add("Date", "FutureOffset", "Get a DateTimeOffset in the future between refDate and yearsToGoForward.")
         table.Rows.Add("Date", "Recent", "Get a random DateTime within the last few days.")
         'table.Rows.Add("Date", "RecentOffset", "Get a random DateTimeOffset within the last few days.")
         table.Rows.Add("Date", "Soon", "Get a DateTime that will happen soon.")
         'table'.Rows.Add("Date", "SoonOffset", "Get a DateTimeOffset that will happen soon.")
-        table.Rows.Add("Date", "Between", "Get a random DateTime between start and end.") 'Must have argument
-        table.Rows.Add("Date", "Now", "Get a date using GETDATE().") 'Must have argument
+        table.Rows.Add("Date", "Between", "Get a random DateTime between start and end.", "Popular") 'Must have argument
+        table.Rows.Add("Date", "Now", "Get a date using GETDATE().", "Popular")
         'table.Rows.Add("Date", "BetweenOffset", "Get a random DateTimeOffset between start and end.") 'Must have argument
         table.Rows.Add("Date", "Timespan", "Get a random TimeSpan.")
         table.Rows.Add("Date", "Month", "Get a random month.")
@@ -92,7 +96,7 @@ Module ModGlobal
 
         table.Rows.Add("Finance", "Account", "Get an account number. Default length is 8 digits.")
         table.Rows.Add("Finance", "AccountName", "Get an account name. Like 'savings', 'checking', 'Home Loan' etc..")
-        table.Rows.Add("Finance", "Amount", "Get a random amount. Default 0 - 1000.")
+        table.Rows.Add("Finance", "Amount", "Get a random amount. Default 0 - 1000. Amount will be in thousands.", "Popular")
         table.Rows.Add("Finance", "TransactionType", "Get a transaction type: 'deposit', 'withdrawal', 'payment', or 'invoice'.")
         'table.Rows.Add("Finance", "Currency", "")
         table.Rows.Add("Finance", "CreditCardNumber", "Generate a random credit card number with valid Luhn checksum.")
@@ -111,7 +115,7 @@ Module ModGlobal
         table.Rows.Add("Hacker", "Phrase", "Returns a phrase.")
 
         table.Rows.Add("Internet", "Avatar", "Generates a legit Internet URL avatar from twitter accounts.")
-        table.Rows.Add("Internet", "Email", "Generates an email address.")
+        table.Rows.Add("Internet", "Email", "Generates an email address.", "Popular")
         table.Rows.Add("Internet", "ExampleEmail", "Generates an example email with @example.com.")
         table.Rows.Add("Internet", "UserName", "Generates user names.")
         table.Rows.Add("Internet", "UserNameUnicode", "Generates a user name preserving Unicode characters.")
@@ -142,13 +146,13 @@ Module ModGlobal
         table.Rows.Add("Lorem", "Sentences", "Get some sentences.")
         table.Rows.Add("Lorem", "Paragraph", "Get a paragraph.")
         table.Rows.Add("Lorem", "Paragraphs", "Get a specified number of paragraphs.")
-        table.Rows.Add("Lorem", "Text", "Get random text on a random lorem methods.")
+        table.Rows.Add("Lorem", "Text", "Get random text on a random lorem methods.", "Popular")
         table.Rows.Add("Lorem", "Lines", "Get lines of lorem.")
         table.Rows.Add("Lorem", "Slug", "Slugify lorem words.")
 
         table.Rows.Add("Name", "FirstName", "Get a first name. Getting a gender specific name is only supported on locales that support it.")
         table.Rows.Add("Name", "LastName", "Get a last name. Getting a gender specific name is only supported on locales that support it.")
-        table.Rows.Add("Name", "FullName", "Get a full name, concatenation of calling FirstName and LastName.")
+        table.Rows.Add("Name", "FullName", "Get a full name, concatenation of calling FirstName and LastName.", "Popular")
         table.Rows.Add("Name", "Prefix", "Gets a random prefix for a name.")
         table.Rows.Add("Name", "Suffix", "Gets a random suffix for a name.")
         table.Rows.Add("Name", "FindName", "Gets a full name.")
@@ -157,8 +161,8 @@ Module ModGlobal
         table.Rows.Add("Name", "JobArea", "Get a job area expertise.")
         table.Rows.Add("Name", "JobType", "Get a type of job.")
 
-        table.Rows.Add("Random", "Number", "Get an int from 0 to max.")
-        table.Rows.Add("Random", "Digits", "Get a random sequence of digits.")
+        table.Rows.Add("Random", "Number", "Get an int from 0 to max.", "Popular")
+        table.Rows.Add("Random", "Digits", "Get a random sequence of digits with custom formatting.", "Popular")
         table.Rows.Add("Random", "Decimal", "Get a random decimal, between 0.0 and 1.0.")
         table.Rows.Add("Random", "Double", "Get a random double, between 0.0 and 1.0.")
         table.Rows.Add("Random", "Float", "Get a random float, between 0.0 and 1.0.")
@@ -167,7 +171,7 @@ Module ModGlobal
         table.Rows.Add("Random", "Char", "Generate a random char between MinValue and MaxValue.")
         table.Rows.Add("Random", "String", "Get a string of characters of a specific length.")
         table.Rows.Add("Random", "Hexadecimal", "Generates a random hexadecimal string.")
-        table.Rows.Add("Random", "Bool", "Get a random boolean.")
+        table.Rows.Add("Random", "Bool", "Get a random boolean.", "Popular")
         'table.Rows.Add("Random", "Uuid", "Get a random GUID. Alias for Randomizer.Guid().")
         table.Rows.Add("Random", "Guid", "Get a random GUID.")
         table.Rows.Add("Random", "AlphaNumeric", "Returns a random set of alpha numeric characters 0-9, a-z.")
@@ -176,8 +180,8 @@ Module ModGlobal
         table.Rows.Add("Random", "UserDefined", "Get a random value from user defined.")
         table.Rows.Add("Random", "Gender", "Get a random gender.")
 
-        table.Rows.Add("Default", "Null", "Return a NULL value.")
-        table.Rows.Add("Default", "Empty", "Return an empty string.")
+        table.Rows.Add("Default", "Null", "Return a NULL value.", "Popular")
+        table.Rows.Add("Default", "Empty", "Return an empty string.", "Popular")
 
 
         table.Rows.Add("System", "FileName", "Get a random file name.")
@@ -196,7 +200,7 @@ Module ModGlobal
         table.Rows.Add("System", "ApplePushToken", "Get a random Apple Push Token.")
         table.Rows.Add("System", "BlackberryPin", "Get a random BlackBerry Device PIN.")
 
-        table.Rows.Add("Phone", "PhoneNumber", "Get a phone number.")
+        table.Rows.Add("Phone", "PhoneNumber", "Get a phone number.", "Popular")
         table.Rows.Add("Phone", "PhoneNumberFormat", "Gets a phone number based on the locale's phone_number.formats[] array index.")
 
         table.Rows.Add("Rant", "Review", "Generates a random user review.")
@@ -209,25 +213,46 @@ Module ModGlobal
         table.Rows.Add("Vehicle", "Fuel", "Get a vehicle fuel type. IE: Electric, Gasoline, Diesel.")
         BogusDatatable = table
     End Function
-    Public Function GenerateDataFromReference(parentDatabase As String, parentTable As String, parentID As String, query As String, Optional maxLength As Integer = 9999999) As String
+    Public Function GenerateDataFromReference(dtDataset As DataTable, paramList As List(Of String), parentDatabase As String, parentTable As String, parentID As String, query As String, Optional maxLength As Integer = 9999999) As String
         Dim Result As String = ""
-        If parentDatabase <> "" AndAlso parentTable <> "" AndAlso parentID <> "" Then
-            Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
-            Result = GetOneData(Sql, "", GetConnectionString(parentDatabase))
+        Try
+            If parentDatabase <> "" AndAlso parentTable <> "" AndAlso parentID <> "" Then
+                Dim Sql = $"SELECT TOP 1 {parentID} FROM {parentTable} ORDER BY NEWID()"
+                Result = GetOneData(Sql, "", GetConnectionString(parentDatabase))
 
-            'Check length
-            If Result.Length > maxLength Then
-                Dim refLength As Integer = GetOneData($"SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parentTable}'", 999999, GetConnectionString(parentDatabase))
+                'Check length
+                If Result.Length > maxLength Then
+                    Dim refLength As Integer = GetOneData($"SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parentTable}'", 999999, GetConnectionString(parentDatabase))
+                    Throw New Exception("Reference result length is more than your column length!" & vbCrLf & "Reference Length : " & refLength)
+                End If
+            ElseIf query <> "" Then
+                'Search previous column data if there is string between pound signs
+                Dim Matches As MatchCollection = Regex.Matches(query, "#(.*?)#") 'Match string between pound signs
 
-                MsgBox("Reference result length is more than your column length!" & vbCrLf & "Reference Length : " & refLength, MsgBoxStyle.Critical)
-                Result = ""
+                For Each match In Matches
+                    Dim ColumnSearch = match.Groups(1).Value
+                    Dim ColumnIndex = dtDataset.AsEnumerable.Select(Function(row) row!ColumnName.ToString.ToUpper).ToList().IndexOf(ColumnSearch.ToString.ToUpper)
+                    If ColumnIndex <> -1 Then
+                        query = Regex.Replace(query, "\#(.*?)\#", SqlStr(paramList(ColumnIndex)))
+                    Else
+                        MsgBox("Unable to find previous data : " & ColumnSearch, MsgBoxStyle.Critical)
+                        Return ""
+                    End If
+                Next
+
+                Dim Dt As DataTable = GetDataTable(query, GetConnectionString(parentDatabase))
+                If Dt Is Nothing Then
+                    Throw New Exception("Query is invalid!")
+                ElseIf Dt.Rows.Count < 1 Then
+                    Throw New Exception("No data from reference!")
+                End If
+
+                Dim RandomRowIndex As Integer = Randomizer.next(0, Dt.Rows.Count)
+                Result = Dt.Rows(RandomRowIndex).Item(0).ToString
             End If
-        ElseIf query <> "" Then
-            Dim Dt As DataTable = GetDataTable(query, GetConnectionString(parentDatabase))
-            If Dt Is Nothing Then Throw New Exception("Query is invalid")
-            Dim RandomRowIndex As Integer = Randomizer.next(0, Dt.Rows.Count)
-            Result = Dt.Rows(RandomRowIndex).Item(0).ToString
-        End If
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
         Return Result
     End Function
     Public Function GenerateFakeData(category As String, subcategory As String, Optional userParameter As String = "", Optional userDefined As String = "", Optional maxLength As Integer = 9999999) As String
@@ -258,7 +283,10 @@ Module ModGlobal
                 ElseIf subcategory = "Bool" Then
                     RandomValue = If(Fake.Random.Bool(), 1, 0)
                 ElseIf subcategory = "String" Then
-                    RandomValue = Fake.Random.String(10).ToString
+                    Dim length = 10
+                    Dim value = GetValueByKey(userParameter, "length", Type.GetType("System.Int32"))
+                    If Not IsNothing(value) Then length = value
+                    RandomValue = Fake.Random.String(length).ToString
                 ElseIf subcategory = "Gender" Then
                     RandomValue = GenderList(Randomizer.Next(0, GenderList.Count))
                 ElseIf subcategory = "UserDefined" Then
@@ -275,18 +303,8 @@ Module ModGlobal
             ElseIf category = "Lorem" AndAlso subcategory = "Paragraphs" Then
                 RandomValue = Fake.Lorem.Paragraphs()
             ElseIf category = "Date" AndAlso
-                    ("Past-Future-Recent-Soon-Between-Timespan-Now-".Contains(subcategory & "-")) Then
+                    ("Between-Now-".Contains(subcategory & "-")) Then
                 Select Case subcategory
-                    Case "Past"
-                        RandomValue = Fake.Date.Past()
-                    Case "Future"
-                        RandomValue = Fake.Date.Future()
-                    Case "Recent"
-                        RandomValue = Fake.Date.Recent()
-                    Case "Soon"
-                        RandomValue = Fake.Date.Soon()
-                    Case "Timespan"
-                        RandomValue = Fake.Date.Timespan().ToString
                     Case "Now"
                         RandomValue = "GETDATE()"
                     Case "Between"
@@ -310,7 +328,6 @@ Module ModGlobal
                 'Check if the method has parameter
                 Dim parameters As ParameterInfo() = SubcategoryMethod.GetParameters()
                 Dim result As Object
-
                 If parameters.Length > 0 Then
                     Dim paramValues As Object()
                     If userParameter = "" Then
@@ -324,7 +341,7 @@ Module ModGlobal
                 End If
 
                 If TypeOf result Is String OrElse TypeOf result Is Double OrElse TypeOf result Is Decimal OrElse TypeOf result Is Char OrElse
-                    TypeOf result Is Single OrElse TypeOf result Is Byte Then
+                    TypeOf result Is Single OrElse TypeOf result Is Byte OrElse TypeOf result Is DateTime OrElse TypeOf result Is TimeSpan Then
                     If subcategory = "AlphaNumeric" Then
                         Dim IsUpperCase As Boolean = GetValueByKey(userParameter, "IsUpperCase", Type.GetType("System.Boolean"))
                         If IsUpperCase Then result = result.ToString.ToUpper()
@@ -332,7 +349,7 @@ Module ModGlobal
                         result = result * 1000
                         result = Convert.ToInt32(result)
                     End If
-                    RandomValue = Replace(result, vbLf, vbCrLf)
+                    RandomValue = Replace(result.ToString, vbLf, vbCrLf)
                 Else
                     If result.length > 1 Then
                         For Each obj In result
@@ -350,7 +367,7 @@ Module ModGlobal
             If RandomValue.Contains("'") Then RandomValue = RandomValue.Replace("'", "")
             Return RandomValue
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical)
+            Throw New Exception(ex.Message)
         End Try
         Return ""
     End Function
@@ -390,6 +407,16 @@ Module ModGlobal
                 Exit For
             End If
         Next
+
+        If paramType.ToString.Contains("Gender") Then
+            If strValue = "Male" Then
+                Return Bogus.DataSets.Name.Gender.Male
+            ElseIf strValue = "Female" Then
+                Return Bogus.DataSets.Name.Gender.Female
+            Else
+                strValue = ""
+            End If
+        End If
 
         If strValue <> "" Then
             Return ChangeType(strValue, paramType)

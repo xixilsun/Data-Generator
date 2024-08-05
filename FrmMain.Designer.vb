@@ -24,11 +24,10 @@ Partial Class FrmMain
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmMain))
         Me.txtQuery = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.gc = New DevExpress.XtraGrid.GridControl()
         Me.gv = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.DatasetPanel = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnAdd = New System.Windows.Forms.ToolStripButton()
@@ -37,11 +36,9 @@ Partial Class FrmMain
         Me.btnClear = New System.Windows.Forms.ToolStripButton()
         Me.btnExport = New System.Windows.Forms.ToolStripButton()
         Me.btnImport = New System.Windows.Forms.ToolStripButton()
-        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.SamplePanel = New System.Windows.Forms.Panel()
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
         Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.cboDatabase = New DevExpress.XtraEditors.ComboBoxEdit()
         Me.Label7 = New System.Windows.Forms.Label()
@@ -51,17 +48,23 @@ Partial Class FrmMain
         Me.btnGenerate = New DevExpress.XtraEditors.SimpleButton()
         Me.numQty = New DevExpress.XtraEditors.SpinEdit()
         Me.btnCopy = New DevExpress.XtraEditors.SimpleButton()
+        Me.Panel4 = New System.Windows.Forms.Panel()
+        Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
         CType(Me.gc, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.Panel1.SuspendLayout()
+        Me.DatasetPanel.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
-        Me.Panel3.SuspendLayout()
+        Me.SamplePanel.SuspendLayout()
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cboTable.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.numQty.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel4.SuspendLayout()
+        Me.Panel5.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtQuery
@@ -69,7 +72,7 @@ Partial Class FrmMain
         Me.txtQuery.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtQuery.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtQuery.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtQuery.Location = New System.Drawing.Point(38, 564)
+        Me.txtQuery.Location = New System.Drawing.Point(37, 546)
         Me.txtQuery.Margin = New System.Windows.Forms.Padding(10)
         Me.txtQuery.Multiline = True
         Me.txtQuery.Name = "txtQuery"
@@ -78,21 +81,11 @@ Partial Class FrmMain
         Me.txtQuery.TabIndex = 11
         Me.txtQuery.Visible = False
         '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label2.Location = New System.Drawing.Point(211, 25)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(71, 14)
-        Me.Label2.TabIndex = 17
-        Me.Label2.Text = "New DataSet"
-        '
         'Label4
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label4.Location = New System.Drawing.Point(35, 540)
+        Me.Label4.Location = New System.Drawing.Point(34, 522)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(37, 14)
         Me.Label4.TabIndex = 18
@@ -105,7 +98,7 @@ Partial Class FrmMain
         Me.gc.Location = New System.Drawing.Point(0, 0)
         Me.gc.MainView = Me.gv
         Me.gc.Name = "gc"
-        Me.gc.Size = New System.Drawing.Size(827, 260)
+        Me.gc.Size = New System.Drawing.Size(827, 242)
         Me.gc.TabIndex = 20
         Me.gc.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gv})
         '
@@ -117,14 +110,14 @@ Partial Class FrmMain
         Me.gv.OptionsView.ShowGroupPanel = False
         Me.gv.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedRow
         '
-        'Panel1
+        'DatasetPanel
         '
-        Me.Panel1.Controls.Add(Me.Panel2)
-        Me.Panel1.Controls.Add(Me.ToolStrip1)
-        Me.Panel1.Location = New System.Drawing.Point(214, 43)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(827, 285)
-        Me.Panel1.TabIndex = 21
+        Me.DatasetPanel.Controls.Add(Me.Panel2)
+        Me.DatasetPanel.Controls.Add(Me.ToolStrip1)
+        Me.DatasetPanel.Location = New System.Drawing.Point(29, 67)
+        Me.DatasetPanel.Name = "DatasetPanel"
+        Me.DatasetPanel.Size = New System.Drawing.Size(827, 267)
+        Me.DatasetPanel.TabIndex = 21
         '
         'Panel2
         '
@@ -132,7 +125,7 @@ Partial Class FrmMain
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 25)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(827, 260)
+        Me.Panel2.Size = New System.Drawing.Size(827, 242)
         Me.Panel2.TabIndex = 22
         '
         'ToolStrip1
@@ -198,13 +191,13 @@ Partial Class FrmMain
         Me.btnImport.Size = New System.Drawing.Size(103, 22)
         Me.btnImport.Text = "Import Setting"
         '
-        'Panel3
+        'SamplePanel
         '
-        Me.Panel3.Controls.Add(Me.gcOutput)
-        Me.Panel3.Location = New System.Drawing.Point(214, 393)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(827, 255)
-        Me.Panel3.TabIndex = 23
+        Me.SamplePanel.Controls.Add(Me.gcOutput)
+        Me.SamplePanel.Location = New System.Drawing.Point(29, 380)
+        Me.SamplePanel.Name = "SamplePanel"
+        Me.SamplePanel.Size = New System.Drawing.Size(827, 255)
+        Me.SamplePanel.TabIndex = 23
         '
         'gcOutput
         '
@@ -223,32 +216,11 @@ Partial Class FrmMain
         Me.gvOutput.Name = "gvOutput"
         Me.gvOutput.OptionsView.ShowGroupPanel = False
         '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label5.Location = New System.Drawing.Point(211, 376)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(67, 14)
-        Me.Label5.TabIndex = 24
-        Me.Label5.Text = "Sample Data"
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label9.ForeColor = System.Drawing.Color.Blue
-        Me.Label9.Location = New System.Drawing.Point(705, 335)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(330, 14)
-        Me.Label9.TabIndex = 36
-        Me.Label9.Text = "If column has reference, leave blank for category and subcategory"
-        '
         'Label6
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label6.Location = New System.Drawing.Point(38, 398)
+        Me.Label6.Location = New System.Drawing.Point(38, 365)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(49, 14)
         Me.Label6.TabIndex = 27
@@ -256,7 +228,7 @@ Partial Class FrmMain
         '
         'cboDatabase
         '
-        Me.cboDatabase.Location = New System.Drawing.Point(38, 64)
+        Me.cboDatabase.Location = New System.Drawing.Point(37, 64)
         Me.cboDatabase.Name = "cboDatabase"
         Me.cboDatabase.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cboDatabase.Size = New System.Drawing.Size(143, 20)
@@ -266,7 +238,7 @@ Partial Class FrmMain
         '
         Me.Label7.AutoSize = True
         Me.Label7.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label7.Location = New System.Drawing.Point(35, 44)
+        Me.Label7.Location = New System.Drawing.Point(34, 44)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 14)
         Me.Label7.TabIndex = 29
@@ -274,7 +246,7 @@ Partial Class FrmMain
         '
         'cboTable
         '
-        Me.cboTable.Location = New System.Drawing.Point(38, 117)
+        Me.cboTable.Location = New System.Drawing.Point(37, 117)
         Me.cboTable.Name = "cboTable"
         Me.cboTable.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cboTable.Size = New System.Drawing.Size(143, 20)
@@ -284,7 +256,7 @@ Partial Class FrmMain
         '
         Me.Label8.AutoSize = True
         Me.Label8.Font = New System.Drawing.Font("Arial", 8.25!)
-        Me.Label8.Location = New System.Drawing.Point(35, 98)
+        Me.Label8.Location = New System.Drawing.Point(34, 100)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(32, 14)
         Me.Label8.TabIndex = 31
@@ -292,7 +264,7 @@ Partial Class FrmMain
         '
         'btnPrepareDataset
         '
-        Me.btnPrepareDataset.Location = New System.Drawing.Point(38, 147)
+        Me.btnPrepareDataset.Location = New System.Drawing.Point(37, 147)
         Me.btnPrepareDataset.Name = "btnPrepareDataset"
         Me.btnPrepareDataset.Size = New System.Drawing.Size(143, 23)
         Me.btnPrepareDataset.TabIndex = 34
@@ -300,7 +272,7 @@ Partial Class FrmMain
         '
         'btnGenerate
         '
-        Me.btnGenerate.Location = New System.Drawing.Point(38, 426)
+        Me.btnGenerate.Location = New System.Drawing.Point(38, 393)
         Me.btnGenerate.Name = "btnGenerate"
         Me.btnGenerate.Size = New System.Drawing.Size(143, 23)
         Me.btnGenerate.TabIndex = 35
@@ -309,7 +281,7 @@ Partial Class FrmMain
         'numQty
         '
         Me.numQty.EditValue = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.numQty.Location = New System.Drawing.Point(116, 395)
+        Me.numQty.Location = New System.Drawing.Point(116, 362)
         Me.numQty.Name = "numQty"
         Me.numQty.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton()})
         Me.numQty.Properties.IsFloatValue = False
@@ -322,70 +294,106 @@ Partial Class FrmMain
         'btnCopy
         '
         Me.btnCopy.Image = Global.DataGenerator.My.Resources.Resources.copy
-        Me.btnCopy.Location = New System.Drawing.Point(38, 455)
+        Me.btnCopy.Location = New System.Drawing.Point(38, 422)
         Me.btnCopy.Name = "btnCopy"
         Me.btnCopy.Size = New System.Drawing.Size(143, 23)
         Me.btnCopy.TabIndex = 39
         Me.btnCopy.Text = "SQL INSERT"
         '
+        'Panel4
+        '
+        Me.Panel4.Controls.Add(Me.cboTable)
+        Me.Panel4.Controls.Add(Me.btnCopy)
+        Me.Panel4.Controls.Add(Me.cboDatabase)
+        Me.Panel4.Controls.Add(Me.numQty)
+        Me.Panel4.Controls.Add(Me.Label7)
+        Me.Panel4.Controls.Add(Me.Label4)
+        Me.Panel4.Controls.Add(Me.Label8)
+        Me.Panel4.Controls.Add(Me.btnGenerate)
+        Me.Panel4.Controls.Add(Me.txtQuery)
+        Me.Panel4.Controls.Add(Me.Label6)
+        Me.Panel4.Controls.Add(Me.btnPrepareDataset)
+        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel4.Location = New System.Drawing.Point(0, 0)
+        Me.Panel4.Name = "Panel4"
+        Me.Panel4.Size = New System.Drawing.Size(1078, 667)
+        Me.Panel4.TabIndex = 40
+        '
+        'Panel5
+        '
+        Me.Panel5.Controls.Add(Me.Label3)
+        Me.Panel5.Controls.Add(Me.Label1)
+        Me.Panel5.Controls.Add(Me.DatasetPanel)
+        Me.Panel5.Controls.Add(Me.SamplePanel)
+        Me.Panel5.Dock = System.Windows.Forms.DockStyle.Right
+        Me.Panel5.Location = New System.Drawing.Point(189, 0)
+        Me.Panel5.Name = "Panel5"
+        Me.Panel5.Size = New System.Drawing.Size(889, 667)
+        Me.Panel5.TabIndex = 41
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.Label1.Location = New System.Drawing.Point(27, 355)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(82, 17)
+        Me.Label1.TabIndex = 25
+        Me.Label1.Text = "Sample Data"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Location = New System.Drawing.Point(26, 41)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(83, 17)
+        Me.Label3.TabIndex = 26
+        Me.Label3.Text = "New DataSet"
+        '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1066, 667)
-        Me.Controls.Add(Me.btnCopy)
-        Me.Controls.Add(Me.numQty)
-        Me.Controls.Add(Me.Label9)
-        Me.Controls.Add(Me.btnGenerate)
-        Me.Controls.Add(Me.btnPrepareDataset)
-        Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.cboTable)
-        Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.cboDatabase)
-        Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.Panel3)
-        Me.Controls.Add(Me.Panel1)
-        Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.txtQuery)
+        Me.ClientSize = New System.Drawing.Size(1078, 667)
+        Me.Controls.Add(Me.Panel5)
+        Me.Controls.Add(Me.Panel4)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "FrmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FrmMain"
         CType(Me.gc, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gv, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
+        Me.DatasetPanel.ResumeLayout(False)
+        Me.DatasetPanel.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
-        Me.Panel3.ResumeLayout(False)
+        Me.SamplePanel.ResumeLayout(False)
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cboTable.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.numQty.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel4.ResumeLayout(False)
+        Me.Panel4.PerformLayout()
+        Me.Panel5.ResumeLayout(False)
+        Me.Panel5.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Friend WithEvents txtQuery As Windows.Forms.TextBox
-    Friend WithEvents Label2 As Windows.Forms.Label
     Friend WithEvents Label4 As Windows.Forms.Label
     Friend WithEvents gc As DevExpress.XtraGrid.GridControl
     Friend WithEvents gv As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents Panel1 As Windows.Forms.Panel
     Friend WithEvents ToolStrip1 As Windows.Forms.ToolStrip
-    Friend WithEvents Panel2 As Windows.Forms.Panel
     Friend WithEvents btnAdd As Windows.Forms.ToolStripButton
     Friend WithEvents btnCategoryDetail As Windows.Forms.ToolStripButton
     Friend WithEvents btnDelete As Windows.Forms.ToolStripButton
-    Friend WithEvents Panel3 As Windows.Forms.Panel
+    Friend WithEvents SamplePanel As Windows.Forms.Panel
     Friend WithEvents gcOutput As DevExpress.XtraGrid.GridControl
     Friend WithEvents gvOutput As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents Label5 As Windows.Forms.Label
-    Friend WithEvents Label9 As Windows.Forms.Label
     Friend WithEvents Label6 As Windows.Forms.Label
     Friend WithEvents cboDatabase As DevExpress.XtraEditors.ComboBoxEdit
     Friend WithEvents Label7 As Windows.Forms.Label
@@ -398,4 +406,10 @@ Partial Class FrmMain
     Friend WithEvents btnExport As Windows.Forms.ToolStripButton
     Friend WithEvents btnClear As Windows.Forms.ToolStripButton
     Friend WithEvents btnCopy As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents Panel4 As Windows.Forms.Panel
+    Friend WithEvents Panel5 As Windows.Forms.Panel
+    Friend WithEvents DatasetPanel As Windows.Forms.Panel
+    Friend WithEvents Panel2 As Windows.Forms.Panel
+    Friend WithEvents Label1 As Windows.Forms.Label
+    Friend WithEvents Label3 As Windows.Forms.Label
 End Class

@@ -1,0 +1,243 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Dataset" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Dataset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColumnName" type="xs:string" minOccurs="0" />
+                <xs:element name="Category" type="xs:string" minOccurs="0" />
+                <xs:element name="Subcategory" type="xs:string" minOccurs="0" />
+                <xs:element name="Setting" type="xs:string" minOccurs="0" />
+                <xs:element name="Parameter" type="xs:string" minOccurs="0" />
+                <xs:element name="UserDefined" type="xs:string" minOccurs="0" />
+                <xs:element name="MaxLength" type="xs:string" default="-" minOccurs="0" />
+                <xs:element name="HasReference" type="xs:boolean" default="false" minOccurs="0" />
+                <xs:element name="Ref" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentDatabase" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentTable" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentID" type="xs:string" minOccurs="0" />
+                <xs:element name="Query" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Dataset>
+    <ColumnName>RegID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2102</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>EmpID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_Employee</ParentDatabase>
+    <Query>SELECT EmpID FROM HREmpPerform WHERE UpdateBy LIKE 'MANUAL%'</Query>
+  </Dataset>
+  <Dataset>
+    <ColumnName>BehaviorDate</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Between</Subcategory>
+    <Setting />
+    <Parameter>Start=7/1/2024
+End=7/17/2024</Parameter>
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Type</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>15</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_SysMst</ParentDatabase>
+    <ParentTable>SyBehaviorType</ParentTable>
+    <ParentID>Code</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Note</ColumnName>
+    <Category>Lorem</Category>
+    <Subcategory>Sentence</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>500</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateOn</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Now</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateBy</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MANUAL (BOGUS)</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>PeriodID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2024-07-01</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Sanction</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>200</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_SysMst</ParentDatabase>
+    <ParentTable>SySanction</ParentTable>
+    <ParentID>SanctionName</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IssuedBy</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>30</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Division</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>LetterLocation</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>SanctionPeriod</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>6 Bulan</UserDefined>
+    <MaxLength>100</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsApproved</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>1</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ApprovedOn</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Now</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ApprovedBy</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>XIXILLIA.SUNARYO</UserDefined>
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+</NewDataSet>

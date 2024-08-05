@@ -22,8 +22,11 @@ Partial Class FrmSettingParameter
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmSettingParameter))
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnSave = New System.Windows.Forms.ToolStripButton()
+        Me.btnNext = New System.Windows.Forms.ToolStripButton()
+        Me.btnPrevious = New System.Windows.Forms.ToolStripButton()
         Me.btnClear = New System.Windows.Forms.ToolStripButton()
         Me.txtColumnName = New DevExpress.XtraEditors.TextEdit()
         Me.LabelControl3 = New DevExpress.XtraEditors.LabelControl()
@@ -49,7 +52,7 @@ Partial Class FrmSettingParameter
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnClear})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnNext, Me.btnPrevious, Me.btnClear})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(585, 25)
@@ -66,6 +69,26 @@ Partial Class FrmSettingParameter
         Me.btnSave.Size = New System.Drawing.Size(55, 25)
         Me.btnSave.Text = "Save"
         '
+        'btnNext
+        '
+        Me.btnNext.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.btnNext.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnNext.Image = CType(resources.GetObject("btnNext.Image"), System.Drawing.Image)
+        Me.btnNext.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnNext.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnNext.Name = "btnNext"
+        Me.btnNext.Size = New System.Drawing.Size(23, 25)
+        '
+        'btnPrevious
+        '
+        Me.btnPrevious.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.btnPrevious.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnPrevious.Image = CType(resources.GetObject("btnPrevious.Image"), System.Drawing.Image)
+        Me.btnPrevious.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnPrevious.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnPrevious.Name = "btnPrevious"
+        Me.btnPrevious.Size = New System.Drawing.Size(23, 25)
+        '
         'btnClear
         '
         Me.btnClear.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -81,7 +104,7 @@ Partial Class FrmSettingParameter
         Me.txtColumnName.Location = New System.Drawing.Point(121, 51)
         Me.txtColumnName.Name = "txtColumnName"
         Me.txtColumnName.Size = New System.Drawing.Size(143, 20)
-        Me.txtColumnName.TabIndex = 10
+        Me.txtColumnName.TabIndex = 80
         '
         'LabelControl3
         '
@@ -113,7 +136,7 @@ Partial Class FrmSettingParameter
         Me.txtUserDefined.Name = "txtUserDefined"
         Me.txtUserDefined.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtUserDefined.Size = New System.Drawing.Size(259, 117)
-        Me.txtUserDefined.TabIndex = 19
+        Me.txtUserDefined.TabIndex = 2
         '
         'Label9
         '
@@ -152,7 +175,7 @@ Partial Class FrmSettingParameter
         Me.cboSubcategory.Name = "cboSubcategory"
         Me.cboSubcategory.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cboSubcategory.Size = New System.Drawing.Size(143, 20)
-        Me.cboSubcategory.TabIndex = 44
+        Me.cboSubcategory.TabIndex = 1
         '
         'cboCategory
         '
@@ -176,7 +199,7 @@ Partial Class FrmSettingParameter
         Me.txtMaxLength.Location = New System.Drawing.Point(121, 79)
         Me.txtMaxLength.Name = "txtMaxLength"
         Me.txtMaxLength.Size = New System.Drawing.Size(143, 20)
-        Me.txtMaxLength.TabIndex = 51
+        Me.txtMaxLength.TabIndex = 81
         '
         'LabelControl4
         '
@@ -209,6 +232,7 @@ Partial Class FrmSettingParameter
         Me.txtParameterList.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtParameterList.Size = New System.Drawing.Size(266, 29)
         Me.txtParameterList.TabIndex = 52
+        Me.txtParameterList.TabStop = False
         Me.txtParameterList.Visible = False
         '
         'pnlParameters
@@ -240,6 +264,9 @@ Partial Class FrmSettingParameter
         Me.Controls.Add(Me.txtColumnName)
         Me.Controls.Add(Me.LabelControl3)
         Me.Controls.Add(Me.ToolStrip1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "FrmSettingParameter"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FrmSettingParameter"
@@ -272,4 +299,6 @@ Partial Class FrmSettingParameter
     Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents txtParameterList As Windows.Forms.TextBox
     Friend WithEvents pnlParameters As Windows.Forms.Panel
+    Friend WithEvents btnNext As Windows.Forms.ToolStripButton
+    Friend WithEvents btnPrevious As Windows.Forms.ToolStripButton
 End Class

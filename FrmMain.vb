@@ -1,7 +1,5 @@
 ﻿Imports System.Data
 Imports System.Linq
-Imports System.Text
-Imports Bogus
 Imports System.Windows.Forms
 Imports System.Collections.Generic
 Imports DevExpress.XtraEditors.Repository
@@ -9,8 +7,8 @@ Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
-Imports DevExpress.XtraReports.Parameters
 Imports DataGenerator.My
+Imports System.Drawing
 
 Public Class FrmMain
     Private dtDataSet As New DataTable("Dataset")
@@ -52,12 +50,14 @@ Public Class FrmMain
         'Add event handler for category column value change
         'AddHandler CategoryCombo.EditValueChanged, AddressOf OnCategoryChanged
         AddHandler SubcategoryCombo.EditValueChanged, AddressOf OnSubcategoryChanged
+        'AddHandler gv.CellValueChanged, AddressOf gridView1_CellValueChanged
+        AddHandler gv.RowCellStyle, AddressOf Gv_RowCellStyle
 
         'Add Handler if has category then set subcategory list
         'AddHandler gv.CustomRowCellEditForEditing, AddressOf OnGridViewCustomRowCellEditForEditing
 
         'Prepare database
-        Dim DatabaseList = ModSQL.GetDataTable("SELECT name AS DatabaseName FROM Sysdatabases WHERE name LIKE 'HRdb%'", ModSQL.GetConnectionString("Master")).AsEnumerable.Select(Function(o) o("DatabaseName")).ToList()
+        Dim DatabaseList = ModSQL.GetDataTable("SELECT name AS DatabaseName FROM Sysdatabases", ModSQL.GetConnectionString("Master")).AsEnumerable.Select(Function(o) o("DatabaseName")).ToList()
         With cboDatabase
             .Properties.Items.AddRange(DatabaseList)
             .SelectedItem = My.Settings.DefaultDatabase
@@ -65,7 +65,40 @@ Public Class FrmMain
 
         FirstLoad = False
     End Sub
+    Private Sub Gv_RowCellStyle(ByVal sender As Object, ByVal e As RowCellStyleEventArgs)
+        Dim view As GridView = CType(sender, GridView)
+        If e.Column.FieldName = "Setting" Then
+            Dim ParameterValue As Object = view.GetRowCellValue(e.RowHandle, "Parameter")
+            Dim UserDefined As Object = view.GetRowCellValue(e.RowHandle, "UserDefined")
 
+            If (Not IsNothing(ParameterValue) AndAlso Not IsDBNull(ParameterValue) AndAlso Not String.IsNullOrEmpty(ParameterValue.ToString())) OrElse
+                (Not IsNothing(UserDefined) AndAlso Not IsDBNull(UserDefined) AndAlso Not String.IsNullOrEmpty(UserDefined.ToString())) Then
+                e.Appearance.BackColor = Color.LightYellow
+            End If
+        ElseIf e.Column.FieldName = "Ref" Then
+            Dim hasReference As Object = view.GetRowCellValue(e.RowHandle, "HasReference")
+            If Not IsNothing(hasReference) AndAlso CBool(hasReference) Then
+                e.Appearance.BackColor = Color.LightYellow
+            End If
+        End If
+    End Sub
+
+    Private Sub OnParameterChanged(sender As Object, e As EventArgs)
+        'Get the current view and focused row handle
+        Dim view As GridView = CType(gc.FocusedView, GridView)
+        Dim rowHandle As Integer = view.FocusedRowHandle
+
+        ''Get the new value of the category column
+        Dim ParameterValue As TextEdit = CType(sender, TextEdit)
+        Dim NewParameter As String = ParameterValue.EditValue.ToString()
+
+        If NewParameter <> "" Then
+            view.SetRowCellValue(rowHandle, view.Columns("Settings"), Color.LightYellow)
+        Else
+
+            view.SetRowCellValue(rowHandle, view.Columns("Settings"), Color.White)
+        End If
+    End Sub
 
     Private Sub OnGridViewCustomRowCellEditForEditing(sender As Object, e As CustomRowCellEditEventArgs)
         Dim View As GridView = CType(sender, GridView)
@@ -97,7 +130,7 @@ Public Class FrmMain
                   "Ref.ParentTable, Ref.ParentID, Ref.ForeignKeyName, Ref.ReferenceTable, Ref.ReferenceColumnName, " & vbCrLf &
                   "CASE WHEN Ref.ReferenceTable IS NOT NULL Then 1 ELSE 0 END AS HasReference" & vbCrLf &
                   "FROM INFORMATION_SCHEMA.COLUMNS C" & vbCrLf &
-                  "INNER JOIN sys.Columns S ON C.COLUMN_NAME = S.name" & vbCrLf &
+                  "INNER JOIN sys.Columns S ON C.COLUMN_NAME = S.name AND object_id(C.TABLE_NAME) = S.object_id " & vbCrLf &
                   "LEFT JOIN " & vbCrLf &
                   "(" & vbCrLf &
                   "	SELECT " & vbCrLf &
@@ -112,10 +145,8 @@ Public Class FrmMain
                   "    sys.foreign_key_columns AS fc ON f.OBJECT_ID = fc.constraint_object_id" & vbCrLf &
                   "INNER JOIN " & vbCrLf &
                   "    sys.tables t ON t.OBJECT_ID = fc.referenced_object_id" & vbCrLf &
-                  "WHERE " & vbCrLf &
-                  "	OBJECT_NAME(f.parent_object_id) = 'Denda'" & vbCrLf &
                   ") REF ON Ref.ReferenceTable = C.TABLE_NAME AND Ref.ReferenceColumnName = C.COLUMN_NAME" & vbCrLf &
-                  "WHERE TABLE_NAME = " & SqlStr(SelectedTable) & " AND S.object_id = object_id(" & SqlStr(SelectedTable) & ")"
+                  "WHERE TABLE_NAME = " & SqlStr(SelectedTable)
         Dim Dt As DataTable = GetDataTable(Sql, GetConnectionString(SelectedDatabase))
         dtDataSet.Rows.Clear()
 
@@ -207,6 +238,8 @@ Public Class FrmMain
     End Sub
 
     Private Sub ProcessGenerateData(sender As Object, e As EventArgs)
+        Dim frm = New FrmSyMsg
+        frm.ActiveAnimation = True
         Try
             'Reset Copy SQL Insert
             btnCopy.Image = Resources.copy
@@ -225,12 +258,10 @@ Public Class FrmMain
             Next
 
             'Set Progress Bar
-            Dim frm = New FrmSyMsg
-            frm.ActiveAnimation = True
             frm.Show("Start generating data")
             frm.ReSetProgressBar(numQty.Value)
             For i As Integer = 0 To numQty.Value - 1
-                Dim paramList As New List(Of String)
+                Dim ParamList As New List(Of String)
                 Dim RowHandle As Integer = 0
                 frm.SetCount("Data - " & i + 1 & " / " & numQty.Value & vbCrLf & "Generating Data...")
                 frm.SetProgressBar()
@@ -243,25 +274,26 @@ Public Class FrmMain
                     If Not Row!HasReference Then
                         RandomResult = GenerateFakeData(Row!Category, Row!Subcategory, Row!Parameter.ToString, Row!UserDefined.ToString, maxLength)
                     Else
-                        RandomResult = GenerateDataFromReference(Row!ParentDatabase.ToString, Row!ParentTable.ToString, Row!ParentID.ToString, Row!Query.ToString, maxLength)
+                        RandomResult = GenerateDataFromReference(dtDataSet, ParamList, Row!ParentDatabase.ToString, Row!ParentTable.ToString, Row!ParentID.ToString, Row!Query.ToString, maxLength)
                     End If
 
                     'If Empty
                     If RandomResult = "" AndAlso Row!Subcategory <> "Empty" Then
+                        frm.Close()
+                        gv.FocusedRowHandle = RowHandle
                         If Row!HasReference Then
-                            gv.FocusedRowHandle = RowHandle
-                            gv.SetColumnError(gv.Columns("MaxLength"), "Reference MaxLength is longer than current MaxLength.", DXErrorProvider.ErrorType.Critical)
+                            'gv.SetColumnError(gv.Columns("MaxLength"), "Reference MaxLength is longer than current MaxLength.", DXErrorProvider.ErrorType.Critical)
+                            OnReferenceButtonClick(Nothing, Nothing)
                         Else
-                            gv.FocusedRowHandle = RowHandle
                             MsgBox("Please check setting for Column Name : " & Row!ColumnName, MsgBoxStyle.Critical)
                             OnSettingButtonClick(Nothing, Nothing)
                         End If
                         Exit Sub
                     End If
-                    paramList.Add(RandomResult)
+                    ParamList.Add(RandomResult)
                     RowHandle += 1
                 Next
-                dtOutput.Rows.Add(paramList.ToArray)
+                dtOutput.Rows.Add(ParamList.ToArray)
             Next
 
             'Close Progress bar
@@ -290,11 +322,13 @@ Public Class FrmMain
             Next
             txtQuery.Text = Query
         Catch ex As Exception
+            If frm IsNot Nothing Then
+                frm.Close()
+                frm = Nothing
+            End If
             MsgBox(ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
-
-
 
     Private Function ValidateGenerate() As Boolean
         For i As Integer = 0 To gv.RowCount - 1
@@ -408,25 +442,21 @@ Public Class FrmMain
 
     Private Sub OnSettingButtonClick(sender As Object, e As ButtonPressedEventArgs)
         Dim Frm As New FrmSettingParameter
-        Dim RowHandle As Integer = gv.FocusedRowHandle
-        Frm.ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
-        Frm.Category = gv.GetRowCellValue(RowHandle, "Category").ToString
-        Frm.Subcategory = gv.GetRowCellValue(RowHandle, "Subcategory").ToString
-        Frm.MaxLength = gv.GetRowCellValue(RowHandle, "MaxLength").ToString
-        Frm.Parameter = gv.GetRowCellValue(RowHandle, "Parameter").ToString
-        Frm.UserDefined = gv.GetRowCellValue(RowHandle, "UserDefined").ToString
+
+        Frm.Gv = gv
+        Frm.RowHandle = gv.FocusedRowHandle
         Frm.CategoryList = AllCategoryList
         Frm.SubcategoryList = AllSubcategoryList
 
         Frm.ShowDialog()
-        If Frm.IsOK Then
-            gv.SetRowCellValue(RowHandle, "ColumnName", Frm.ColumnName)
-            gv.SetRowCellValue(RowHandle, "Category", Frm.Category)
-            gv.SetRowCellValue(RowHandle, "Subcategory", Frm.Subcategory)
-            gv.SetRowCellValue(RowHandle, "MaxLength", Frm.MaxLength)
-            gv.SetRowCellValue(RowHandle, "Parameter", Frm.Parameter)
-            gv.SetRowCellValue(RowHandle, "UserDefined", Frm.UserDefined)
-        End If
+        'If Frm.IsOK Then
+        '    gv.SetRowCellValue(Frm.RowHandle, "ColumnName", Frm.ColumnName)
+        '    gv.SetRowCellValue(Frm.RowHandle, "Category", Frm.Category)
+        '    gv.SetRowCellValue(Frm.RowHandle, "Subcategory", Frm.Subcategory)
+        '    gv.SetRowCellValue(Frm.RowHandle, "MaxLength", Frm.MaxLength)
+        '    gv.SetRowCellValue(Frm.RowHandle, "Parameter", Frm.Parameter)
+        '    gv.SetRowCellValue(Frm.RowHandle, "UserDefined", Frm.UserDefined)
+        'End If
     End Sub
 
     Private Sub OnReferenceButtonClick(sender As Object, e As ButtonPressedEventArgs)
@@ -493,19 +523,17 @@ Public Class FrmMain
 
         ''Get the new value of the category column
         Dim cboSubategory As ComboBoxEdit = CType(sender, ComboBoxEdit)
+        Dim OldSubcategory As String = view.GetRowCellValue(rowHandle, "Subcategory").ToString
         Dim NewSubcategory As String = cboSubategory.EditValue.ToString()
-        'Dim NewSubcategory As String = view.GetRowCellValue(rowHandle, "Subcategory").ToString
-        'Dim cboSubategory As ComboBoxEdit = TryCast(sender, ComboBoxEdit)
 
-        If cboSubategory.Properties.Items.Contains(NewSubcategory) Then
-            ''Ensure the value is updated in gridview
-            'view.SetRowCellValue(rowHandle, "Subcategory", NewSubcategory)
-            'Dim Subcategory As String = view.GetRowCellValue(rowHandle, "Subcategory")
+        If cboSubategory.Properties.Items.Contains(NewSubcategory) AndAlso OldSubcategory <> NewSubcategory Then
             Dim OldCategory As String = view.GetRowCellValue(rowHandle, "Category").ToString
             Dim NewCategory As String = BogusDt.AsEnumerable().Where(Function(o) o("Subcategory") = NewSubcategory).Select(Function(o) o("Category").ToString).First
             If OldCategory <> NewCategory Then
                 view.SetRowCellValue(rowHandle, "Category", NewCategory)
             End If
+            view.SetRowCellValue(rowHandle, "Parameter", "")
+
         End If
     End Sub
 
@@ -514,6 +542,10 @@ Public Class FrmMain
             ProcessGenerateData(sender, e)
         ElseIf e.Control AndAlso e.KeyCode = Keys.C Then
             btnCopy_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.S Then
+            OnSettingButtonClick(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.R Then
+            OnReferenceButtonClick(Nothing, Nothing)
         End If
     End Sub
 
@@ -526,38 +558,6 @@ Public Class FrmMain
             .SelectedIndex = 0
         End With
     End Sub
-
-    Private Sub TestingGenerateData()
-        Dim faker As New Faker(Of Customer)
-
-        '-- Make a rule for each property
-        faker.RuleFor(Function(c) c.FirstName, Function(f) f.Name.FullName) _
-             .RuleFor(Function(c) c.LastName, Function(f) f.Name.LastName) _
-                                                                           _
-             .Rules(Sub(f, c)   '-- Or, alternatively, in bulk with .Rules() 
-                        c.Age = f.Random.Int(18, 35)
-                        c.Title = f.Name.JobTitle()
-                    End Sub)
-
-        Dim cust = faker.Generate(10)
-        Dim sb = New StringBuilder()
-        For Each cus In cust
-            sb.AppendLine(PropertyList(cus))
-        Next
-        txtQuery.Text = sb.ToString
-    End Sub
-
-    '<Extension()>
-    Public Shared Function PropertyList(ByVal obj As Object) As String
-        Dim props = obj.[GetType]().GetProperties()
-        Dim sb = New StringBuilder()
-
-        For Each p In props
-            sb.AppendLine(p.Name & ": " & p.GetValue(obj, Nothing))
-        Next
-
-        Return sb.ToString()
-    End Function
 
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         Dim newRow As DataRow = dtDataSet.NewRow()
@@ -632,13 +632,5 @@ Public Class FrmMain
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         dtDataSet.Clear()
     End Sub
-
 End Class
 
-
-Public Class Customer
-    Public Property FirstName() As String
-    Public Property LastName() As String
-    Public Property Age() As Integer
-    Public Property Title() As String
-End Class

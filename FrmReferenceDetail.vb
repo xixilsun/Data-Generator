@@ -188,24 +188,9 @@ Public Class FrmReferenceDetail
         pnlReference.Controls.Clear()
         If cboReferenceBy.SelectedItem = "Query" Then
             AddInputReference("Reference to DB")
-            'Add Label
-            Dim lbl As New Label With {
-                .Text = "Query",
-                .AutoSize = True,
-                .Location = New Point(0, pnlReference.Controls.Count * 14 + 4)
-            }
-            pnlReference.Controls.Add(lbl)
-
-            'Add Input box
-            Dim memoEdit As New MemoEdit With {
-                .Width = 257,
-                .Height = 80,
-                .Location = New Point(2, pnlReference.Controls.Count * 14 + 10)
-            }
-            pnlReference.Controls.Add(memoEdit)
-
+            AddInputReferenceByQuery()
             cboParentDatabase = DirectCast(pnlReference.Controls.Item(1), ComboBoxEdit)
-            txtQuery = DirectCast(memoEdit, MemoEdit)
+            txtQuery = DirectCast(pnlReference.Controls.Item(3), MemoEdit)
 
             'Set Default text for txtQuery
             SetDefaultComboBox()
@@ -228,6 +213,34 @@ Public Class FrmReferenceDetail
             AddHandler cboParentTable.SelectedIndexChanged, AddressOf cboParentTable_SelectedIndexChanged
         End If
 
+    End Sub
+
+    Private Sub AddInputReferenceByQuery()
+        'Add Label
+        Dim lbl As New Label With {
+            .Text = "Query",
+            .AutoSize = True,
+            .Location = New Point(0, pnlReference.Controls.Count * 14 + 4)
+        }
+        pnlReference.Controls.Add(lbl)
+
+        'Add Input box
+        Dim memoEdit As New MemoEdit With {
+            .Width = 257,
+            .Height = 80,
+            .Location = New Point(2, pnlReference.Controls.Count * 14 + 10)
+        }
+        pnlReference.Controls.Add(memoEdit)
+
+        'Add Label
+        Dim lbl2 As New Label With {
+            .MaximumSize = New Size(270, 0),
+            .Text = "Input #ColumnName# to indicate data from previous column on the same row",
+            .ForeColor = Color.Blue,
+            .AutoSize = True,
+            .Location = New Point(0, pnlReference.Controls.Count * 14 + memoEdit.Height + 4)
+        }
+        pnlReference.Controls.Add(lbl2)
     End Sub
 
     Private Sub AddInputReference(labelText As String)
