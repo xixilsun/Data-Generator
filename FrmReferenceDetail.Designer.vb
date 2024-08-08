@@ -25,6 +25,7 @@ Partial Class FrmReferenceDetail
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnSave = New System.Windows.Forms.ToolStripButton()
         Me.btnClear = New System.Windows.Forms.ToolStripButton()
+        Me.btnSetting = New System.Windows.Forms.ToolStripButton()
         Me.LabelControl3 = New DevExpress.XtraEditors.LabelControl()
         Me.txtColumnName = New DevExpress.XtraEditors.TextEdit()
         Me.LabelControl5 = New DevExpress.XtraEditors.LabelControl()
@@ -37,7 +38,7 @@ Partial Class FrmReferenceDetail
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnClear})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnClear, Me.btnSetting})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(304, 25)
@@ -52,7 +53,9 @@ Partial Class FrmReferenceDetail
         Me.btnSave.Margin = New System.Windows.Forms.Padding(0)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(55, 25)
+        Me.btnSave.Tag = ""
         Me.btnSave.Text = "Save"
+        Me.btnSave.ToolTipText = "Save (Ctrl + S)"
         '
         'btnClear
         '
@@ -62,7 +65,21 @@ Partial Class FrmReferenceDetail
         Me.btnClear.Margin = New System.Windows.Forms.Padding(0)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(57, 25)
+        Me.btnClear.Tag = ""
         Me.btnClear.Text = "Clear"
+        Me.btnClear.ToolTipText = "Clear (Ctrl + Del)"
+        '
+        'btnSetting
+        '
+        Me.btnSetting.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSetting.Image = Global.DataGenerator.My.Resources.Resources.Detail
+        Me.btnSetting.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnSetting.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnSetting.Name = "btnSetting"
+        Me.btnSetting.Size = New System.Drawing.Size(67, 25)
+        Me.btnSetting.Tag = ""
+        Me.btnSetting.Text = "Setting"
+        Me.btnSetting.ToolTipText = "Setting (Ctrl + Shift + S)"
         '
         'LabelControl3
         '
@@ -142,4 +159,5 @@ Partial Class FrmReferenceDetail
     Friend WithEvents LabelControl5 As DevExpress.XtraEditors.LabelControl
     Friend WithEvents cboReferenceBy As DevExpress.XtraEditors.ComboBoxEdit
     Friend WithEvents pnlReference As Windows.Forms.Panel
+    Friend WithEvents btnSetting As Windows.Forms.ToolStripButton
 End Class

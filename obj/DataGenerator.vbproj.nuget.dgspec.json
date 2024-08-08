@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[35.5.0, )"
             },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.92.1, )"
+            },
             "Microsoft.VisualBasic": {
               "target": "Package",
               "version": "[10.3.0, )"

@@ -1,0 +1,203 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Dataset" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Dataset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColumnName" type="xs:string" minOccurs="0" />
+                <xs:element name="Category" type="xs:string" minOccurs="0" />
+                <xs:element name="Subcategory" type="xs:string" minOccurs="0" />
+                <xs:element name="Setting" type="xs:string" minOccurs="0" />
+                <xs:element name="Parameter" type="xs:string" minOccurs="0" />
+                <xs:element name="UserDefined" type="xs:string" minOccurs="0" />
+                <xs:element name="MaxLength" type="xs:string" default="-" minOccurs="0" />
+                <xs:element name="HasReference" type="xs:boolean" default="false" minOccurs="0" />
+                <xs:element name="Ref" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentDatabase" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentTable" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentID" type="xs:string" minOccurs="0" />
+                <xs:element name="Query" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Dataset>
+    <ColumnName>RegID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2102</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>EmpID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_Employee</ParentDatabase>
+    <ParentTable>HREmployee</ParentTable>
+    <ParentID>EmpID</ParentID>
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>EmpName</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>200</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_Employee</ParentDatabase>
+    <Query>SELECT EmpName FROM HREmployee WHERE EmpID = #EmpID#</Query>
+  </Dataset>
+  <Dataset>
+    <ColumnName>DepName</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>200</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>PeriodID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>07/01/2024</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ActYear</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2024</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ActMonth</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>7</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Grade</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>A
+B
+C</UserDefined>
+    <MaxLength>50</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateOn</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Now</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>UpdateBy</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MANUAL (BOGUS)</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsTraining</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>GenDepID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>SubDepID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Null</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+</NewDataSet>

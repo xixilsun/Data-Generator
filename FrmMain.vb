@@ -9,7 +9,8 @@ Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraEditors.Controls
 Imports DataGenerator.My
 Imports System.Drawing
-
+Imports DevExpress.XtraGrid
+Imports ClosedXML.Excel
 Public Class FrmMain
     Private dtDataSet As New DataTable("Dataset")
     Private SelectedDatabase As String = ""
@@ -19,6 +20,8 @@ Public Class FrmMain
     Private AllSubcategoryList As List(Of String)
     Private FirstLoad As Boolean = True
 
+    Private loadedFilePath As String
+    Private originalImportedDt As DataTable
 
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Add Handler
@@ -195,9 +198,22 @@ Public Class FrmMain
             Dim Max As String = "-"
             If Not IsDBNull(row!MaxLength) AndAlso row!DataType <> "text" Then Max = row!MaxLength
 
+            Dim dr As DataRow = dtDataSet.NewRow()
+            dr!ColumnName = row!ColumnName
+            dr!Category = DefaultCategory
+            dr!Subcategory = DefaultSubcategory
+            dr!Setting = ""
+            dr!Parameter = ""
+            dr!UserDefined = ""
+            dr!MaxLength = Max
+            dr!HasReference = row!HasReference
+            dr!Ref = ""
+            dr!ParentDatabase = If(row!HasReference, SelectedDatabase, "")
+            dr!ParentTable = row!ParentTable
+            dr!ParentID = row!ParentID
+            dr!Query = ""
 
-            dtDataSet.Rows.Add(row!ColumnName, DefaultCategory, DefaultSubcategory, "", "", "", Max,
-                               row!HasReference, "", If(row!HasReference, SelectedDatabase, ""), row!ParentTable, row!ParentID, "")
+            dtDataSet.Rows.Add(dr)
         Next
 
         'Add Handler
@@ -206,23 +222,27 @@ Public Class FrmMain
     End Sub
 
     Private Sub OnDBSelectedIndexChanged(sender As Object, e As EventArgs)
-        Dim cboDB = TryCast(sender, ComboBoxEdit)
-        If cboDB.SelectedIndex <> -1 Then
-            Dim DatabaseName = cboDatabase.SelectedItem.ToString
-            Dim Sql = "SELECT TABLE_NAME AS TableName" & vbCrLf &
+        Try
+            Dim cboDB = TryCast(sender, ComboBoxEdit)
+            If cboDB.SelectedIndex <> -1 Then
+                Dim DatabaseName = cboDatabase.SelectedItem.ToString
+                Dim Sql = "SELECT TABLE_NAME AS TableName" & vbCrLf &
                       "FROM INFORMATION_SCHEMA.TABLES" & vbCrLf &
                       "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG = " & SqlStr(DatabaseName) & vbCrLf &
                       "ORDER BY TableName"
 
-            Dim TableList = ModSQL.GetDataTable(Sql, GetConnectionString(DatabaseName)).AsEnumerable.Select(Function(o) o("TableName")).ToList()
-            With cboTable
-                .Properties.Items.Clear()
-                .Properties.Items.AddRange(TableList)
-                .SelectedIndex = 0
-            End With
+                Dim TableList = ModSQL.GetDataTable(Sql, GetConnectionString(DatabaseName)).AsEnumerable.Select(Function(o) o("TableName")).ToList()
+                With cboTable
+                    .Properties.Items.Clear()
+                    .Properties.Items.AddRange(TableList)
+                    .SelectedIndex = 0
+                End With
 
-            If FirstLoad Then SetSelectedItem(cboTable, My.Settings.DefaultTable)
-        End If
+                If FirstLoad Then SetSelectedItem(cboTable, My.Settings.DefaultTable)
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
     End Sub
 
     Private Sub SetSelectedItem(cboTable As ComboBoxEdit, selectedItem As String)
@@ -247,13 +267,11 @@ Public Class FrmMain
             'Trigger Validation before generate data
             If Not ValidateGenerate() Then Exit Sub
             Dim dtOutput As New DataTable
-            Dim AllColumns As String = ""
             Dim col As New List(Of String)
             Dim RowData As String = ""
 
             For Each row In dtDataSet.Rows
                 dtOutput.Columns.Add(row!ColumnName, System.Type.GetType("System.String"))
-                AllColumns &= If(AllColumns = "", "", ", ") & row!ColumnName
                 col.Add(row!ColumnName)
             Next
 
@@ -300,27 +318,8 @@ Public Class FrmMain
             frm.Close()
             frm = Nothing
 
-            gcOutput.DataSource = Nothing
-            gcOutput.DataSource = dtOutput
-
-            gcOutput.MainView.PopulateColumns()
-            gcOutput.MainView.RefreshData()
-
-            gvOutput.OptionsView.ColumnAutoWidth = False
-            gvOutput.HorzScrollVisibility = ScrollVisibility.Always
-            gvOutput.BestFitColumns()
-
-            Dim Query As String = $"INSERT INTO {If(SelectedTable = "", "MyTable", SelectedTable)} ({AllColumns}) VALUES"
-            Dim Count As Integer = 1
-            For Each row In dtOutput.Rows
-                Dim dataQuery As String = ""
-                For Each column As DataColumn In dtOutput.Columns
-                    dataQuery &= If(dataQuery = "", "", ", ") & If(row(column) = "NULL" OrElse row(column) = "GETDATE()", row(column), $"'{row(column)}'")
-                Next
-                Query &= vbCrLf & $"({dataQuery})" & If(dtOutput.Rows.Count = Count, ";", ",")
-                Count += 1
-            Next
-            txtQuery.Text = Query
+            BindDataToGridControl(dtOutput)
+            SetInsertQueryText(dtOutput)
         Catch ex As Exception
             If frm IsNot Nothing Then
                 frm.Close()
@@ -328,6 +327,25 @@ Public Class FrmMain
             End If
             MsgBox(ex.Message, MsgBoxStyle.Critical)
         End Try
+    End Sub
+
+    Private Sub SetInsertQueryText(dataTable As DataTable)
+        Dim AllColumns As String = ""
+        For Each column In dataTable.Columns
+            AllColumns &= If(AllColumns = "", "", ", ") & column.ToString.Replace(" ", "")
+        Next
+
+        Dim Query As String = $"INSERT INTO {If(SelectedTable = "", "MyTable", SelectedTable)} ({AllColumns}) VALUES"
+        Dim Count As Integer = 1
+        For Each row In dataTable.Rows
+            Dim dataQuery As String = ""
+            For Each column As DataColumn In dataTable.Columns
+                dataQuery &= If(dataQuery = "", "", ", ") & If(row(column) = "NULL" OrElse row(column) = "GETDATE()", row(column), $"'{row(column)}'")
+            Next
+            Query &= vbCrLf & $"({dataQuery})" & If(dataTable.Rows.Count = Count, ";", ",")
+            Count += 1
+        Next
+        txtQuery.Text = Query
     End Sub
 
     Private Function ValidateGenerate() As Boolean
@@ -440,49 +458,26 @@ Public Class FrmMain
         gv.Columns("Ref").ColumnEdit = btnReference
     End Sub
 
-    Private Sub OnSettingButtonClick(sender As Object, e As ButtonPressedEventArgs)
+    Public Sub OnSettingButtonClick(sender As Object, e As ButtonPressedEventArgs)
         Dim Frm As New FrmSettingParameter
 
+        Frm.FrmMain = Me
         Frm.Gv = gv
         Frm.RowHandle = gv.FocusedRowHandle
         Frm.CategoryList = AllCategoryList
         Frm.SubcategoryList = AllSubcategoryList
 
         Frm.ShowDialog()
-        'If Frm.IsOK Then
-        '    gv.SetRowCellValue(Frm.RowHandle, "ColumnName", Frm.ColumnName)
-        '    gv.SetRowCellValue(Frm.RowHandle, "Category", Frm.Category)
-        '    gv.SetRowCellValue(Frm.RowHandle, "Subcategory", Frm.Subcategory)
-        '    gv.SetRowCellValue(Frm.RowHandle, "MaxLength", Frm.MaxLength)
-        '    gv.SetRowCellValue(Frm.RowHandle, "Parameter", Frm.Parameter)
-        '    gv.SetRowCellValue(Frm.RowHandle, "UserDefined", Frm.UserDefined)
-        'End If
     End Sub
 
-    Private Sub OnReferenceButtonClick(sender As Object, e As ButtonPressedEventArgs)
+    Public Sub OnReferenceButtonClick(sender As Object, e As ButtonPressedEventArgs)
         Dim Frm As New FrmReferenceDetail
-        Dim RowHandle As Integer = gv.FocusedRowHandle
-        Frm.ColumnName = gv.GetRowCellValue(RowHandle, "ColumnName").ToString
-        Frm.HasReference = CType(gv.GetRowCellValue(RowHandle, "HasReference"), Boolean)
-        Frm.ParentDatabase = gv.GetRowCellValue(RowHandle, "ParentDatabase").ToString
-        Frm.ParentTable = gv.GetRowCellValue(RowHandle, "ParentTable").ToString
-        Frm.ParentID = gv.GetRowCellValue(RowHandle, "ParentID").ToString
-        Frm.Query = gv.GetRowCellValue(RowHandle, "Query").ToString
+
+        Frm.FrmMain = Me
+        Frm.Gv = gv
+        Frm.RowHandle = gv.FocusedRowHandle
+
         Frm.ShowDialog()
-        If Frm.IsOK Then
-            gv.SetRowCellValue(RowHandle, "HasReference", Frm.HasReference)
-            If Frm.HasReference Then
-                gv.SetRowCellValue(RowHandle, "ParentDatabase", Frm.ParentDatabase)
-                gv.SetRowCellValue(RowHandle, "ParentTable", Frm.ParentTable)
-                gv.SetRowCellValue(RowHandle, "ParentID", Frm.ParentID)
-                gv.SetRowCellValue(RowHandle, "Query", Frm.Query)
-            Else
-                gv.SetRowCellValue(RowHandle, "ParentDatabase", String.Empty)
-                gv.SetRowCellValue(RowHandle, "ParentTable", String.Empty)
-                gv.SetRowCellValue(RowHandle, "ParentID", String.Empty)
-                gv.SetRowCellValue(RowHandle, "Query", String.Empty)
-            End If
-        End If
     End Sub
 
     Private Sub SetupDropdownColumns()
@@ -540,12 +535,22 @@ Public Class FrmMain
     Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.F5 Then
             ProcessGenerateData(sender, e)
-        ElseIf e.Control AndAlso e.KeyCode = Keys.C Then
-            btnCopy_Click(Nothing, Nothing)
         ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.S Then
             OnSettingButtonClick(Nothing, Nothing)
         ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.R Then
             OnReferenceButtonClick(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.P Then
+            PrepareDataset(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.C Then
+            btnCopy_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.I Then
+            btnImportExcel_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.E Then
+            btnExportExcel_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.S Then
+            btnSaveSetting_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.O Then
+            btnLoadSetting_Click(Nothing, Nothing)
         End If
     End Sub
 
@@ -576,11 +581,11 @@ Public Class FrmMain
         Frm.ShowDialog()
     End Sub
 
-    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+    Private Sub btnSaveSetting_Click(sender As Object, e As EventArgs) Handles btnSaveSetting.Click
         Using SaveFileDialog As New SaveFileDialog()
             SaveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
             SaveFileDialog.Title = "Export Dataset Settings"
-            SaveFileDialog.FileName = cboTable.SelectedItem
+            SaveFileDialog.FileName = cboDatabase.SelectedItem & "-" & cboTable.SelectedItem
             SaveFileDialog.InitialDirectory = My.Settings.DefaultExportPath
 
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
@@ -608,22 +613,31 @@ Public Class FrmMain
         End Try
         Return dt
     End Function
-    Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
+    Private Sub btnLoadSetting_Click(sender As Object, e As EventArgs) Handles btnLoadSetting.Click
         Using OpenFileDialog As New OpenFileDialog()
             OpenFileDialog.InitialDirectory = My.Settings.DefaultExportPath
             OpenFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
             OpenFileDialog.Title = "Import Dataset Settings"
             If OpenFileDialog.ShowDialog() = DialogResult.OK Then
-                Dim FilePath As String = OpenFileDialog.FileName
-                dtDataSet = LoadDatatableFromFile(FilePath)
-                cboTable.SelectedItem = IO.Path.GetFileNameWithoutExtension(OpenFileDialog.FileName)
-                SelectedTable = cboTable.SelectedItem
+                loadedFilePath = OpenFileDialog.FileName
+                dtDataSet = LoadDatatableFromFile(loadedFilePath)
+                originalImportedDt = dtDataSet.Copy()
+
+                Dim FileName As String = IO.Path.GetFileNameWithoutExtension(OpenFileDialog.FileName)
+                Dim tempArray = FileName.Split("-")
+                If tempArray.Length = 2 Then
+                    cboDatabase.SelectedItem = tempArray(0)
+                    cboTable.SelectedItem = tempArray(1)
+                    SelectedTable = cboTable.SelectedItem
+                End If
                 gc.DataSource = dtDataSet
             End If
         End Using
     End Sub
 
     Private Sub btnCopy_Click(sender As Object, e As EventArgs) Handles btnCopy.Click
+        'Need to create query for export from gridcontrol
+
         If txtQuery.Text.Trim = "" Then Exit Sub
         Clipboard.SetText(txtQuery.Text)
         btnCopy.Image = Resources.copy2
@@ -631,6 +645,103 @@ Public Class FrmMain
 
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         dtDataSet.Clear()
+    End Sub
+
+    Private Sub btnExportExcel_Click(sender As Object, e As EventArgs) Handles btnExportExcel.Click
+        ' Create a SaveFileDialog to specify the path to save the file
+        Dim saveFileDialog As New SaveFileDialog()
+        saveFileDialog.Filter = "Excel Files|*.xlsx"
+        saveFileDialog.Title = "Save as Excel File"
+        saveFileDialog.FileName = cboDatabase.SelectedItem & "-" & cboTable.SelectedItem
+        saveFileDialog.InitialDirectory = My.Settings.DefaultExportPath
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            ' Get the GridView from the GridControl
+            Dim gridView As GridView = CType(gcOutput.MainView, GridView)
+            ' Export the GridControl data to an Excel file
+            gridView.ExportToXlsx(saveFileDialog.FileName)
+            MessageBox.Show("Data exported successfully.", "Export to Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
+    End Sub
+
+    Private Sub btnImportExcel_Click(sender As Object, e As EventArgs) Handles btnImportExcel.Click
+        Try
+            ' Create an OpenFileDialog to select the Excel file
+            Dim openFileDialog As New OpenFileDialog()
+            openFileDialog.Filter = "Excel Files|*.xlsx;*.xls"
+            openFileDialog.Title = "Select an Excel File"
+
+            If openFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim excelFilePath As String = openFileDialog.FileName
+
+                Dim FileName As String = IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName)
+                Dim tempArray = FileName.Split("-")
+                If tempArray.Length = 2 Then
+                    cboDatabase.SelectedItem = tempArray(0)
+                    cboTable.SelectedItem = tempArray(1)
+                    SelectedTable = cboTable.SelectedItem
+                End If
+
+                ' Load the Excel file using ClosedXML
+                Using workbook As New XLWorkbook(excelFilePath)
+                    Dim worksheet As IXLWorksheet = workbook.Worksheets.First()
+
+                    ' Create a DataTable to hold the data
+                    Dim dataTable As New DataTable()
+
+                    ' Read the header row
+                    Dim firstRow As IXLRow = worksheet.FirstRow()
+                    For Each cell As IXLCell In firstRow.Cells()
+                        dataTable.Columns.Add(cell.Value.ToString())
+                    Next
+
+                    ' Read the data rows
+                    For Each row As IXLRow In worksheet.RowsUsed().Skip(1)
+                        Dim dataRow As DataRow = dataTable.NewRow()
+                        For i As Integer = 0 To dataTable.Columns.Count - 1
+                            dataRow(i) = row.Cell(i + 1).Value
+                        Next
+                        dataTable.Rows.Add(dataRow)
+                    Next
+
+                    BindDataToGridControl(dataTable)
+                    SetInsertQueryText(dataTable)
+                End Using
+                MessageBox.Show("Data imported successfully.", "Import from Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical)
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Bind the DataTable to the GridControl
+    ''' </summary>
+    ''' <param name="dataTable"></param>
+    Private Sub BindDataToGridControl(dataTable As DataTable)
+        gcOutput.DataSource = Nothing
+        gcOutput.DataSource = dataTable
+
+        gcOutput.MainView.PopulateColumns()
+        gcOutput.MainView.RefreshData()
+
+        gvOutput.OptionsView.ColumnAutoWidth = False
+        gvOutput.HorzScrollVisibility = ScrollVisibility.Always
+        gvOutput.BestFitColumns()
+    End Sub
+
+    Private Sub FrmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        If Not IsNothing(originalImportedDt) AndAlso Not AreTablesTheSame(originalImportedDt, dtDataSet) Then
+            Dim result As DialogResult = MsgBox("Save setting changes?", MsgBoxStyle.YesNoCancel + MsgBoxStyle.Exclamation, "Unsaved Changes")
+            Select Case result
+                Case DialogResult.Yes
+                    SaveDatasetSetting(dtDataSet, loadedFilePath)
+                Case DialogResult.No
+                Case DialogResult.Cancel
+                    e.Cancel = True
+            End Select
+        End If
     End Sub
 End Class
 

@@ -25,3 +25,9 @@ X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.Resources.
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmReferenceDetail.resources
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmSettingParameter.resources
 X:\WorkingCopy\!Testing Project\DataGenerator\obj\Debug\DataGenerator.FrmSyMsg.resources
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\ClosedXML.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\ClosedXML.pdb
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\DocumentFormat.OpenXml.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\ExcelNumberFormat.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\FastMember.Signed.dll
+X:\WorkingCopy\!Testing Project\DataGenerator\bin\Debug\System.IO.Packaging.dll

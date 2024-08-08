@@ -27,7 +27,7 @@ Partial Class FrmSettingParameter
         Me.btnSave = New System.Windows.Forms.ToolStripButton()
         Me.btnNext = New System.Windows.Forms.ToolStripButton()
         Me.btnPrevious = New System.Windows.Forms.ToolStripButton()
-        Me.btnClear = New System.Windows.Forms.ToolStripButton()
+        Me.btnReference = New System.Windows.Forms.ToolStripButton()
         Me.txtColumnName = New DevExpress.XtraEditors.TextEdit()
         Me.LabelControl3 = New DevExpress.XtraEditors.LabelControl()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -52,7 +52,7 @@ Partial Class FrmSettingParameter
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnNext, Me.btnPrevious, Me.btnClear})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnSave, Me.btnNext, Me.btnPrevious, Me.btnReference})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(585, 25)
@@ -68,6 +68,7 @@ Partial Class FrmSettingParameter
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(55, 25)
         Me.btnSave.Text = "Save"
+        Me.btnSave.ToolTipText = "Save (Ctrl + S)"
         '
         'btnNext
         '
@@ -78,6 +79,7 @@ Partial Class FrmSettingParameter
         Me.btnNext.Margin = New System.Windows.Forms.Padding(0)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(23, 25)
+        Me.btnNext.ToolTipText = "Alt + →"
         '
         'btnPrevious
         '
@@ -88,16 +90,18 @@ Partial Class FrmSettingParameter
         Me.btnPrevious.Margin = New System.Windows.Forms.Padding(0)
         Me.btnPrevious.Name = "btnPrevious"
         Me.btnPrevious.Size = New System.Drawing.Size(23, 25)
+        Me.btnPrevious.ToolTipText = "Alt + ←"
         '
-        'btnClear
+        'btnReference
         '
-        Me.btnClear.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnClear.Image = Global.DataGenerator.My.Resources.Resources._Exit
-        Me.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnClear.Margin = New System.Windows.Forms.Padding(0)
-        Me.btnClear.Name = "btnClear"
-        Me.btnClear.Size = New System.Drawing.Size(57, 25)
-        Me.btnClear.Text = "Clear"
+        Me.btnReference.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnReference.Image = Global.DataGenerator.My.Resources.Resources.Detail
+        Me.btnReference.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnReference.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnReference.Name = "btnReference"
+        Me.btnReference.Size = New System.Drawing.Size(85, 25)
+        Me.btnReference.Text = "Reference"
+        Me.btnReference.ToolTipText = "Reference (Ctrl + Shift + R)"
         '
         'txtColumnName
         '
@@ -283,7 +287,6 @@ Partial Class FrmSettingParameter
 
     Friend WithEvents ToolStrip1 As Windows.Forms.ToolStrip
     Friend WithEvents btnSave As Windows.Forms.ToolStripButton
-    Friend WithEvents btnClear As Windows.Forms.ToolStripButton
     Friend WithEvents txtColumnName As DevExpress.XtraEditors.TextEdit
     Friend WithEvents LabelControl3 As DevExpress.XtraEditors.LabelControl
     Friend WithEvents Label4 As Windows.Forms.Label
@@ -301,4 +304,5 @@ Partial Class FrmSettingParameter
     Friend WithEvents pnlParameters As Windows.Forms.Panel
     Friend WithEvents btnNext As Windows.Forms.ToolStripButton
     Friend WithEvents btnPrevious As Windows.Forms.ToolStripButton
+    Friend WithEvents btnReference As Windows.Forms.ToolStripButton
 End Class

@@ -1,0 +1,214 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="Dataset" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Dataset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColumnName" type="xs:string" minOccurs="0" />
+                <xs:element name="Category" type="xs:string" minOccurs="0" />
+                <xs:element name="Subcategory" type="xs:string" minOccurs="0" />
+                <xs:element name="Setting" type="xs:string" minOccurs="0" />
+                <xs:element name="Parameter" type="xs:string" minOccurs="0" />
+                <xs:element name="UserDefined" type="xs:string" minOccurs="0" />
+                <xs:element name="MaxLength" type="xs:string" default="-" minOccurs="0" />
+                <xs:element name="HasReference" type="xs:boolean" default="false" minOccurs="0" />
+                <xs:element name="Ref" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentDatabase" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentTable" type="xs:string" minOccurs="0" />
+                <xs:element name="ParentID" type="xs:string" minOccurs="0" />
+                <xs:element name="Query" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <Dataset>
+    <ColumnName>RegID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2102</UserDefined>
+    <MaxLength>10</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>TransID</ColumnName>
+    <Category />
+    <Subcategory />
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>25</MaxLength>
+    <HasReference>true</HasReference>
+    <Ref />
+    <ParentDatabase>HRdb_Employee</ParentDatabase>
+    <Query>SELECT TOP 10 CONCAT(E.EMPID,'-2407') FROM V_HREmpMonthly E
+ LEFT JOIN HREmpTerminate ET ON ET.EmpID = E.EmpId AND ET.RegId = E.RegId AND YEAR(ET.PeriodID) = E.ActYear AND MONTH(ET.PeriodID) = E.ActMonth
+ LEFT JOIN HRdb_SysMst.dbo.SyJobPosition JP ON JP.PositionId = E.JobPosition
+ LEFT JOIN HREmpStart EC ON E.EmpID = EC.EmpID AND E.RegID = EC.RegID
+ WHERE E.RegID ='2102'
+ AND ISNULL(EC.StartDate,E.StartDate) &lt;= '2024/07/07'
+ AND E.Actyear =2024 AND E.ActMonth =7
+ AND (ET.EmpId IS NULL OR (ET.EmpId IS NOT NULL AND ISNULL(ET.TerminateDate,'01/01/2059') BETWEEN '2024/07/07' AND '2024/08/06'))
+ AND E.Empid NOT IN (
+        SELECT ISNULL(empid,'') FROM HREmpMutation WHERE RegIDBef='2102'
+        AND (RegIDBef &lt;&gt; RegIDAft) AND RealPrdID='2024/07/01'
+ ) AND Newyear = 'Idul Fitri'
+ AND (E.DepID IN ('2102.63003','2102.63040','2102.63002','2102.63029','2102.63004','2102.63028','2102.63005','2102.63033','2102.63042','2102.63031','2102.63020','2102.63008','2102.63036','2102.63025','2102.63022','2102.63046','2102.63017','2102.63013','2102.63043','2102.63047','2102.63039','2102.63038','2102.63023','2102.63015','2102.01000','2102.63019','2102.63035','2102.63014','2102.63009','2102.63011','2102.63041','2102.63024','2102.63032','2102.63027','2102.63026','2102.63018','2102.63016','2102.63021','2102.63044','2102.63048','2102.63045','2102.63012','2102.63037','2102.63010','2102.63034','2102.63007','2102.63006','2102.63030') OR  E.SubDepID IN ('0073A','0073E','0073F','0073I','0005H','0005I','12344','00002','0073C','0073K','0073L','0073B','0005A','0073N','0073AO','0073P','0073Q','0073S','0073T','0073V','0073X','0073Y','0073Z','0073AA','0073AB','0073AE','0073AF','0073AG','0073AH','0073AK','0005AB','0073AM','0073AN','0062A'))
+                       UNION
+ SELECT TOP 10 CONCAT(E.EMPID,'-2407')
+ From V_HREmpMonthly E
+ INNER JOIN HREmpTerminate ET ON ET.EmpID = E.EmpId AND ET.RegId = E.RegId AND YEAR(ET.PeriodID) = E.ActYear AND MONTH(ET.PeriodID) = E.ActMonth
+ LEFT JOIN HRdb_SysMst.dbo.SyJobPosition JP ON JP.PositionId = E.JobPosition
+ LEFT JOIN HREmpStart EC ON E.EmpID = EC.EmpID AND E.RegID = EC.RegID
+ WHERE E.RegID ='2102'
+ AND ISNULL(EC.StartDate,E.StartDate) &lt;= '2024/07/07'
+ AND ISNULL(ET.TerminateDate,'01/01/2059') BETWEEN '2024/07/07' AND '2024/08/06'
+ AND E.ActYear = 2024
+ AND E.ActMonth BETWEEN 6 AND 7
+ AND E.EmpClass NOT IN ('')
+ AND Newyear = 'Idul Fitri'
+ AND (E.DepID IN ('2102.63003','2102.63040','2102.63002','2102.63029','2102.63004','2102.63028','2102.63005','2102.63033','2102.63042','2102.63031','2102.63020','2102.63008','2102.63036','2102.63025','2102.63022','2102.63046','2102.63017','2102.63013','2102.63043','2102.63047','2102.63039','2102.63038','2102.63023','2102.63015','2102.01000','2102.63019','2102.63035','2102.63014','2102.63009','2102.63011','2102.63041','2102.63024','2102.63032','2102.63027','2102.63026','2102.63018','2102.63016','2102.63021','2102.63044','2102.63048','2102.63045','2102.63012','2102.63037','2102.63010','2102.63034','2102.63007','2102.63006','2102.63030') OR  E.SubDepID IN ('0073A','0073E','0073F','0073I','0005H','0005I','12344','00002','0073C','0073K','0073L','0073B','0005A','0073N','0073AO','0073P','0073Q','0073S','0073T','0073V','0073X','0073Y','0073Z','0073AA','0073AB','0073AE','0073AF','0073AG','0073AH','0073AK','0005AB','0073AM','0073AN','0062A'))</Query>
+  </Dataset>
+  <Dataset>
+    <ColumnName>TypeRapel</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>Before</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Perdate</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>2024-07-01</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>FormulaID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>0000001</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ComponentID</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MSALARY</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>Amount</ColumnName>
+    <Category>Finance</Category>
+    <Subcategory>Amount</Subcategory>
+    <Setting />
+    <Parameter>Min=3000
+Max=6000
+Decimals=0</Parameter>
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsClosed</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>0</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>IsApproved</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>1</UserDefined>
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ApprovedOn</ColumnName>
+    <Category>Date</Category>
+    <Subcategory>Now</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>-</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>ApprovedBy</ColumnName>
+    <Category>Random</Category>
+    <Subcategory>UserDefined</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined>MANUAL (BOGUS)</UserDefined>
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+  <Dataset>
+    <ColumnName>RapelID</ColumnName>
+    <Category>Default</Category>
+    <Subcategory>Empty</Subcategory>
+    <Setting />
+    <Parameter />
+    <UserDefined />
+    <MaxLength>20</MaxLength>
+    <HasReference>false</HasReference>
+    <Ref />
+    <ParentDatabase />
+    <Query />
+  </Dataset>
+</NewDataSet>

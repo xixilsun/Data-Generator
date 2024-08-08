@@ -439,4 +439,17 @@ Module ModGlobal
         End If
         Return Nothing
     End Function
+
+    Public Function AreTablesTheSame(ByVal tbl1 As DataTable, ByVal tbl2 As DataTable) As Boolean
+        If tbl1.Rows.Count <> tbl2.Rows.Count OrElse tbl1.Columns.Count <> tbl2.Columns.Count Then Return False
+
+        For i As Integer = 0 To tbl1.Rows.Count - 1
+
+            For c As Integer = 0 To tbl1.Columns.Count - 1
+                If Not Equals(tbl1.Rows(i)(c), tbl2.Rows(i)(c)) Then Return False
+            Next
+        Next
+
+        Return True
+    End Function
 End Module

@@ -1,18 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "BpOz5TRZSdC6t+Z2pJYJBHjrTC6lRsltU6p4iSxG12TzFNVmSMu7w1fvl5pE3Muu3W2hNJbu2hc8jbiGPzFAJw==",
+  "dgSpecHash": "lMigeK+amXTETicKtO4S8kAdxqtDmAiWaXD27UpnGmYA34x+QylYFEG1wJceDXveP0yHWsIDmmIT9bQpz72kag==",
   "success": true,
   "projectFilePath": "X:\\WorkingCopy\\!Testing Project\\DataGenerator\\DataGenerator.vbproj",
   "expectedPackageFiles": [
     "C:\\NUGET\\global_packages\\bogus\\35.5.0\\bogus.35.5.0.nupkg.sha512",
-    "C:\\NUGET\\global_packages\\microsoft.visualbasic\\10.3.0\\microsoft.visualbasic.10.3.0.nupkg.sha512"
+    "C:\\NUGET\\global_packages\\closedxml\\0.92.1\\closedxml.0.92.1.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\excelnumberformat\\1.0.3\\excelnumberformat.1.0.3.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\fastmember.signed\\1.3.0\\fastmember.signed.1.3.0.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\microsoft.visualbasic\\10.3.0\\microsoft.visualbasic.10.3.0.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\system.io.filesystem.primitives\\4.0.1\\system.io.filesystem.primitives.4.0.1.nupkg.sha512",
+    "C:\\NUGET\\global_packages\\system.io.packaging\\4.0.0\\system.io.packaging.4.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Access to the path 'C:\\NUGET\\http_cache\\670c1461c29885f9aa22c281d8b7da90845b38e4$ps_api.nuget.org_v3_index.json\\vuln_index.dat-new' is denied."
-    }
-  ]
+  "logs": []
 }

@@ -34,9 +34,12 @@ Partial Class FrmMain
         Me.btnDelete = New System.Windows.Forms.ToolStripButton()
         Me.btnCategoryDetail = New System.Windows.Forms.ToolStripButton()
         Me.btnClear = New System.Windows.Forms.ToolStripButton()
-        Me.btnExport = New System.Windows.Forms.ToolStripButton()
-        Me.btnImport = New System.Windows.Forms.ToolStripButton()
+        Me.btnSaveSetting = New System.Windows.Forms.ToolStripButton()
+        Me.btnLoadSetting = New System.Windows.Forms.ToolStripButton()
         Me.SamplePanel = New System.Windows.Forms.Panel()
+        Me.ToolStrip2 = New System.Windows.Forms.ToolStrip()
+        Me.btnExportExcel = New System.Windows.Forms.ToolStripButton()
+        Me.btnImportExcel = New System.Windows.Forms.ToolStripButton()
         Me.gcOutput = New DevExpress.XtraGrid.GridControl()
         Me.gvOutput = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -50,14 +53,15 @@ Partial Class FrmMain
         Me.btnCopy = New DevExpress.XtraEditors.SimpleButton()
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.Panel5 = New System.Windows.Forms.Panel()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.gc, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatasetPanel.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
         Me.SamplePanel.SuspendLayout()
+        Me.ToolStrip2.SuspendLayout()
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -130,7 +134,7 @@ Partial Class FrmMain
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnDelete, Me.btnCategoryDetail, Me.btnClear, Me.btnExport, Me.btnImport})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAdd, Me.btnDelete, Me.btnCategoryDetail, Me.btnClear, Me.btnSaveSetting, Me.btnLoadSetting})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(827, 25)
@@ -175,37 +179,67 @@ Partial Class FrmMain
         Me.btnClear.Size = New System.Drawing.Size(57, 22)
         Me.btnClear.Text = "Clear"
         '
-        'btnExport
+        'btnSaveSetting
         '
-        Me.btnExport.Image = Global.DataGenerator.My.Resources.Resources.Export
-        Me.btnExport.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(100, 22)
-        Me.btnExport.Text = "Export Setting"
+        Me.btnSaveSetting.Image = Global.DataGenerator.My.Resources.Resources.Export
+        Me.btnSaveSetting.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnSaveSetting.Name = "btnSaveSetting"
+        Me.btnSaveSetting.Size = New System.Drawing.Size(91, 22)
+        Me.btnSaveSetting.Text = "Save Setting"
+        Me.btnSaveSetting.ToolTipText = "Ctrl + S"
         '
-        'btnImport
+        'btnLoadSetting
         '
-        Me.btnImport.Image = Global.DataGenerator.My.Resources.Resources.Import
-        Me.btnImport.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnImport.Name = "btnImport"
-        Me.btnImport.Size = New System.Drawing.Size(103, 22)
-        Me.btnImport.Text = "Import Setting"
+        Me.btnLoadSetting.Image = Global.DataGenerator.My.Resources.Resources.Import
+        Me.btnLoadSetting.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnLoadSetting.Name = "btnLoadSetting"
+        Me.btnLoadSetting.Size = New System.Drawing.Size(93, 22)
+        Me.btnLoadSetting.Text = "Load Setting"
+        Me.btnLoadSetting.ToolTipText = "Ctrl + O"
         '
         'SamplePanel
         '
+        Me.SamplePanel.Controls.Add(Me.ToolStrip2)
         Me.SamplePanel.Controls.Add(Me.gcOutput)
         Me.SamplePanel.Location = New System.Drawing.Point(29, 380)
         Me.SamplePanel.Name = "SamplePanel"
-        Me.SamplePanel.Size = New System.Drawing.Size(827, 255)
+        Me.SamplePanel.Size = New System.Drawing.Size(827, 250)
         Me.SamplePanel.TabIndex = 23
+        '
+        'ToolStrip2
+        '
+        Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnExportExcel, Me.btnImportExcel})
+        Me.ToolStrip2.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip2.Name = "ToolStrip2"
+        Me.ToolStrip2.Size = New System.Drawing.Size(827, 25)
+        Me.ToolStrip2.TabIndex = 21
+        Me.ToolStrip2.Text = "ToolStrip2"
+        '
+        'btnExportExcel
+        '
+        Me.btnExportExcel.Image = CType(resources.GetObject("btnExportExcel.Image"), System.Drawing.Image)
+        Me.btnExportExcel.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnExportExcel.Name = "btnExportExcel"
+        Me.btnExportExcel.Size = New System.Drawing.Size(89, 22)
+        Me.btnExportExcel.Text = "Export Excel"
+        Me.btnExportExcel.ToolTipText = "Ctrl + E"
+        '
+        'btnImportExcel
+        '
+        Me.btnImportExcel.Image = CType(resources.GetObject("btnImportExcel.Image"), System.Drawing.Image)
+        Me.btnImportExcel.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnImportExcel.Name = "btnImportExcel"
+        Me.btnImportExcel.Size = New System.Drawing.Size(92, 22)
+        Me.btnImportExcel.Text = "Import Excel"
+        Me.btnImportExcel.ToolTipText = "Ctrl + I"
         '
         'gcOutput
         '
-        Me.gcOutput.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.gcOutput.Location = New System.Drawing.Point(0, 0)
+        Me.gcOutput.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.gcOutput.Location = New System.Drawing.Point(0, 25)
         Me.gcOutput.MainView = Me.gvOutput
         Me.gcOutput.Name = "gcOutput"
-        Me.gcOutput.Size = New System.Drawing.Size(827, 255)
+        Me.gcOutput.Size = New System.Drawing.Size(827, 225)
         Me.gcOutput.TabIndex = 20
         Me.gcOutput.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvOutput})
         '
@@ -269,6 +303,7 @@ Partial Class FrmMain
         Me.btnPrepareDataset.Size = New System.Drawing.Size(143, 23)
         Me.btnPrepareDataset.TabIndex = 34
         Me.btnPrepareDataset.Text = "Prepare Dataset"
+        Me.btnPrepareDataset.ToolTip = "Ctrl + Shift + P"
         '
         'btnGenerate
         '
@@ -277,6 +312,7 @@ Partial Class FrmMain
         Me.btnGenerate.Size = New System.Drawing.Size(143, 23)
         Me.btnGenerate.TabIndex = 35
         Me.btnGenerate.Text = "Generate"
+        Me.btnGenerate.ToolTip = "F5"
         '
         'numQty
         '
@@ -287,7 +323,6 @@ Partial Class FrmMain
         Me.numQty.Properties.IsFloatValue = False
         Me.numQty.Properties.Mask.EditMask = "N00"
         Me.numQty.Properties.MaxValue = New Decimal(New Integer() {99999, 0, 0, 0})
-        Me.numQty.Properties.MinValue = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numQty.Size = New System.Drawing.Size(65, 20)
         Me.numQty.TabIndex = 37
         '
@@ -299,6 +334,7 @@ Partial Class FrmMain
         Me.btnCopy.Size = New System.Drawing.Size(143, 23)
         Me.btnCopy.TabIndex = 39
         Me.btnCopy.Text = "SQL INSERT"
+        Me.btnCopy.ToolTip = "Ctrl + C"
         '
         'Panel4
         '
@@ -331,16 +367,6 @@ Partial Class FrmMain
         Me.Panel5.Size = New System.Drawing.Size(889, 667)
         Me.Panel5.TabIndex = 41
         '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.Label1.Location = New System.Drawing.Point(27, 355)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(82, 17)
-        Me.Label1.TabIndex = 25
-        Me.Label1.Text = "Sample Data"
-        '
         'Label3
         '
         Me.Label3.AutoSize = True
@@ -351,6 +377,16 @@ Partial Class FrmMain
         Me.Label3.TabIndex = 26
         Me.Label3.Text = "New DataSet"
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.Label1.Location = New System.Drawing.Point(27, 355)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(82, 17)
+        Me.Label1.TabIndex = 25
+        Me.Label1.Text = "Sample Data"
+        '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -360,6 +396,8 @@ Partial Class FrmMain
         Me.Controls.Add(Me.Panel4)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "FrmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FrmMain"
@@ -371,6 +409,9 @@ Partial Class FrmMain
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         Me.SamplePanel.ResumeLayout(False)
+        Me.SamplePanel.PerformLayout()
+        Me.ToolStrip2.ResumeLayout(False)
+        Me.ToolStrip2.PerformLayout()
         CType(Me.gcOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvOutput, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cboDatabase.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -402,8 +443,8 @@ Partial Class FrmMain
     Friend WithEvents btnPrepareDataset As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents btnGenerate As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents numQty As DevExpress.XtraEditors.SpinEdit
-    Friend WithEvents btnImport As Windows.Forms.ToolStripButton
-    Friend WithEvents btnExport As Windows.Forms.ToolStripButton
+    Friend WithEvents btnLoadSetting As Windows.Forms.ToolStripButton
+    Friend WithEvents btnSaveSetting As Windows.Forms.ToolStripButton
     Friend WithEvents btnClear As Windows.Forms.ToolStripButton
     Friend WithEvents btnCopy As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents Panel4 As Windows.Forms.Panel
@@ -412,4 +453,7 @@ Partial Class FrmMain
     Friend WithEvents Panel2 As Windows.Forms.Panel
     Friend WithEvents Label1 As Windows.Forms.Label
     Friend WithEvents Label3 As Windows.Forms.Label
+    Friend WithEvents ToolStrip2 As Windows.Forms.ToolStrip
+    Friend WithEvents btnExportExcel As Windows.Forms.ToolStripButton
+    Friend WithEvents btnImportExcel As Windows.Forms.ToolStripButton
 End Class

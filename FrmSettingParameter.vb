@@ -9,6 +9,7 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid.Views.Grid
 
 Public Class FrmSettingParameter
+    Private _frmMain As FrmMain
     Private _gv As GridView
     Private _currentRowHandle As Integer
 
@@ -23,75 +24,10 @@ Public Class FrmSettingParameter
     Private _IsOK As Boolean
     Private IsFirstLoad As Boolean = True
 
-    'Public Sub New(gridView As GridView)
-    '    InitializeComponent()
-
-    '    _gv = gridView
-    '    _currentRowHandle = rowHandle
-
-    '    ShowDetails()
-    '    'UpdateButtons()
-    'End Sub
-
-    Public Sub ShowDetails()
-        ' Assuming you have a method to display the details of the row
-        'Dim' rowData As Object = _gv.GetRow(_currentRowHandle)
-        ' Display the rowData in the form controls
-        _ColumnName = _gv.GetRowCellValue(_currentRowHandle, "ColumnName").ToString
-        _Category = _gv.GetRowCellValue(_currentRowHandle, "Category").ToString
-        _Subcategory = _gv.GetRowCellValue(_currentRowHandle, "Subcategory").ToString
-        _MaxLength = _gv.GetRowCellValue(_currentRowHandle, "MaxLength").ToString
-        _Parameter = _gv.GetRowCellValue(_currentRowHandle, "Parameter").ToString
-        _UserDefined = _gv.GetRowCellValue(_currentRowHandle, "UserDefined").ToString
-
-        cboCategory.SelectedItem = If(_Category = "", Nothing, _Category)
-        cboSubcategory.SelectedItem = If(_Subcategory = "", Nothing, _Subcategory)
-
-        'Set to form
-        txtColumnName.Text = _ColumnName
-        txtParameterList.Text = _Parameter
-        txtMaxLength.Text = _MaxLength
-        txtUserDefined.Text = _UserDefined
-
-    End Sub
-
-    Public ReadOnly Property IsOK As Boolean
-        Get
-            Return _IsOK
-        End Get
-    End Property
-    Public ReadOnly Property Parameter As String
-        Get
-            Return _Parameter
-        End Get
-    End Property
-    Public ReadOnly Property UserDefined As String
-        Get
-            Return _UserDefined
-        End Get
-    End Property
-    Public ReadOnly Property MaxLength As String
-        Get
-            Return _MaxLength
-        End Get
-    End Property
-    Public ReadOnly Property ColumnName As String
-        Get
-            Return _ColumnName
-        End Get
-    End Property
-    Public ReadOnly Property Category As String
-
-        Get
-            Return _Category
-        End Get
-    End Property
-
-    Public ReadOnly Property Subcategory As String
-
-        Get
-            Return _Subcategory
-        End Get
+    Public WriteOnly Property FrmMain As FrmMain
+        Set(ByVal value As FrmMain)
+            _frmMain = value
+        End Set
     End Property
 
     Public Property RowHandle As Integer
@@ -144,26 +80,59 @@ Public Class FrmSettingParameter
         End Try
     End Sub
     Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.Control AndAlso e.KeyCode = Keys.S Then
+        If e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.U Then
+            cboSubcategory.SelectedItem = "UserDefined"
+            txtUserDefined.Select()
+        ElseIf e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.R Then
+            btnReference_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.S Then
             btnSave_Click(Nothing, Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
             Me.Close()
-        ElseIf e.Shift AndAlso e.KeyCode = Keys.Right Then
+        ElseIf e.Alt AndAlso e.KeyCode = Keys.Right Then
             btnNext_Click(Nothing, Nothing)
-        ElseIf e.Shift AndAlso e.KeyCode = Keys.Left Then
+        ElseIf e.Alt AndAlso e.KeyCode = Keys.Left Then
             btnPrevious_Click(Nothing, Nothing)
         End If
     End Sub
+
+    Public Sub ShowDetails()
+        _ColumnName = _gv.GetRowCellValue(_currentRowHandle, "ColumnName").ToString
+        _Category = _gv.GetRowCellValue(_currentRowHandle, "Category").ToString
+        _Subcategory = _gv.GetRowCellValue(_currentRowHandle, "Subcategory").ToString
+        _MaxLength = _gv.GetRowCellValue(_currentRowHandle, "MaxLength").ToString
+        _Parameter = _gv.GetRowCellValue(_currentRowHandle, "Parameter").ToString
+        _UserDefined = _gv.GetRowCellValue(_currentRowHandle, "UserDefined").ToString
+
+        'Set to form
+        txtColumnName.Text = _ColumnName
+        txtParameterList.Text = _Parameter
+        txtMaxLength.Text = _MaxLength
+        txtUserDefined.Text = _UserDefined
+
+        With cboCategory
+            .Properties.Items.Clear()
+            .Properties.Items.AddRange(CategoryList)
+            cboCategory.SelectedItem = If(_Category = "", Nothing, _Category)
+        End With
+
+        With cboSubcategory
+            .Properties.Items.Clear()
+            .Properties.Items.AddRange(SubcategoryList)
+            .SelectedItem = If(_Subcategory = "", Nothing, _Subcategory)
+        End With
+    End Sub
+
     Private Sub SetParameterList()
         'Get Parameter to ParameterList
         Dim ParameterText As String = ""
         For Each ctrl As Control In pnlParameters.Controls
-            If TypeOf ctrl Is TextEdit Then
-                Dim txt As TextEdit = DirectCast(ctrl, TextEdit)
-                ParameterText &= If(ParameterText = "", "", vbCrLf) & txt.Name & "=" & txt.Text
-            ElseIf TypeOf ctrl Is SpinEdit Then
+            If TypeOf ctrl Is SpinEdit Then
                 Dim num As SpinEdit = DirectCast(ctrl, SpinEdit)
                 ParameterText &= If(ParameterText = "", "", vbCrLf) & num.Name & "=" & num.Value
+            ElseIf TypeOf ctrl Is TextEdit Then
+                Dim txt As TextEdit = DirectCast(ctrl, TextEdit)
+                ParameterText &= If(ParameterText = "", "", vbCrLf) & txt.Name & "=" & txt.Text
             ElseIf TypeOf ctrl Is ComboBoxEdit Then
                 Dim cbo As ComboBoxEdit = DirectCast(ctrl, ComboBoxEdit)
                 ParameterText &= If(ParameterText = "", "", vbCrLf) & cbo.Name & "=" & cbo.SelectedItem
@@ -176,8 +145,6 @@ Public Class FrmSettingParameter
     End Sub
 
     Private Sub FrmSettingParameter_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        cboCategory.Properties.Items.AddRange(CategoryList)
-        cboSubcategory.Properties.Items.AddRange(SubcategoryList)
         ShowDetails()
         UpdateButtons()
 
@@ -446,7 +413,13 @@ Public Class FrmSettingParameter
         End If
     End Sub
 
-    Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
+    Private Sub btnClear_Click(sender As Object, e As EventArgs)
 
+    End Sub
+
+    Private Sub btnReference_Click(sender As Object, e As EventArgs) Handles btnReference.Click
+        Me.Dispose()
+        _gv.FocusedRowHandle = _currentRowHandle
+        _frmMain.OnReferenceButtonClick(Nothing, Nothing)
     End Sub
 End Class

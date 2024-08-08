@@ -3,7 +3,12 @@ Imports System.Drawing
 Imports System.Linq
 Imports System.Windows.Forms
 Imports DevExpress.XtraEditors
+Imports DevExpress.XtraGrid.Views.Grid
 Public Class FrmReferenceDetail
+    Private _frmMain As FrmMain
+    Private _gv As GridView
+    Private _currentRowHandle As Integer
+
     Private _ColumnName As String = ""
     Private _ParentDatabase As String = ""
     Private _ParentTable As String = ""
@@ -16,65 +21,38 @@ Public Class FrmReferenceDetail
     Private cboParentID As New ComboBoxEdit
     Private txtQuery As New MemoEdit
 
-    Public ReadOnly Property IsOK As Boolean
-        Get
-            Return _IsOK
-        End Get
+    Public WriteOnly Property FrmMain As FrmMain
+        Set(ByVal value As FrmMain)
+            _frmMain = value
+        End Set
     End Property
-    Public Property ColumnName As String
-        Set(ByVal value As String)
-            _ColumnName = value
+
+    Public Property RowHandle As Integer
+        Set(ByVal value As Integer)
+            _currentRowHandle = value
         End Set
         Get
-            Return _ColumnName
-        End Get
-    End Property
-    Public Property Query As String
-        Set(ByVal value As String)
-            _Query = value
-        End Set
-        Get
-            Return _Query
-        End Get
-    End Property
-    Public Property ParentDatabase As String
-        Set(ByVal value As String)
-            _ParentDatabase = value
-        End Set
-        Get
-            Return _ParentDatabase
+            Return _currentRowHandle
         End Get
     End Property
 
-    Public Property ParentTable As String
-        Set(ByVal value As String)
-            _ParentTable = value
+    Public Property Gv As GridView
+        Set(ByVal value As GridView)
+            _gv = value
         End Set
         Get
-            Return _ParentTable
+            Return _gv
         End Get
     End Property
-
-    Public Property ParentID As String
-        Set(ByVal value As String)
-            _ParentID = value
-        End Set
-        Get
-            Return _ParentID
-        End Get
-    End Property
-
-    Public Property HasReference As Boolean
-        Set(ByVal value As Boolean)
-            _HasReference = value
-        End Set
-        Get
-            Return _HasReference
-        End Get
-    End Property
-
 
     Private Sub FrmReferenceDetail_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        _ColumnName = _gv.GetRowCellValue(_currentRowHandle, "ColumnName").ToString
+        _HasReference = CType(_gv.GetRowCellValue(_currentRowHandle, "HasReference"), Boolean)
+        _ParentDatabase = _gv.GetRowCellValue(_currentRowHandle, "ParentDatabase").ToString
+        _ParentTable = _gv.GetRowCellValue(_currentRowHandle, "ParentTable").ToString
+        _ParentID = _gv.GetRowCellValue(_currentRowHandle, "ParentID").ToString
+        _Query = _gv.GetRowCellValue(_currentRowHandle, "Query").ToString
+
         txtColumnName.Text = _ColumnName
         'SetDefaultComboBox()
 
@@ -84,6 +62,32 @@ Public Class FrmReferenceDetail
             .SelectedIndex = If(_Query <> "", 1, 0)
         End With
 
+        Me.KeyPreview = True
+    End Sub
+
+    Private Sub frmConvert_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.Control AndAlso e.Shift AndAlso e.KeyCode = Keys.S Then
+            btnSetting_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.Delete Then
+            btnClear_Click(Nothing, Nothing)
+        ElseIf e.Control AndAlso e.KeyCode = Keys.S Then
+            btnSave_Click(Nothing, Nothing)
+        ElseIf e.KeyCode = Keys.Escape Then
+            Me.Close()
+            'ElseIf e.Alt Then
+            '    For Each ctrl As Control In Me.Controls
+            '        If TypeOf ctrl Is ToolStrip Then
+            '            Dim ts As ToolStrip = DirectCast(ctrl, ToolStrip)
+            '            For Each item In ts.Items
+            '                If TypeOf item Is ToolStripButton Then
+            '                    Dim btn As ToolStripButton = DirectCast(item, ToolStripButton)
+            '                    btn.Text = btn.Text & " (" & btn.Tag & ")"
+
+            '                End If
+            '            Next
+            '        End If
+            '    Next
+        End If
     End Sub
 
     Private Sub SetDefaultComboBox()
@@ -147,11 +151,23 @@ Public Class FrmReferenceDetail
             _IsOK = True
             Me.Dispose()
         ElseIf cboParentTable.SelectedItem = "" AndAlso cboParentID.SelectedItem = "" AndAlso cboParentDatabase.SelectedItem = "" AndAlso txtQuery.Text = "" Then
+            _ParentDatabase = String.Empty
+            _ParentTable = String.Empty
+            _ParentID = String.Empty
+            _Query = String.Empty
             _HasReference = False
             _IsOK = True
             Me.Dispose()
         Else
             MsgBox("Fill Input!", MsgBoxStyle.Critical)
+        End If
+
+        If _IsOK Then
+            _gv.SetRowCellValue(_currentRowHandle, "HasReference", _HasReference)
+            _gv.SetRowCellValue(_currentRowHandle, "ParentDatabase", _ParentDatabase)
+            _gv.SetRowCellValue(_currentRowHandle, "ParentTable", _ParentTable)
+            _gv.SetRowCellValue(_currentRowHandle, "ParentID", _ParentID)
+            _gv.SetRowCellValue(_currentRowHandle, "Query", _Query)
         End If
     End Sub
 
@@ -255,5 +271,11 @@ Public Class FrmReferenceDetail
             }
         pnlReference.Controls.Add(lbl)
         pnlReference.Controls.Add(cbo)
+    End Sub
+
+    Private Sub btnSetting_Click(sender As Object, e As EventArgs) Handles btnSetting.Click
+        Me.Dispose()
+        _gv.FocusedRowHandle = _currentRowHandle
+        _frmMain.OnSettingButtonClick(Nothing, Nothing)
     End Sub
 End Class
